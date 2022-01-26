@@ -1,0 +1,5 @@
+make sure you're using python3
+sudo python -m pip install mfrc522 
+sudo python -m pip install soco
+ 
+
