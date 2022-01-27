@@ -5,15 +5,20 @@ import RPi.GPIO as GPIO
 import mfrc522 as MFRC522
 import signal
 import soco
+import yaml
 from soco.plugins.sharelink import ShareLinkPlugin  # type: ignore
 
-cardMap = {}
-cardMap["136_4_73_140"] = "https://open.spotify.com/playlist/1BcqUS1Ivi3HHFupnvsAVk?si=f687707dd8154481"
-cardMap["136_4_95_158"] = "https://open.spotify.com/playlist/4XelIj6BvMyaJjQWmEKd7l?si=750cbd45d748408a"
-cardMap["162_212_47_28"] = "https://open.spotify.com/album/4KJGypBUe7ANibtri1msUe?si=UMWw2HtUTr6Hq9RvsC2MRg"
+
+from os import path
+albumPath = path.join(path.dirname(path.abspath(__file__)),"config.yaml")
+a_yaml_file = open(albumPath)
+config = yaml.load(a_yaml_file, Loader=yaml.FullLoader)
+
+cardMap = config["cards"]
+speaker = config["speaker"]
 cardMap["unknown"] = ""
 
-
+print(f"cardmap is {cardMap}")
 def setPlaylist(deviceName,url):
     device = soco.discovery.by_name(deviceName)
 
@@ -37,7 +42,7 @@ def end_read(signal,frame):
     global continue_reading
     print ("Ctrl+C captured, ending read.")
     continue_reading = False
-    stopPlaying("Study")
+    stopPlaying(speaker)
     GPIO.cleanup()
 
 
@@ -70,10 +75,11 @@ def readForCard():
                 url = cardMap["unknown"]
             else:
                 print(f"playing {url}")
-            setPlaylist("Study",url)    
+            setPlaylist(speaker,url)    
 
 
 # Hook the SIGINT
 signal.signal(signal.SIGINT, end_read)
+signal.signal(signal.SIGTERM, end_read)
 print ("Press Ctrl-C to stop.")
 readForCard()

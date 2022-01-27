@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "copyOnPi",
+            "type": "shell",
+            "command": "scp ${file} ${config:sshUser}@${config:sshEndpoint}:${config:mainPath}"
+        },
+        {
+            "label": "startOnPi",
+            "type": "shell",
+            "command": "ssh ${config:sshUser}@${config:sshEndpoint} 'nohup python3 -m ptvsd --host 0.0.0.0 --port 5678 --wait ${config:mainPath} > /dev/null 2>&1 &'"
+        },
+        {
+            "label": "wait",
+            "type": "shell",
+            "command": "sleep 5"
+        },
+        {
+            "label": "copyAndStartOnPi",
+            "dependsOrder": "sequence",
+            "dependsOn": ["copyOnPi", "startOnPi", "wait"]
+        },
+        {
+            "label": "cleanupOnPi",
+            "type": "shell",
+            "command": "ssh ${config:sshUser}@${config:sshEndpoint} 'pkill -9 python'"
+        },
+    ]    
+}

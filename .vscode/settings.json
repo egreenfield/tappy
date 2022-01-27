@@ -1,0 +1,6 @@
+{
+    "sshUser": "pi",
+    "sshEndpoint": "10.0.0.99",    
+    "mainPath":"~/dev/tappy/main.py"
+ }
+ 
