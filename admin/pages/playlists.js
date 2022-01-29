@@ -1,8 +1,11 @@
 import Layout from '../components/layout'
 import Sidebar from '../components/sidebar'
+import { useSession, signIn, signOut } from "next-auth/react"
 
 export default function Playlists() {
-  return (
+  const { data: session } = useSession()
+  if (session) {
+    return (
     <section>
       <h2>Playlists</h2>
       <p>
@@ -30,6 +33,15 @@ export default function Playlists() {
       </p>
     </section>
   )
+  }
+  return (
+    <section>
+      <h2>Playlists</h2>
+      Not signed in <br />
+      <button onClick={() => signIn()}>Sign in</button>
+    </section>
+  )
+
 }
 
 Playlists.getLayout = function getLayout(page) {
