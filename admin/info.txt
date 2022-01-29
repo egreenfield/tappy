@@ -1,0 +1,11 @@
+Basic static account info fetching
+https://leerob.io/blog/spotify-api-nextjs
+
+Node Sonos
+https://github.com/bencevans/node-sonos
+https://www.npmjs.com/package/sonos
+
+
+
+installing lib to watch RFID reader
+https://github.com/museuminabox/rfid-rc522
