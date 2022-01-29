@@ -1,7 +1,10 @@
 import Layout from '../components/layout'
 import Sidebar from '../components/sidebar'
+import { useSession, signIn, signOut } from "next-auth/react"
 
 export default function Albums() {
+  const { data: session } = useSession()
+  if (session) {
   return (
     <section>
       <h2>Albums</h2>
@@ -30,6 +33,15 @@ export default function Albums() {
       </p>
     </section>
   )
+}
+return (
+  <section>
+    <h2>Albums</h2>
+    Not signed in <br />
+    <button onClick={() => signIn('spotify')}>Sign in</button>
+  </section>
+)
+
 }
 
 Albums.getLayout = function getLayout(page) {

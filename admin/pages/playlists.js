@@ -38,7 +38,7 @@ export default function Playlists() {
     <section>
       <h2>Playlists</h2>
       Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      <button onClick={() => signIn('spotify')}>Sign in</button>
     </section>
   )
 
