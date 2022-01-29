@@ -1,36 +1,41 @@
 import Layout from '../components/layout'
 import Sidebar from '../components/sidebar'
-import { useSession, signIn, signOut } from "next-auth/react"
+import { getSession, useSession, signIn, signOut } from "next-auth/react"
+import {getUsersPlaylists} from '../lib/spotify';
 
-export default function Playlists() {
+
+// This gets called on every request
+export async function getServerSideProps(ctx) {
+  // Fetch data from external API
+//  const res = await fetch(`https://.../data`)
+//  const data = await res.json()
+  let session = await getSession(ctx) 
+  let items = []
+  console.log("session is",session);
+  if(session && session.token.accessToken) {
+    const response = await getUsersPlaylists(session.token.accessToken);
+    items = (await response.json()).items;  
+  }
+  return { props: { items,session } }
+}
+
+export default function Playlists({items}) {
   const { data: session } = useSession()
   if (session) {
     return (
     <section>
       <h2>Playlists</h2>
-      <p>
-        This example adds a property <code>getLayout</code> to your page,
-        allowing you to return a React component for the layout. This allows you
-        to define the layout on a per-page basis. Since we're returning a
-        function, we can have complex nested layouts if desired.
-      </p>
-      <p>
-        When navigating between pages, we want to persist page state (input
-        values, scroll position, etc) for a Single-Page Application (SPA)
-        experience.
-      </p>
-      <p>
-        This layout pattern will allow for state persistence because the React
-        component tree is persisted between page transitions. To preserve state,
-        we need to prevent the React component tree from being discarded between
-        page transitions.
-      </p>
-      <h3>Try It Out</h3>
-      <p>
-        To visualize this, try tying in the search input in the{' '}
-        <code>Sidebar</code> and then changing routes. You'll notice the input
-        state is persisted.
-      </p>
+        <ul>
+        {
+          items.map(item => (
+            <li key={item.id}>
+              <img src={item.images[0]?.url} width="30" />
+              <a href={item.external_urls.spotify}>{item.name}</a>
+            </li>
+          )
+          )
+        }
+      </ul>
     </section>
   )
   }

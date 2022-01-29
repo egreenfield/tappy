@@ -11,6 +11,7 @@
     "node-sonos": "^0.12.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "sonos": "^1.14.1"
+    "sonos": "^1.14.1",
+    "spotify-web-api-node": "^5.0.2"
   }
 }

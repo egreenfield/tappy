@@ -1,0 +1,9 @@
+* add "link card" behavior
+* modify python app to load config file every time.
+* add list component.
+* implement "albums" page
+* implement "speakers" page
+* implement launch on start
+* figure out how to print labels
+* stain/finish box
+* sand off pencil marks inside box
