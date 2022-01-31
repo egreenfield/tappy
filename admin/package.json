@@ -13,5 +13,10 @@
     "react-dom": "^17.0.2",
     "sonos": "^1.14.1",
     "spotify-web-api-node": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.13",
+    "@types/react": "^17.0.38",
+    "typescript": "^4.5.5"
   }
 }

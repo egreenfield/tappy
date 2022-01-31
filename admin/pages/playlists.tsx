@@ -16,7 +16,7 @@ export async function getServerSideProps(ctx) {
     const response = await getUsersPlaylists(session.token.accessToken);
     items = (await response.json()).items;  
   }
-  return { props: { items,session } }
+  return { props: { items } }
 }
 
 export default function Playlists({items}) {

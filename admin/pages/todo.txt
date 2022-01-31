@@ -1,7 +1,13 @@
 * add "link card" behavior
-* modify python app to load config file every time.
-* add list component.
+    - add button to table
+    - disable card playback, with timeout
+    - start listening to taps
+    - show dialog if waiting for tap
+    - add cancel button
+    - when tap comes, write new config file
+    - modify python app to load config file every time.
 * implement "albums" page
+* add list component.
 * implement "speakers" page
 * implement launch on start
 * figure out how to print labels
