@@ -12,7 +12,6 @@ log = logging.getLogger(__name__)
 class Tappy:
     def __init__(self):
         self.buzzer = 26
-        # Create an object of the class MFRC522
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.buzzer, GPIO.OUT)
         GPIO.output(self.buzzer, GPIO.HIGH)
@@ -24,14 +23,14 @@ class Tappy:
     def cardTapped(self, uid):
         log.info(f"Card read UID: {uid}")
         self.beep()
-        cardData = self.dataModel.cardMap.get(uid)
+        cardData = self.dataModel.getCardDetails(uid)
         if cardData == None:
             log.info("no playlist associated with card")
             return
         else:
             url = cardData["url"]
             log.info(f"playing {url}")
-        self.setPlaylist(self.dataModel.speaker,url)    
+        self.setPlaylist(self.dataModel.getCurrentSpeaker(),url)    
 
     def setPlaylist(self,deviceName,url):
         device = soco.discovery.by_name(deviceName)
@@ -40,7 +39,8 @@ class Tappy:
         share_link = ShareLinkPlugin(device)
         device.shuffle = True
         device.repeat = True
-        log.info(share_link.add_share_link_to_queue(url))
+        result = share_link.add_share_link_to_queue(url)
+        log.info(result)
         device.play_from_queue(0)
 
     def beep(self):
@@ -56,7 +56,7 @@ class Tappy:
     
     def stop(self):
         self.reader.stopReading()
-        self.stopPlaying(self.dataModel.speaker)
+        self.stopPlaying(self.dataModel.getCurrentSpeaker())
         self.restService.stop()
 
 

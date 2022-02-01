@@ -22,7 +22,8 @@ class CardReader:
     def stopReading(self):
         self.continue_reading = False
 
-    def overrideReadCallback(self,callback,timeout):
+    def overrideReadCallback(self,callback,timeout = 5):
+        log.info(f"overriding read callback with {timeout} timeout")
         self.overrideTimestamp = time.time()
         self.overrideTimeout = timeout
         self.overrideCallback = callback
@@ -36,7 +37,9 @@ class CardReader:
             return
         uid = str(uid[0])+"_"+str(uid[1])+"_"+str(uid[2])+"_"+str(uid[3])
         if (self.overrideCallback != None):
+            log.info("override callback found")
             if(time.time() - self.overrideTimestamp > self.overrideTimeout):
+                log.info(f"override callback timed out {time.time() - self.overrideTimestamp} vs {self.overrideTimeout}")
                 self.overrideCallback = None
         if (self.overrideCallback != None):
             self.overrideCallback(uid)

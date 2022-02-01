@@ -1,17 +1,22 @@
 {
-	"speaker": "Study",
-	"status": "active",
-	"sleepStart": 0,
-	"sleepDuration": 0,
-	"cards": {
-	  "136_4_73_140": {
-	  	"url":"https://open.spotify.com/playlist/1BcqUS1Ivi3HHFupnvsAVk?si=f687707dd8154481"
-	  },
-	  "136_4_95_158": {
-	  	"url":"https://open.spotify.com/playlist/4XelIj6BvMyaJjQWmEKd7l?si=750cbd45d748408a"
-	  },
-	  "162_212_47_28": {
-	  	"url":"https://open.spotify.com/album/4KJGypBUe7ANibtri1msUe?si=UMWw2HtUTr6Hq9RvsC2MRg"
-	  }
-	}
+    "speaker": "Study",
+    "status": "active",
+    "sleepStart": 0,
+    "sleepDuration": 0,
+    "cards": {
+        "136_4_73_140": {
+            "url": "https://open.spotify.com/playlist/1BcqUS1Ivi3HHFupnvsAVk?si=f687707dd8154481"
+        },
+        "136_4_95_158": {
+            "url": "https://open.spotify.com/playlist/4XelIj6BvMyaJjQWmEKd7l?si=750cbd45d748408a"
+        },
+        "162_212_47_28": {
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DXb9LIXaj5WhL?si=2814c385729947c5",
+            "cover": null,
+            "title": "90s Acoustic",
+            "details": {
+                "printed": false
+            }
+        }
+    }
 }
