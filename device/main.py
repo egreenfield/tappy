@@ -6,6 +6,7 @@ import mfrc522 as MFRC522
 import signal
 import soco
 import yaml
+import time
 from soco.plugins.sharelink import ShareLinkPlugin  # type: ignore
 
 
@@ -27,7 +28,12 @@ cardMap["unknown"] = ""
 print(f"cardmap is {cardMap}")
 
 # Create an object of the class MFRC522
+GPIO.setmode(GPIO.BCM)
 MIFAREReader = MFRC522.MFRC522()
+
+buzzer = 26
+GPIO.setup(buzzer, GPIO.OUT)
+GPIO.output(buzzer, GPIO.HIGH)
 
 
 def setPlaylist(deviceName,url):
@@ -56,6 +62,13 @@ def end_read(signal,frame):
     stopPlaying(speaker)
     GPIO.cleanup()
 
+def beep():
+    for i in range(1,3):
+        GPIO.output(buzzer, GPIO.LOW)
+        time.sleep(0.01)
+        GPIO.output(buzzer, GPIO.HIGH)
+        time.sleep(0.01)
+
 
 def readCard():
     # Get the UID of the card
@@ -83,6 +96,7 @@ def updateState(status):
             # SWITCH
             print("*** NEW CARD")
             state = kHasCard
+            beep()
             readCard()
     if(state == kMaybeCard):
         if(status == MIFAREReader.MI_ERR):
@@ -110,4 +124,6 @@ def lookForCard():
 signal.signal(signal.SIGINT, end_read)
 signal.signal(signal.SIGTERM, end_read)
 print ("Press Ctrl-C to stop.")
+for i in range(1,5):
+    beep()
 lookForCard()
