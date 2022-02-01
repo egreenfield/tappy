@@ -7,17 +7,22 @@ from werkzeug.serving import make_server
 
 log = logging.getLogger(__name__)
 
+def buildLastReadData(dataModel):
+    result = {
+        "count":dataModel.readCount
+    }
+    id = dataModel.getLastCardRead()
+    if id != None:
+        result['card'] = id
+        result['content'] = dataModel.getCard(id)
+    return result
 
 class LastCardHandler():
     def __init__(self,tappy):
         self.tappy = tappy
 
     def on_get(self,req,resp):
-        result = {}
-        id = self.tappy.dataModel.getLastCardRead()
-        if id != None:
-            result['card'] = id
-            result['content'] = self.tappy.dataModel.getCard(id)
+        result = buildLastReadData(self.tappy.dataModel)
         resultJson = json.dumps(result,indent=4)
         resp.status = falcon.HTTP_200  # This is the default status        
         resp.text = (resultJson)
@@ -39,8 +44,6 @@ class CardLinkHandler():
         self.tappy = tappy
 
     def on_post(self,req,resp):
-        resp.status = falcon.HTTP_200  # This is the default status        
-        resp.text = ('{}')
         eventBody = req.media
         log.debug(f'received event: {eventBody}')
         cardDetails = {}
@@ -50,6 +53,12 @@ class CardLinkHandler():
         cardDetails["details"] = eventBody["details"]
         timeout = eventBody.get("timeout") or 30
         self.tappy.reader.overrideReadCallback(callback=lambda uid : self.tappy.dataModel.updateCardData(uid,cardDetails),timeout=timeout)
+
+        result = buildLastReadData(self.tappy.dataModel)
+        resultJson = json.dumps(result,indent=4)
+        resp.status = falcon.HTTP_200  # This is the default status        
+        resp.text = (resultJson)
+        resp.content_type = falcon.MEDIA_JSON
 
 class CardUpdateHandler():
     def __init__(self,tappy):
