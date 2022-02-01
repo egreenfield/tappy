@@ -1,10 +1,9 @@
 import RPi.GPIO as GPIO
-import soco
 import time
 from data_model import DataModel
 from card_reader import CardReader
 from rest_service import RestService
-from soco.plugins.sharelink import ShareLinkPlugin  # type: ignore
+from stereo import Stereo
 
 import logging
 log = logging.getLogger(__name__)
@@ -19,6 +18,7 @@ class Tappy:
         self.dataModel = DataModel()
         self.reader = CardReader(self.dataModel, lambda uid : self.cardTapped(uid))
         self.restService = RestService(self)
+        self.stereo = Stereo(self)
 
     def cardTapped(self, uid):
         log.info(f"Card read UID: {uid}")
@@ -29,19 +29,7 @@ class Tappy:
             return
         else:
             url = cardData["url"]
-            log.info(f"playing {url}")
-        self.setPlaylist(self.dataModel.getCurrentSpeaker(),url)    
-
-    def setPlaylist(self,deviceName,url):
-        device = soco.discovery.by_name(deviceName)
-        device.stop()
-        device.clear_queue()
-        share_link = ShareLinkPlugin(device)
-        device.shuffle = True
-        device.repeat = True
-        result = share_link.add_share_link_to_queue(url)
-        log.info(result)
-        device.play_from_queue(0)
+        self.stereo.playUrl(self.dataModel.getCurrentSpeaker(),url)    
 
     def beep(self):
         for i in range(1,3):
@@ -49,15 +37,12 @@ class Tappy:
             time.sleep(0.01)
             GPIO.output(self.buzzer, GPIO.HIGH)
             time.sleep(0.01)
-
-    def stopPlaying(self,deviceName):
-        device = soco.discovery.by_name(deviceName)
-        device.stop()
     
     def stop(self):
         self.reader.stopReading()
-        self.stopPlaying(self.dataModel.getCurrentSpeaker())
+        self.stereo.stopPlaying(self.dataModel.getCurrentSpeaker())
         self.restService.stop()
+        GPIO.cleanup()
 
 
     def start(self):

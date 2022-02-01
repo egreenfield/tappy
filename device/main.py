@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-import RPi.GPIO as GPIO
 import signal
 import logging
 log = logging.getLogger(__name__)
@@ -15,9 +14,8 @@ tappy = Tappy()
 # Capture SIGINT for cleanup when the script is aborted
 def end_read(signal,frame):
     global tappy
-    log.info ("Ctrl+C captured, ending.")
+    log.info ("Ctrl+C shutting down.")
     tappy.stop()
-    GPIO.cleanup()
 
 # Hook the SIGINT
 signal.signal(signal.SIGINT, end_read)

@@ -37,7 +37,7 @@ class DataModel:
     def loadConfig(self):
         file = open(self.configPath)
         self.config = json.load(file)
-        log.info(f"loaded cardmap as {self.config['cards']}")
+        #log.info(f"loaded cardmap as {self.config['cards']}")
 
     def saveConfig(self):
         with open(self.configPath, 'w') as outfile:
