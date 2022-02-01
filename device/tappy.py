@@ -1,7 +1,6 @@
 import RPi.GPIO as GPIO
 import soco
 import time
-from threading import Thread
 from data_model import DataModel
 from card_reader import CardReader
 from rest_service import RestService
@@ -57,11 +56,12 @@ class Tappy:
     def stop(self):
         self.reader.stopReading()
         self.stopPlaying(self.dataModel.speaker)
+        self.restService.stop()
+
 
     def start(self):
         for i in range(1,5):
             self.beep()
-        
-        readerThread = Thread(target=lambda : self.restService.start())
-        readerThread.start()
+
+        self.restService.start()        
         self.reader.lookForCard()        

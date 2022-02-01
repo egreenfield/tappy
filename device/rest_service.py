@@ -1,6 +1,8 @@
 import falcon
 import logging
+from threading import Thread
 from werkzeug.serving import run_simple
+from werkzeug.serving import make_server
 
 log = logging.getLogger(__name__)
 
@@ -19,7 +21,11 @@ class RestService:
         self.app = falcon.App()
         self.tappy = tappy
         self.app.add_route("/api/card/link",CardLinkHandler(tappy))
+    def stop(self):
+        self.server.shutdown()
+        self.thread.join()
+
     def start(self):
-        run_simple('', 8000, self.app, use_reloader=False, threaded=True,static_files={
-#                '/videos': videoPath
-            })
+        self.server = make_server('', 8000, self.app, threaded=True)
+        self.thread = Thread(target=lambda : self.server.serve_forever())
+        self.thread.start()
