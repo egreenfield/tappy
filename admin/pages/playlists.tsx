@@ -2,6 +2,40 @@ import Layout from '../components/layout'
 import Sidebar from '../components/sidebar'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
 import {getUsersPlaylists} from '../lib/spotify';
+import { Table, Space } from 'antd';
+import { ColumnsType } from 'antd/lib/table';
+
+
+interface PlaylistData {
+  key: number;
+  
+  name: string;
+  images: {url:string}[]
+}
+
+const columns: ColumnsType<PlaylistData> = [
+  {
+    title: '',
+    key: 'key',
+    align: 'right',
+    render: (text,record) => <img src={record.images[0]?.url} width="50" />
+  },
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'key',
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    render: (text, record) => (
+      <Space size="middle">
+        <a>♂</a>
+        <a>🔨</a>
+      </Space>
+    ),
+  },
+];
 
 
 // This gets called on every request
@@ -25,7 +59,8 @@ export default function Playlists({items}) {
     return (
     <section>
       <h2>Playlists</h2>
-        <ul>
+        <Table columns={columns} pagination={{/*pageSize: 15*/}} dataSource={items} />
+      {/* <ul>
         {
           items.map(item => (
             <li key={item.id}>
@@ -35,7 +70,7 @@ export default function Playlists({items}) {
           )
           )
         }
-      </ul>
+      </ul> */}
     </section>
   )
   }
