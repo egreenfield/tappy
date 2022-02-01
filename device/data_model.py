@@ -8,8 +8,13 @@ class DataModel:
         self.configPath = path.join(path.dirname(path.abspath(__file__)),"../config.json")
         self.loadConfig()
 
-    def getCardDetails(self,uid):
-        return self.config['cards'].get(uid)
+    def getCard(self,uid):
+        data = self.config['cards'].get(uid)
+        return None if data == None else dict(data)
+
+    def getAllCards(self):
+        # note: should really be doing a deep copy here
+        return dict(self.config['cards'])
 
     def getCurrentSpeaker(self):
         return self.config['speaker']
