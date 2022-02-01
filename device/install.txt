@@ -1,0 +1,17 @@
+make sure you're using python3
+sudo python -m pip install mfrc522 
+sudo python -m pip install soco
+sudo python -m pip install pyyaml
+sudo python -m pip install falcon
+sudo python -m pip install Werkzeug
+
+
+Remote debugging:
+sudo python -m pip install ptvsd
+
+
+
+sudo cp tappy.service /lib/systemd/system/tappy.service
+sudo chmod 644 /lib/systemd/system/tappy.service
+sudo systemctl daemon-reload
+sudo systemctl enable tappy.service

@@ -2,128 +2,77 @@
 # -*- coding: utf8 -*-
 
 import RPi.GPIO as GPIO
-import mfrc522 as MFRC522
 import signal
 import soco
-import yaml
 import time
 from soco.plugins.sharelink import ShareLinkPlugin  # type: ignore
+from data_model import DataModel
+from card_reader import CardReader
 
 
-kNoCard = 0
-kHasCard = 1
-kMaybeCard = 2
+class Tappy:
+    def __init__(self):
+        self.buzzer = 26
+        # Create an object of the class MFRC522
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.buzzer, GPIO.OUT)
+        GPIO.output(self.buzzer, GPIO.HIGH)
 
-state = kNoCard
+        self.dataModel = DataModel()
+        self.reader = CardReader(self.dataModel, lambda uid : self.cardTapped(uid))
 
-from os import path
-albumPath = path.join(path.dirname(path.abspath(__file__)),"config.yaml")
-a_yaml_file = open(albumPath)
-config = yaml.load(a_yaml_file, Loader=yaml.FullLoader)
-
-cardMap = config["cards"]
-speaker = config["speaker"]
-cardMap["unknown"] = ""
-
-print(f"cardmap is {cardMap}")
-
-# Create an object of the class MFRC522
-GPIO.setmode(GPIO.BCM)
-MIFAREReader = MFRC522.MFRC522()
-
-buzzer = 26
-GPIO.setup(buzzer, GPIO.OUT)
-GPIO.output(buzzer, GPIO.HIGH)
-
-
-def setPlaylist(deviceName,url):
-    device = soco.discovery.by_name(deviceName)
-
-    device.stop()
-
-    device.clear_queue()
-    share_link = ShareLinkPlugin(device)
-    device.shuffle = True
-    device.repeat = True
-    print(share_link.add_share_link_to_queue(url))
-    device.play_from_queue(0)
-
-
-def stopPlaying(deviceName):
-    device = soco.discovery.by_name(deviceName)
-    device.stop()
-
-continue_reading = True
-# Capture SIGINT for cleanup when the script is aborted
-def end_read(signal,frame):
-    global continue_reading
-    print ("Ctrl+C captured, ending read.")
-    continue_reading = False
-    stopPlaying(speaker)
-    GPIO.cleanup()
-
-def beep():
-    for i in range(1,3):
-        GPIO.output(buzzer, GPIO.LOW)
-        time.sleep(0.01)
-        GPIO.output(buzzer, GPIO.HIGH)
-        time.sleep(0.01)
-
-
-def readCard():
-    # Get the UID of the card
-    (status,uid) = MIFAREReader.MFRC522_Anticoll()
-
-    # If we have the UID, continue
-    if status == MIFAREReader.MI_OK:
-
-        # Print UID
-        uid = str(uid[0])+"_"+str(uid[1])+"_"+str(uid[2])+"_"+str(uid[3])
+    def cardTapped(self, uid):
         print(f"Card read UID: {uid}")
-        url = cardMap.get(uid)
+        self.beep()
+        url = self.dataModel.cardMap.get(uid)
         if url == None:
             print("no playlist associated, playing default")
-            url = cardMap["unknown"]
+            url = self.dataModel.cardMap["unknown"]
         else:
             print(f"playing {url}")
-        setPlaylist(speaker,url)    
+        self.setPlaylist(self.dataModel.speaker,url)    
 
+    def setPlaylist(self,deviceName,url):
+        device = soco.discovery.by_name(deviceName)
+        device.stop()
+        device.clear_queue()
+        share_link = ShareLinkPlugin(device)
+        device.shuffle = True
+        device.repeat = True
+        print(share_link.add_share_link_to_queue(url))
+        device.play_from_queue(0)
 
-def updateState(status):
-    global state
-    if(state == kNoCard):
-        if(status == MIFAREReader.MI_OK):
-            # SWITCH
-            print("*** NEW CARD")
-            state = kHasCard
-            beep()
-            readCard()
-    if(state == kMaybeCard):
-        if(status == MIFAREReader.MI_ERR):
-            # SWITCH
-            print("*** CARD GONE")
-            state = kNoCard
-        else:
-            state = kHasCard
-    if(state == kHasCard):
-        if(status == MIFAREReader.MI_ERR):
-            state = kMaybeCard            
+    def beep(self):
+        for i in range(1,3):
+            GPIO.output(self.buzzer, GPIO.LOW)
+            time.sleep(0.01)
+            GPIO.output(self.buzzer, GPIO.HIGH)
+            time.sleep(0.01)
 
-def lookForCard():
+    def stopPlaying(self,deviceName):
+        device = soco.discovery.by_name(deviceName)
+        device.stop()
+    
+    def stop(self):
+        self.reader.stopReading()
+        self.stopPlaying(self.dataModel.speaker)
 
-    # This loop keeps checking for chips. If one is near it will get the UID and authenticate
-    while continue_reading:
-        
-        # Scan for cards    
-        (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
+    def start(self):
+        for i in range(1,5):
+            self.beep()
+        self.reader.lookForCard()        
 
-        updateState(status)
+tappy = Tappy()
 
+# Capture SIGINT for cleanup when the script is aborted
+def end_read(signal,frame):
+    global tappy
+    print ("Ctrl+C captured, ending.")
+    tappy.stop()
+    GPIO.cleanup()
 
 # Hook the SIGINT
 signal.signal(signal.SIGINT, end_read)
 signal.signal(signal.SIGTERM, end_read)
 print ("Press Ctrl-C to stop.")
-for i in range(1,5):
-    beep()
-lookForCard()
+tappy.start()

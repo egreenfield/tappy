@@ -1,0 +1,11 @@
+{
+	"speaker": "Study",
+	"status": "active",
+	"sleepStart": 0,
+	"sleepDuration": 0,
+	"cards": {
+	  "136_4_73_140": "https://open.spotify.com/playlist/1BcqUS1Ivi3HHFupnvsAVk?si=f687707dd8154481",
+	  "136_4_95_158": "https://open.spotify.com/playlist/4XelIj6BvMyaJjQWmEKd7l?si=750cbd45d748408a",
+	  "162_212_47_28": "https://open.spotify.com/album/4KJGypBUe7ANibtri1msUe?si=UMWw2HtUTr6Hq9RvsC2MRg"
+	}
+}
