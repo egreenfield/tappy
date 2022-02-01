@@ -1,12 +1,14 @@
 from os import path
 import json
+import logging
+log = logging.getLogger(__name__)
 
 class DataModel:
     def __init__(self):
         albumPath = path.join(path.dirname(path.abspath(__file__)),"../config.json")
         file = open(albumPath)
         self.config = json.load(file)
-        print(f"cardmap is {self.cardMap}")
+        log.info(f"loaded cardmap as {self.cardMap}")
 
     @property
     def cardMap(self):

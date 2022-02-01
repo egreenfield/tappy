@@ -1,5 +1,7 @@
 import mfrc522 as MFRC522
-import RPi.GPIO as GPIO
+import logging
+import time
+log = logging.getLogger(__name__)
 
 
 kNoCard = 0
@@ -14,31 +16,45 @@ class CardReader:
         self.readCallback = readCallback
         self.state = kNoCard
         self.continue_reading = True
-
+        self.overrideCallback = None
+        self.overrideTimeout = 0
+        self.overrideTimestamp = 0
     def stopReading(self):
         self.continue_reading = False
-        
+
+    def overrideReadCallback(self,callback,timeout):
+        self.overrideTimestamp = time.time()
+        self.overrideTimeout = timeout
+        self.overrideCallback = callback
+
     def readCard(self):
         # Get the UID of the card
         (status,uid) = self.MIFAREReader.MFRC522_Anticoll()
 
         # If we have the UID, continue
-        if status == self.MIFAREReader.MI_OK:
-            # Print UID
-            uid = str(uid[0])+"_"+str(uid[1])+"_"+str(uid[2])+"_"+str(uid[3])
+        if status != self.MIFAREReader.MI_OK:
+            return
+        uid = str(uid[0])+"_"+str(uid[1])+"_"+str(uid[2])+"_"+str(uid[3])
+        if (self.overrideCallback != None):
+            if(time.time() - self.overrideTimestamp > self.overrideTimeout):
+                self.overrideCallback = None
+        if (self.overrideCallback != None):
+            self.overrideCallback(uid)
+            self.overrideCallback = None
+        else:
             self.readCallback(uid)
 
     def updateState(self,status):
         if(self.state == kNoCard):
             if(status == self.MIFAREReader.MI_OK):
                 # SWITCH
-                print("*** NEW CARD")
+                log.info("*** NEW CARD")
                 self.state = kHasCard
                 self.readCard()
         if(self.state == kMaybeCard):
             if(status == self.MIFAREReader.MI_ERR):
                 # SWITCH
-                print("*** CARD GONE")
+                log.info("*** CARD GONE")
                 self.state = kNoCard
             else:
                 self.state = kHasCard
