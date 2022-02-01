@@ -1,3 +1,4 @@
+* move all react behavior to client side
 * add "link card" behavior
     - add button to table
     - disable card playback, with timeout
