@@ -24,11 +24,12 @@ class Tappy:
     def cardTapped(self, uid):
         log.info(f"Card read UID: {uid}")
         self.beep()
-        url = self.dataModel.cardMap.get(uid)
-        if url == None:
+        cardData = self.dataModel.cardMap.get(uid)
+        if cardData == None:
             log.info("no playlist associated with card")
             return
         else:
+            url = cardData["url"]
             log.info(f"playing {url}")
         self.setPlaylist(self.dataModel.speaker,url)    
 
