@@ -19,6 +19,14 @@ class DataModel:
     def getCurrentSpeaker(self):
         return self.config['speaker']
 
+    def registerCardRead(self,id):
+        self.config['lastCardRead'] = id
+        self.autoSave()
+    
+    def getLastCardRead(self):
+        return self.config.get('lastCardRead')
+
+
     def updateCardData(self,uid,newCardData,merge=True):
         if(merge):
             cardData = self.config['cards'].get(uid) or {}
@@ -44,3 +52,4 @@ class DataModel:
             json.dump(self.config, outfile,indent=4)
     def autoSave(self):
         self.saveConfig()
+

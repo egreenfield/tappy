@@ -7,6 +7,22 @@ from werkzeug.serving import make_server
 
 log = logging.getLogger(__name__)
 
+
+class LastCardHandler():
+    def __init__(self,tappy):
+        self.tappy = tappy
+
+    def on_get(self,req,resp):
+        result = {}
+        id = self.tappy.dataModel.getLastCardRead()
+        if id != None:
+            result['card'] = id
+            result['content'] = self.tappy.dataModel.getCard(id)
+        resultJson = json.dumps(result,indent=4)
+        resp.status = falcon.HTTP_200  # This is the default status        
+        resp.text = (resultJson)
+        resp.content_type = falcon.MEDIA_JSON
+
 class CardHandler():
     def __init__(self,tappy):
         self.tappy = tappy
@@ -56,6 +72,7 @@ class RestService:
         self.app = falcon.App()
         self.tappy = tappy
         self.app.add_route("/api/card/link",CardLinkHandler(tappy))
+        self.app.add_route("/api/card/last",LastCardHandler(tappy))
         self.app.add_route("/api/card/{id}}",CardUpdateHandler(tappy))
         self.app.add_route("/api/card",CardHandler(tappy))
     def stop(self):
