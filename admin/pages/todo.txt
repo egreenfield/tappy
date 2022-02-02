@@ -10,7 +10,7 @@
     DONE - modify python app to load config file every time.
 DONE * move dialog to component
 * implement "albums" page
-* add list component.
+DONE * add list component.
 * implement "speakers" page
 * implement launch on start
 * figure out how to print labels

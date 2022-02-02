@@ -6,10 +6,12 @@ import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
 import { startLinkAction } from '../lib/cardActions';
 import LinkDialog from '../components/LinkDialog';
+import Link from 'next/link';
 
 
 interface PlaylistData {
   key: number;  
+  id:string;
   name: string;
   images: {url:string}[]
 }
@@ -47,12 +49,14 @@ export default function Playlists({items}) {
       title: '',
       key: 'key',
       align: 'right',
+      width: 60,
       render: (text,record) => <img src={record.images[0]?.url} width="50" />
     },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'id',
+      render: (text,record) => (<Link  href={`/playlists/${record.id}`}>{text}</Link>)
     },
     {
       title: 'Action',

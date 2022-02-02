@@ -1,8 +1,11 @@
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const basic = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
+
+
 const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
 const PLAYLISTS_ENDPOINT = 'https://api.spotify.com/v1/me/playlists';
+const PLAYLIST_CONTENT_ENDPOINT = 'https://api.spotify.com/v1/playlists/';
 
 const getAccessToken = async (refresh_token) => {
     const response = await fetch(TOKEN_ENDPOINT, {
@@ -28,3 +31,13 @@ const getAccessToken = async (refresh_token) => {
       },
     });
   };
+
+  export const getPlaylistContent = async(refresh_token:string,id:string) => {
+    const {access_token} = await getAccessToken(refresh_token);
+    return fetch(PLAYLIST_CONTENT_ENDPOINT+id, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+
+  }
