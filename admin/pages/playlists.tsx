@@ -3,19 +3,14 @@ import { getSession, useSession, signIn, signOut } from "next-auth/react"
 import {getUsersPlaylists} from '../lib/spotify';
 import { Table, Space, Button, Modal } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 interface PlaylistData {
-  key: number;
-  
+  key: number;  
   name: string;
   images: {url:string}[]
 }
-
-
-
-
 
 // This gets called on every request
 export async function getServerSideProps(ctx) {
@@ -31,8 +26,6 @@ export async function getServerSideProps(ctx) {
 export default function Playlists({items}) {
   const { data: session } = useSession()
   const [linkData,setLinkData] = useState(undefined);
-  const [timeoutID,setTimeoutID] = useState(undefined);
-
 
   const linkCard = async (record) => {
     let body = (record)? JSON.stringify({
@@ -52,21 +45,42 @@ export default function Playlists({items}) {
       method: "POST",
       body
     })  
+
     if(record) {
       let result = await response.json()
       setLinkData(result);
-      setTimeoutID(setTimeout(handleCancelLink,30000));
-    } else {
-      setLinkData(undefined);
+    }
+  }
+  useEffect(() => {
+    let timeoutID;
+    let checkID;
+    if (linkData != undefined) {
+      timeoutID = setTimeout(handleCancelLink,30000);
+      checkID = setInterval(() => {checkForTap(linkData.count)},1000);
+    }
+    return function cleanupDialog() {
       if(timeoutID != undefined) {
         clearTimeout(timeoutID);
-        setTimeoutID(undefined);
       }
+      if(checkID != undefined) {
+        clearInterval(checkID);
+      }      
+    }    
+  })
+  const checkForTap = async (previousCount:number) => {
+    let response = await fetch('/api/card/last');
+    let newTapData = await response.json()
+    if (newTapData.count > previousCount) {
+      removeDialog();
     }
+  }    
+
+  const removeDialog = () => {
+    setLinkData(undefined);
   }
 
   const handleCancelLink = async () => {
-    setLinkData(undefined);
+    removeDialog();
     linkCard(undefined);
   }
 
@@ -103,11 +117,11 @@ export default function Playlists({items}) {
           visible={linkData != undefined}
           title="Ready to Link"
           onCancel={handleCancelLink}
-          footer={[
-            <Button key="back" onClick={handleCancelLink}>
-              Cancel
-            </Button>,
-          ]}
+          centered
+          okButtonProps={{loading:true, disabled:true}}
+          cancelButtonProps={{type:"primary"}}
+          okText=" "
+          closable={false}
         >
          <div>
            <p>Tap a card on tappy to link it to this playlist.</p>

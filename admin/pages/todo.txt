@@ -2,8 +2,8 @@
     DONE - add button to table
     DONE - disable card playback, with timeout
     DONE - start listening to taps
-    - show dialog if waiting for tap
-    - add cancel button
+    DONE - show dialog if waiting for tap
+    DONE - add cancel button
     - return tap data to client
     - dismiss dialog when tap happens.
     DONE - when tap comes, write new config file
