@@ -54,6 +54,9 @@ class CardLinkHandler():
         timeout = eventBody.get("timeout") or 30
         self.tappy.reader.overrideReadCallback(callback=lambda uid : self.tappy.dataModel.updateCardData(uid,cardDetails),timeout=timeout)
 
+        print(f"link body is: {json.dumps(eventBody,indent=4)}")
+
+
         result = buildLastReadData(self.tappy.dataModel)
         resultJson = json.dumps(result,indent=4)
         resp.status = falcon.HTTP_200  # This is the default status        

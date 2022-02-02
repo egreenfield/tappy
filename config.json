@@ -5,7 +5,12 @@
     "sleepDuration": 0,
     "cards": {
         "136_4_73_140": {
-            "url": "https://open.spotify.com/playlist/1BcqUS1Ivi3HHFupnvsAVk?si=f687707dd8154481"
+            "url": "https://open.spotify.com/playlist/2dEROQgsJ77WV2A2TSZjHO",
+            "cover": "https://mosaic.scdn.co/640/ab67616d0000b2731d46cf8a85a85062534a3197ab67616d0000b2739e015d7c3257551a325fe03aab67616d0000b2739ff4a2a6906f053698f5348aab67616d0000b273c5214ee5d4300598a8a95264",
+            "title": "a shorter playlist",
+            "details": {
+                "printed": false
+            }
         },
         "136_4_95_158": {
             "url": "https://open.spotify.com/playlist/4XelIj6BvMyaJjQWmEKd7l?si=750cbd45d748408a"
@@ -19,5 +24,5 @@
             }
         }
     },
-    "lastCardRead": "162_212_47_28"
+    "lastCardRead": "136_4_73_140"
 }
