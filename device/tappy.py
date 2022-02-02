@@ -23,7 +23,6 @@ class Tappy:
     def cardTapped(self, uid):
         log.info(f"Card read UID: {uid}")
         self.beep(1)
-        self.dataModel.registerCardRead(uid)
         cardData = self.dataModel.getCard(uid)
         if cardData == None:
             log.info("no playlist associated with card")
