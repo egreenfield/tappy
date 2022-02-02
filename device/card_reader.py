@@ -38,6 +38,7 @@ class CardReader:
         if status != self.MIFAREReader.MI_OK:
             return
         uid = str(uid[0])+"_"+str(uid[1])+"_"+str(uid[2])+"_"+str(uid[3])
+        self.dataModel.registerCardRead(uid)
         if (self.overrideCallback != None):
             log.info("override callback found")
             if(time.time() - self.overrideTimestamp > self.overrideTimeout):
