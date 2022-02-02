@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth, { Session, User } from "next-auth"
 import SpotifyProvider from "next-auth/providers/spotify";
 
 export default NextAuth({
@@ -18,7 +18,7 @@ export default NextAuth({
             }
             return token;
         },
-        async session(session, user) {
+        async session(session:Session, user:User) {
             session.user = user;
             return session;
         },

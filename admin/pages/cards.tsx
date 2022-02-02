@@ -34,9 +34,6 @@ export default function Albums() {
 
 Albums.getLayout = function getLayout(page) {
   return (
-    <Layout>
-      <Sidebar />
-      {page}
-    </Layout>
+    <Layout selected='cards'>{page}</Layout>
   )
 }
