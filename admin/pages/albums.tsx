@@ -46,9 +46,6 @@ return (
 
 Albums.getLayout = function getLayout(page) {
   return (
-    <Layout>
-      <Sidebar />
-      {page}
-    </Layout>
+    <Layout selected='albums'>{page}</Layout>
   )
 }

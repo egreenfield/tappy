@@ -1,4 +1,5 @@
 import '../global.css'
+import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 import { SessionProvider } from "next-auth/react"
 import { AppDataContext, appData } from '../lib/appData';
 export default function MyApp({ Component, pageProps: {session, ...pageProps}, }) {
