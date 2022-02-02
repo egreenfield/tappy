@@ -5,7 +5,7 @@ import { Layout as AntLayout, Menu } from 'antd';
 import { useRouter } from 'next/router';
 const { Header, Content, Footer } = AntLayout;
 
-export default function Layout({ children, selected }) {
+export default function Layout({ children, selected }:{children:any[],selected:string}) {
   const router = useRouter();
   const navigate = (section:string) => {
     router.push("/"+section)

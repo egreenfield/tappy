@@ -1,12 +1,13 @@
-* move all react behavior to client side
 * add "link card" behavior
-    - add button to table
-    - disable card playback, with timeout
-    - start listening to taps
+    DONE - add button to table
+    DONE - disable card playback, with timeout
+    DONE - start listening to taps
     - show dialog if waiting for tap
     - add cancel button
-    - when tap comes, write new config file
-    - modify python app to load config file every time.
+    - return tap data to client
+    - dismiss dialog when tap happens.
+    DONE - when tap comes, write new config file
+    DONE - modify python app to load config file every time.
 * implement "albums" page
 * add list component.
 * implement "speakers" page
@@ -14,3 +15,4 @@
 * figure out how to print labels
 * stain/finish box
 * sand off pencil marks inside box
+* move all react behavior to client side
