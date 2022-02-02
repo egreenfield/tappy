@@ -5,24 +5,45 @@
     "sleepDuration": 0,
     "cards": {
         "136_4_73_140": {
-            "url": "https://open.spotify.com/playlist/2dEROQgsJ77WV2A2TSZjHO",
-            "cover": "https://mosaic.scdn.co/640/ab67616d0000b2731d46cf8a85a85062534a3197ab67616d0000b2739e015d7c3257551a325fe03aab67616d0000b2739ff4a2a6906f053698f5348aab67616d0000b273c5214ee5d4300598a8a95264",
-            "title": "a shorter playlist",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DXcDxnC0UqHJa",
+            "cover": "https://i.scdn.co/image/ab67706f00000003a2dba0d1f56bc9bdb28b5204",
+            "title": "Folksy Covers",
             "details": {
                 "printed": false
             }
         },
         "136_4_95_158": {
-            "url": "https://open.spotify.com/playlist/4XelIj6BvMyaJjQWmEKd7l?si=750cbd45d748408a"
+            "url": "https://open.spotify.com/playlist/52Q50z0zS4m5hb3Wy4EXT3",
+            "cover": "https://i.scdn.co/image/ab67706c0000bebbc7a7a3cf3a830ec95d5e7020",
+            "title": "the kitchen sink",
+            "details": {
+                "printed": false
+            }
         },
         "162_212_47_28": {
-            "url": "https://open.spotify.com/playlist/37i9dQZF1DXb9LIXaj5WhL?si=2814c385729947c5",
-            "cover": null,
-            "title": "90s Acoustic",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1EUMDoJuT8yJsl",
+            "cover": "https://lineup-images.scdn.co/wrapped-2021-top100_LARGE-en.jpg",
+            "title": "Your Top Songs 2021",
+            "details": {
+                "printed": false
+            }
+        },
+        "136_4_80_222": {
+            "url": "https://open.spotify.com/playlist/1BcqUS1Ivi3HHFupnvsAVk",
+            "cover": "https://mosaic.scdn.co/640/ab67616d0000b2730cf212ffc3719550dfab899dab67616d0000b2737f570d8b2e794f1493dca2caab67616d0000b2738fdac781e93048350a5d20c1ab67616d0000b273c289ed4316aaab5a5b7376c1",
+            "title": "Roadtrip",
+            "details": {
+                "printed": false
+            }
+        },
+        "136_4_58_152": {
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DX0JKUIfwQSJh",
+            "cover": "https://i.scdn.co/image/ab67706f000000034e0be6cade5bd732df4ddc32",
+            "title": "70s & 80s Acoustic",
             "details": {
                 "printed": false
             }
         }
     },
-    "lastCardRead": "136_4_73_140"
+    "lastCardRead": "136_4_58_152"
 }

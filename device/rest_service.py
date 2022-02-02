@@ -45,17 +45,20 @@ class CardLinkHandler():
 
     def on_post(self,req,resp):
         eventBody = req.media
-        log.debug(f'received event: {eventBody}')
+        log.info(f'received event: {eventBody}')
         cardDetails = {}
-        cardDetails["url"] = eventBody["url"]
-        cardDetails["cover"] = eventBody["cover"]
-        cardDetails["title"] = eventBody["title"]
-        cardDetails["details"] = eventBody["details"]
-        timeout = eventBody.get("timeout") or 30
-        self.tappy.reader.overrideReadCallback(callback=lambda uid : self.tappy.dataModel.updateCardData(uid,cardDetails),timeout=timeout)
-
+        if(eventBody.get("url") == None):
+            self.tappy.reader.overrideReadCallback(callback=None,timeout=0)
+            self.tappy.beep(count=3,delay=.2)
+        else:
+            cardDetails["url"] = eventBody["url"]
+            cardDetails["cover"] = eventBody["cover"]
+            cardDetails["title"] = eventBody["title"]
+            cardDetails["details"] = eventBody["details"]
+            timeout = eventBody.get("timeout") or 30
+            self.tappy.reader.overrideReadCallback(callback=lambda uid : self.tappy.dataModel.updateCardData(uid,cardDetails),timeout=timeout,beep=True)
+            self.tappy.beep(count=2,delay=.2)
         print(f"link body is: {json.dumps(eventBody,indent=4)}")
-
 
         result = buildLastReadData(self.tappy.dataModel)
         resultJson = json.dumps(result,indent=4)

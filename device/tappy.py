@@ -16,13 +16,13 @@ class Tappy:
         GPIO.output(self.buzzer, GPIO.HIGH)
 
         self.dataModel = DataModel()
-        self.reader = CardReader(self.dataModel, lambda uid : self.cardTapped(uid))
+        self.reader = CardReader(self, lambda uid : self.cardTapped(uid))
         self.restService = RestService(self)
         self.stereo = Stereo(self)
 
     def cardTapped(self, uid):
         log.info(f"Card read UID: {uid}")
-        self.beep()
+        self.beep(1)
         self.dataModel.registerCardRead(uid)
         cardData = self.dataModel.getCard(uid)
         if cardData == None:
@@ -33,12 +33,12 @@ class Tappy:
             log.info(f"playing card {cardData.get('title')}")
         self.stereo.playUrl(self.dataModel.getCurrentSpeaker(),url)    
 
-    def beep(self):
-        for i in range(1,3):
+    def beep(self,count = 1,length=0.01,delay = 0.01):
+        for i in range(1,1+count):
             GPIO.output(self.buzzer, GPIO.LOW)
-            time.sleep(0.01)
+            time.sleep(length)
             GPIO.output(self.buzzer, GPIO.HIGH)
-            time.sleep(0.01)
+            time.sleep(delay)
     
     def stop(self):
         self.reader.stopReading()
@@ -49,7 +49,7 @@ class Tappy:
 
     def start(self):
         for i in range(1,5):
-            self.beep()
+            self.beep(5)
 
         self.restService.start()        
         self.reader.lookForCard()        

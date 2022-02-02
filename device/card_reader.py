@@ -10,9 +10,10 @@ kMaybeCard = 2
 
 
 class CardReader:
-    def __init__(self,dataModel,readCallback):
+    def __init__(self,tappy,readCallback):
         self.MIFAREReader = MFRC522.MFRC522()
-        self.dataModel = dataModel
+        self.dataModel = tappy.dataModel
+        self.tappy = tappy
         self.readCallback = readCallback
         self.state = kNoCard
         self.continue_reading = True
@@ -22,11 +23,12 @@ class CardReader:
     def stopReading(self):
         self.continue_reading = False
 
-    def overrideReadCallback(self,callback,timeout = 5):
+    def overrideReadCallback(self,callback,timeout = 5,beep = True):
         log.info(f"overriding read callback with {timeout} timeout")
         self.overrideTimestamp = time.time()
         self.overrideTimeout = timeout
         self.overrideCallback = callback
+        self.overrideBeep = beep
 
     def readCard(self):
         # Get the UID of the card
@@ -42,6 +44,8 @@ class CardReader:
                 log.info(f"override callback timed out {time.time() - self.overrideTimestamp} vs {self.overrideTimeout}")
                 self.overrideCallback = None
         if (self.overrideCallback != None):
+            if self.overrideBeep:
+                self.tappy.beep(3)
             self.overrideCallback(uid)
             self.overrideCallback = None
         else:
