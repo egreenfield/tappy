@@ -7,12 +7,15 @@ import { useEffect, useState } from 'react';
 import { startLinkAction } from '../lib/cardActions';
 import LinkDialog from '../components/LinkDialog';
 import Link from 'next/link';
+import { FaLink as LinkIcon, FaExternalLinkAlt as Navigate } from 'react-icons/fa';
+import { IconContext } from 'react-icons/lib';
 
 
 interface PlaylistData {
   key: number;  
   id:string;
   name: string;
+  external_urls: {spotify:string}
   images: {url:string}[]
 }
 
@@ -62,10 +65,12 @@ export default function Playlists({items}) {
       title: 'Action',
       key: 'id',
       render: (text, record) => (
-        <Space size="middle">
-          <a>♂</a>
-          <a onClick={()=> linkCard(record)}>🔨</a>
-        </Space>
+        <IconContext.Provider value={{ color: "#7777FF" }}>
+          <Space size="middle">
+              <Navigate onClick={()=> window.location.href = record.external_urls.spotify}/>
+              <LinkIcon onClick={()=> linkCard(record)} />
+          </Space>
+        </IconContext.Provider>
       ),
     },
   ];

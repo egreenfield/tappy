@@ -36,7 +36,6 @@ export async function getServerSideProps(ctx) {
   if(session && session.token.accessToken) {
     const response = await getPlaylistContent(session.token.accessToken,ctx.params.id);
     detail = (await response.json());  
-    console.log(detail)
   }
   return { props: detail }
 }
