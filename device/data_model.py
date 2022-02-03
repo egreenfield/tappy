@@ -28,6 +28,10 @@ class DataModel:
     def getLastCardRead(self):
         return self.db.get('lastCardRead')
 
+    def deleteCardData(self,uid):
+        log.info(f"deleting card {uid}")        
+        self.db['cards'].pop(uid,None);
+        self.autoSave();
 
     def updateCardData(self,uid,newCardData,merge=True):
         if(merge):

@@ -82,13 +82,23 @@ class CardUpdateHandler():
         cardDetails["details"] = eventBody.get("details")
         self.tappy.dataModel.updateCardData(id,cardDetails)
 
+    def on_get(self,req,resp,id):
+        card = self.tappy.dataModel.getCard(id) or {}
+        resultJson = json.dumps(card,indent=4)
+        resp.status = falcon.HTTP_200  # This is the default status        
+        resp.text = (resultJson)
+        resp.content_type = falcon.MEDIA_JSON
+
+    def on_delete(self,req,resp,id):
+        self.tappy.dataModel.deleteCardData(id)
+
 class RestService:
     def __init__(self,tappy):
         self.app = falcon.App()
         self.tappy = tappy
         self.app.add_route("/api/card/link",CardLinkHandler(tappy))
         self.app.add_route("/api/card/last",LastCardHandler(tappy))
-        self.app.add_route("/api/card/{id}}",CardUpdateHandler(tappy))
+        self.app.add_route("/api/card/{id}",CardUpdateHandler(tappy))
         self.app.add_route("/api/card",CardHandler(tappy))
     def stop(self):
         self.server.shutdown()
