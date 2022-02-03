@@ -4,6 +4,7 @@ import styles from './layout.module.css'
 import { Layout as AntLayout, Menu } from 'antd';
 import { useRouter } from 'next/router';
 const { Header, Content, Footer } = AntLayout;
+import { AiOutlineHome, AiFillHome } from 'react-icons/ai';
 
 export default function Layout({ children, selected }:{children:any[],selected:string}) {
   const router = useRouter();
@@ -18,10 +19,10 @@ export default function Layout({ children, selected }:{children:any[],selected:s
   //     <main className={styles.main}>{children}</main>
   //   </>
   <AntLayout>
-      <Header>
-        <div className="logo" />
+      <Header style={{ padding: '0px 20px' }}>
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[selected]} onClick={({key}) => navigate(key)}>
-          <Menu.Item key="albums">albums</Menu.Item>
+          <Menu.Item key=""><AiOutlineHome /></Menu.Item>
+          <Menu.Item key="music">music</Menu.Item>
           <Menu.Item key="playlists">playlists</Menu.Item>
           <Menu.Item key="cards">cards</Menu.Item>
           <Menu.Item key="speakers">speakers</Menu.Item>

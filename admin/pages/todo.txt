@@ -4,15 +4,21 @@
     DONE - start listening to taps
     DONE - show dialog if waiting for tap
     DONE - add cancel button
-    - return tap data to client
-    - dismiss dialog when tap happens.
+    DONE - return tap data to client
+    DONE - dismiss dialog when tap happens.
     DONE - when tap comes, write new config file
     DONE - modify python app to load config file every time.
+DONE * move dialog to component
 * implement "albums" page
-* add list component.
+DONE * add list component.
 * implement "speakers" page
-* implement launch on start
+DONE * implement launch on start
 * figure out how to print labels
 * stain/finish box
 * sand off pencil marks inside box
 * move all react behavior to client side
+
+
+
+look for icons at https://react-icons.github.io/react-icons
+

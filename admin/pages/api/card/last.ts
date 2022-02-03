@@ -14,6 +14,5 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse<Da
             'Content-Type': 'application/json'
           },      
     })
-    console.log("device response is ",deviceResponse)
     res.status(200).json(await deviceResponse.json())
 }

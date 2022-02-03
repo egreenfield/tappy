@@ -4,11 +4,18 @@ import {getUsersPlaylists} from '../lib/spotify';
 import { Table, Space, Button, Modal } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
+import { startLinkAction } from '../lib/cardActions';
+import LinkDialog from '../components/LinkDialog';
+import Link from 'next/link';
+import { FaLink as LinkIcon, FaExternalLinkAlt as Navigate } from 'react-icons/fa';
+import { IconContext } from 'react-icons/lib';
 
 
 interface PlaylistData {
   key: number;  
+  id:string;
   name: string;
+  external_urls: {spotify:string}
   images: {url:string}[]
 }
 
@@ -25,63 +32,19 @@ export async function getServerSideProps(ctx) {
 
 export default function Playlists({items}) {
   const { data: session } = useSession()
-  const [linkData,setLinkData] = useState(undefined);
+  const [linkAction,setLinkAction] = useState(undefined);
 
   const linkCard = async (record) => {
-    let body = (record)? JSON.stringify({
+    let action = startLinkAction({
       url:record.external_urls.spotify,
       title:record.name,
       cover:record.images[0]?.url,
       details: {
         printed: false
       }
-    }):"{}";
-
-    let response = await fetch('/api/card/link',{
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: "POST",
-      body
-    })  
-
-    if(record) {
-      let result = await response.json()
-      setLinkData(result);
-    }
-  }
-  useEffect(() => {
-    let timeoutID;
-    let checkID;
-    if (linkData != undefined) {
-      timeoutID = setTimeout(handleCancelLink,30000);
-      checkID = setInterval(() => {checkForTap(linkData.count)},1000);
-    }
-    return function cleanupDialog() {
-      if(timeoutID != undefined) {
-        clearTimeout(timeoutID);
-      }
-      if(checkID != undefined) {
-        clearInterval(checkID);
-      }      
-    }    
-  })
-  const checkForTap = async (previousCount:number) => {
-    let response = await fetch('/api/card/last');
-    let newTapData = await response.json()
-    if (newTapData.count > previousCount) {
-      removeDialog();
-    }
-  }    
-
-  const removeDialog = () => {
-    setLinkData(undefined);
-  }
-
-  const handleCancelLink = async () => {
-    removeDialog();
-    linkCard(undefined);
+    });
+    setLinkAction(action);
+    action.promise.finally(()=> setLinkAction(undefined))
   }
 
   const columns: ColumnsType<PlaylistData> = [
@@ -89,21 +52,25 @@ export default function Playlists({items}) {
       title: '',
       key: 'key',
       align: 'right',
+      width: 60,
       render: (text,record) => <img src={record.images[0]?.url} width="50" />
     },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'id',
+      render: (text,record) => (<Link  href={`/playlists/${record.id}`}>{text}</Link>)
     },
     {
       title: 'Action',
       key: 'id',
       render: (text, record) => (
-        <Space size="middle">
-          <a>♂</a>
-          <a onClick={()=> linkCard(record)}>🔨</a>
-        </Space>
+        <IconContext.Provider value={{ color: "#7777FF" }}>
+          <Space size="middle">
+              <Navigate onClick={()=> window.location.href = record.external_urls.spotify}/>
+              <LinkIcon onClick={()=> linkCard(record)} />
+          </Space>
+        </IconContext.Provider>
       ),
     },
   ];
@@ -113,21 +80,7 @@ export default function Playlists({items}) {
     <section>
       <h1>Playlists</h1>
         <Table columns={columns} pagination={{/*pageSize: 15*/}} dataSource={items} />          
-        <Modal
-          visible={linkData != undefined}
-          title="Ready to Link"
-          onCancel={handleCancelLink}
-          centered
-          okButtonProps={{loading:true, disabled:true}}
-          cancelButtonProps={{type:"primary"}}
-          okText=" "
-          closable={false}
-        >
-         <div>
-           <p>Tap a card on tappy to link it to this playlist.</p>
-         </div>
-        </Modal>
-
+      <LinkDialog action={linkAction} />
     </section>
   )
   }

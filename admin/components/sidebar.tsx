@@ -13,8 +13,8 @@ export default function Sidebar() {
       <Link href="/playlists">
         <a>Playlists</a>
       </Link>
-      <Link href="/albums">
-        <a>Albums</a>
+      <Link href="/music">
+        <a>Music</a>
       </Link>
       <Link href="/speakers">
         <a>Speakers</a>
