@@ -1,7 +1,7 @@
 import Layout from '../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
 import {getUsersPlaylists} from '../lib/spotify';
-import { Table, Space, Button, Modal } from 'antd';
+import { Table, Space, Button, Modal, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
 import { startLinkAction } from '../lib/cardActions';
@@ -9,6 +9,7 @@ import LinkDialog from '../components/LinkDialog';
 import Link from 'next/link';
 import { FaLink as LinkIcon, FaExternalLinkAlt as Navigate } from 'react-icons/fa';
 import { IconContext } from 'react-icons/lib';
+import TopTable from '../components/TopTable';
 
 
 interface PlaylistData {
@@ -40,7 +41,8 @@ export default function Playlists({items}) {
       title:record.name,
       cover:record.images[0]?.url,
       details: {
-        printed: false
+        printed: false,
+        type: "playlist"
       }
     });
     setLinkAction(action);
@@ -56,22 +58,27 @@ export default function Playlists({items}) {
       render: (text,record) => <img src={record.images[0]?.url} width="50" />
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'id',
-      render: (text,record) => (<Link  href={`/playlists/${record.id}`}>{text}</Link>)
-    },
-    {
-      title: 'Action',
+      title: '',
+      width: 60,
       key: 'id',
       render: (text, record) => (
         <IconContext.Provider value={{ color: "#7777FF" }}>
           <Space size="middle">
-              <Navigate onClick={()=> window.location.href = record.external_urls.spotify}/>
-              <LinkIcon onClick={()=> linkCard(record)} />
+            <Tooltip title="Open in Spotify">
+              <Navigate cursor="pointer" onClick={()=> window.location.href = record.external_urls.spotify}/>
+            </Tooltip>
+            <Tooltip title="Link to Card">
+              <LinkIcon cursor="pointer" onClick={()=> linkCard(record)} />
+            </Tooltip>
           </Space>
         </IconContext.Provider>
       ),
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'id',
+      render: (text,record) => (<Link  href={`/playlists/${record.id}`}>{text}</Link>)
     },
   ];
   
@@ -79,7 +86,7 @@ export default function Playlists({items}) {
     return (
     <section>
       <h1>Playlists</h1>
-        <Table columns={columns} pagination={{/*pageSize: 15*/}} dataSource={items} />          
+        <TopTable columns={columns} dataSource={items} />          
       <LinkDialog action={linkAction} />
     </section>
   )

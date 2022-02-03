@@ -6,6 +6,7 @@ import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
 import { startLinkAction } from '../../lib/cardActions';
 import LinkDialog from '../../components/LinkDialog';
+import TopTable from '../../components/TopTable';
 
 interface TrackData {
     name:string;
@@ -46,7 +47,8 @@ export default function PlaylistDetails(playlist:PlaylistDetailData) {
       title:playlist.name,
       cover:playlist.images[0]?.url,
       details: {
-        printed: false
+        printed: false,
+        type:"playlis"
       }
     });
     setLinkAction(action);
@@ -76,7 +78,7 @@ export default function PlaylistDetails(playlist:PlaylistDetailData) {
         <h1>{playlist.name}</h1>      
         <h2>{playlist.description}</h2>      
         <Button type="primary" onClick={()=>linkCard(playlist)}>Link Card</Button>
-        <Table columns={columns} pagination={{/*pageSize: 15*/}} dataSource={playlist.tracks.items} />          
+        <TopTable columns={columns} dataSource={playlist.tracks.items} />          
         <LinkDialog action={linkAction} />
     </section>
   )

@@ -6,6 +6,7 @@ import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
 import { startLinkAction } from '../../lib/cardActions';
 import LinkDialog from '../../components/LinkDialog';
+import TopTable from '../../components/TopTable';
 
 
 // This gets called on every request
@@ -28,7 +29,8 @@ export default function AlbumDetails(album:AlbumData) {
       title:playlist.name,
       cover:playlist.images[0]?.url,
       details: {
-        printed: false
+        printed: false,
+        type: "album"
       }
     });
     setLinkAction(action);
@@ -37,7 +39,7 @@ export default function AlbumDetails(album:AlbumData) {
 
   const columns: ColumnsType<TrackData> = [
     {
-      title: 'Name',
+      title: 'Track',
       dataIndex: 'track.name',
       key: 'id',
       render: (text,record) => <>{record.name}</>
@@ -50,7 +52,7 @@ export default function AlbumDetails(album:AlbumData) {
         <img src={album.images[0].url} width="150" />
         <h1>{album.name}</h1>      
         <Button type="primary" onClick={()=>linkCard(album)}>Link Card</Button>
-        <Table columns={columns} pagination={{/*pageSize: 15*/}} dataSource={album.tracks} />          
+        <TopTable columns={columns} dataSource={album.tracks} />          
         <LinkDialog action={linkAction} />
     </section>
   )

@@ -9,10 +9,12 @@
     DONE - when tap comes, write new config file
     DONE - modify python app to load config file every time.
 DONE * move dialog to component
-* implement "albums" page
+DONE * implement "albums" page
 DONE * add list component.
-* implement "speakers" page
 DONE * implement launch on start
+* implement "speakers" page
+* implement "cards" page
+* implement "what card is this?" action
 * figure out how to print labels
 * stain/finish box
 * sand off pencil marks inside box

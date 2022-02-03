@@ -1,7 +1,7 @@
 import Layout from '../../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
 import {AlbumData, ArtistDetail, getArtistDetail, getPlaylistContent, getUsersPlaylists} from '../../lib/spotify';
-import { Table, Space, Button, Modal } from 'antd';
+import { Table, Space, Button, Modal, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
 import { startLinkAction } from '../../lib/cardActions';
@@ -9,6 +9,7 @@ import LinkDialog from '../../components/LinkDialog';
 import { FaLink as LinkIcon, FaExternalLinkAlt as Navigate } from 'react-icons/fa';
 import { IconContext } from 'react-icons/lib';
 import Link from 'next/link';
+import TopTable from '../../components/TopTable';
 
 
 // This gets called on every request
@@ -32,7 +33,8 @@ export default function ArtistDetails(detail:ArtistDetail) {
       title:playlist.name,
       cover:playlist.images[0]?.url,
       details: {
-        printed: false
+        printed: false,
+        type:"album"
       }
     });
     setLinkAction(action);
@@ -48,31 +50,36 @@ export default function ArtistDetails(detail:ArtistDetail) {
       render: (text,record) => <img src={record.images[0]?.url} width="50" />
     },
     {
-      title: 'Name',
-      dataIndex: 'track.name',
-      key: 'id',
-      render: (text,record) => <Link href={`/albums/${record.id}`}>{record.name}</Link>
-    },
-    {
-        title: 'Action',
+        title: '',
+        width: 60,
         key: 'id',
         render: (text, record) => (
           <IconContext.Provider value={{ color: "#7777FF" }}>
             <Space size="middle">
-                <Navigate onClick={()=> window.location.href = record.external_urls.spotify}/>
-                <LinkIcon onClick={()=> linkCard(record)} />
+                <Tooltip title="Open in Spotify">
+                    <Navigate cursor="pointer" onClick={()=> window.location.href = record.external_urls.spotify}/>
+                </Tooltip>
+                <Tooltip title="Link to Card">
+                    <LinkIcon cursor="pointer" onClick={()=> linkCard(record)} />
+                </Tooltip>
             </Space>
           </IconContext.Provider>
         ),
       },
-    ];
+      {
+        title: 'Album',
+        dataIndex: 'track.name',
+        key: 'id',
+        render: (text,record) => <Link href={`/albums/${record.id}`}>{record.name}</Link>
+      },
+      ];
   
   if (session) {
     return (
     <section>
         <img src={detail.images[0].url} width="150" />
         <h1>{detail.name}</h1>      
-        <Table columns={columns} dataSource={detail.albums} />          
+        <TopTable columns={columns} dataSource={detail.albums} />          
         <LinkDialog action={linkAction} />
     </section>
   )

@@ -17,6 +17,19 @@ export interface LinkActionRequest {
     details:any;
 }
 
+export interface CardData {
+    id:string;
+    url:string;
+    cover:string;
+    title:string;
+    details: {
+        printed:string;
+        type:string;
+    }
+}
+
+//----------------------------------------------------------------
+// Client Side
 
 const handleTimeout = async (action:LinkAction) => {
     completeAction(action,true);
@@ -63,6 +76,15 @@ const completeAction = (action:LinkAction,canceled:boolean) => {
     }
 }
 
+export async function unlinkCard(card:CardData) {
+    return fetch('/api/card/'+card.id,{
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: "DELETE",
+    })    
+}
 
 export function startLinkAction(request:LinkActionRequest):LinkAction {
 
@@ -103,4 +125,17 @@ export function startLinkAction(request:LinkActionRequest):LinkAction {
     return action;
 }
 
+//----------------------------------------------------------------
+// Server Side
 
+export async function getCurrentCards():Promise<CardData[]> {
+        let response = await fetch('http://10.0.0.99:8000/api/card',{
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "GET"
+            });
+        let cardMap = await response.json();
+        return Object.keys(cardMap).map<CardData>(id => ({id, ...cardMap[id]}))
+}
