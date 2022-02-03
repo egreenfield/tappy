@@ -13,7 +13,7 @@ def buildLastReadData(dataModel):
     }
     id = dataModel.getLastCardRead()
     if id != None:
-        result['card'] = id
+        result['id'] = id
         result['content'] = dataModel.getCard(id)
     return result
 
