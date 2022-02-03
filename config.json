@@ -59,9 +59,9 @@
             }
         },
         "136_4_161_24": {
-            "url": "https://open.spotify.com/playlist/3HiF3ZUGEuQZBBK4is5vpa",
-            "cover": "https://mosaic.scdn.co/640/ab67616d0000b2731a1679a314d4c3855881ed01ab67616d0000b2736aa9314b7ddfbd8f036ba3acab67616d0000b27372c5875a8e4b49075978cd04ab67616d0000b273d231bd1716b71b6444e25f89",
-            "title": "Random Songs",
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DXcDxnC0UqHJa",
+            "cover": "https://i.scdn.co/image/ab67706f00000003a2dba0d1f56bc9bdb28b5204",
+            "title": "Folksy Covers",
             "details": {
                 "printed": false,
                 "type": "playlist"
@@ -77,5 +77,5 @@
             }
         }
     },
-    "lastCardRead": "136_4_131_154"
+    "lastCardRead": "136_4_161_24"
 }
