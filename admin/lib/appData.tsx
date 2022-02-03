@@ -1,20 +1,18 @@
 import React, { useState } from "react";
+import { CardData, CardDataMap } from "./cardActions";
 
-type ReaderCallback = (cardID:string)=>void; 
+
 export class AppData  {
     changeCallback: ()=>void;
-    readerCallback: ReaderCallback;
-    readerTimeout = 20000;
-    readerTimer:NodeJS.Timeout;
     AppData() {
         this.changeCallback = undefined;
+        this.printQueue = {};
     }
+    printQueue:CardDataMap;
 
-    loadConfigData() {
-
-    }
-    saveConfigData() {
-        
+    addToPrintQueue(card:CardData) {
+        this.printQueue[card.id] = (card);
+        this.changeCallback();
     }
 }
 
