@@ -1,7 +1,7 @@
 import Layout from '../../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
 import {AlbumData, getAlbumDetail, TrackData} from '../../lib/spotify';
-import { Table, Space, Button, Modal } from 'antd';
+import { Table, Space, Button, Modal, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
 import { startLinkAction } from '../../lib/cardActions';
@@ -23,11 +23,11 @@ export default function AlbumDetails(album:AlbumData) {
   const { data: session } = useSession()
   const [linkAction,setLinkAction] = useState(undefined);
 
-  const linkCard = async (playlist:AlbumData) => {
+  const linkCard = async (album:AlbumData) => {
     let action = startLinkAction({
-      url:playlist.external_urls.spotify,
-      title:playlist.name,
-      cover:playlist.images[0]?.url,
+      url:album.external_urls.spotify,
+      title:album.name,
+      cover:album.images[0]?.url,
       details: {
         printed: false,
         type: "album"
@@ -49,26 +49,39 @@ export default function AlbumDetails(album:AlbumData) {
   if (session) {
     return (
     <section>
-        <img src={album.images[0].url} width="150" />
-        <h1>{album.name}</h1>      
-        <Button type="primary" onClick={()=>linkCard(album)}>Link Card</Button>
-        <TopTable columns={columns} dataSource={album.tracks} />          
-        <LinkDialog action={linkAction} />
+        <Row>
+          <Col>
+            <img src={album.images[0].url} width="150" />
+          </Col>
+          <Col style={{paddingLeft: 10}}>
+            <h1>{album.name}</h1>      
+            <Button type="primary" onClick={()=>linkCard(album)}>Link Card</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <TopTable columns={columns} dataSource={album.tracks} />          
+            <LinkDialog action={linkAction} />
+          </Col>
+        </Row>
+
     </section>
   )
   }
   return (
-    <section>
-      <h1>Playlist Details</h1>      
-      <p>Sign in to see details</p>
-      <Button type="primary" onClick={()=>{signIn("spotify")}}>Sign in</Button>
-    </section>
+    <>
+      <h1>Album Details</h1>      
+      <section>
+        <p>Sign in to see details</p>
+        <Button type="primary" onClick={()=>{signIn("spotify")}}>Sign in</Button>
+      </section>
+    </>
   )
 
 }
 
 AlbumDetails.getLayout = function getLayout(page) {
   return (
-    <Layout selected='playlists'>{page}</Layout>
+    <Layout selected='music'>{page}</Layout>
   )
 }

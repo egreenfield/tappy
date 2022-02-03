@@ -1,7 +1,7 @@
 import Layout from '../../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
 import {AlbumData, getPlaylistContent, getUsersPlaylists} from '../../lib/spotify';
-import { Table, Space, Button, Modal } from 'antd';
+import { Table, Space, Button, Modal, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
 import { startLinkAction } from '../../lib/cardActions';
@@ -74,12 +74,22 @@ export default function PlaylistDetails(playlist:PlaylistDetailData) {
   if (session) {
     return (
     <section>
-        <img src={playlist.images[0].url} width="150" />
-        <h1>{playlist.name}</h1>      
-        <h2>{playlist.description}</h2>      
-        <Button type="primary" onClick={()=>linkCard(playlist)}>Link Card</Button>
-        <TopTable columns={columns} dataSource={playlist.tracks.items} />          
-        <LinkDialog action={linkAction} />
+        <Row>
+          <Col>
+          <img src={playlist.images[0].url} width="150" />
+        </Col>
+        <Col style={{paddingLeft: 10}}>
+          <h2>{playlist.name}</h2>      
+          <h1 style={{marginTop:-10, marginBottom:20}}>{playlist.description}</h1>      
+          <Button type="primary" onClick={()=>linkCard(playlist)}>Link Card</Button>
+        </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <TopTable columns={columns} dataSource={playlist.tracks.items} />          
+            <LinkDialog action={linkAction} />
+          </Col>
+        </Row>
     </section>
   )
   }

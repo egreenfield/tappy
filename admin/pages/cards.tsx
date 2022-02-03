@@ -1,7 +1,7 @@
 import Layout from '../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
 import {getUsersPlaylists} from '../lib/spotify';
-import { Table, Space, Button, Modal, Tooltip, Popconfirm, message } from 'antd';
+import { Table, Space, Button, Modal, Tooltip, Popconfirm, message, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
 import { CardData, getCurrentCards, startLinkAction, unlinkCard } from '../lib/cardActions';
@@ -90,16 +90,28 @@ export default function Cards({cards}:CardsProps) {
   
     return (
     <>
-    <h1>Cards <Button type='primary' onClick={identifyCard} style={{marginLeft: 30, paddingTop: 6, paddingLeft:10, paddingRight:10}} ><AiFillQuestionCircle  /> </Button></h1>
-    <section>
-      <h1>Playlists </h1>
-        <TopTable columns={columns}           
-          dataSource={modifiedCards.filter(c=>c.details.type != "album")} />          
-      <h1>Albums</h1>
-        <TopTable columns={columns} 
-          dataSource={modifiedCards.filter(c=>c.details.type == "album")} />          
-      <LinkDialog action={linkAction} />
-    </section>
+      <Row>
+          <Col span={24}>
+          <h1>Cards <Button type='primary' onClick={identifyCard} style={{marginLeft: 30, paddingTop: 6, paddingLeft:10, paddingRight:10}} ><AiFillQuestionCircle  /> </Button></h1>
+          </Col>
+      </Row>
+      <section>
+      <Row>
+        <Col span={11}>
+        <h1>Playlists </h1>
+          <TopTable columns={columns}           
+            dataSource={modifiedCards.filter(c=>c.details.type != "album")} />          
+        </Col>
+        <Col span={1}>
+        </Col>
+        <Col span={12}>
+        <h1>Albums</h1>
+          <TopTable columns={columns} 
+            dataSource={modifiedCards.filter(c=>c.details.type == "album")} />          
+        <LinkDialog action={linkAction} />
+        </Col>
+    </Row>
+      </section>
       </>
   )  
 }

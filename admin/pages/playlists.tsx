@@ -84,12 +84,14 @@ export default function Playlists({items}) {
   
   if (session) {
     return (
-    <section>
+    <>
       <h1>Playlists</h1>
-        <TopTable columns={columns} dataSource={items} />          
-      <LinkDialog action={linkAction} />
-    </section>
-  )
+      <section>
+          <TopTable columns={columns} dataSource={items} />          
+        <LinkDialog action={linkAction} />
+      </section>
+    </>
+    )
   }
   return (
     <section>
