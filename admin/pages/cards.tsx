@@ -1,7 +1,7 @@
 import Layout from '../components/layout'
 import Sidebar from '../components/sidebar'
 
-export default function Albums() {
+export default function Cards() {
   return (
     <section>
       <h2>Cards</h2>
@@ -32,7 +32,7 @@ export default function Albums() {
   )
 }
 
-Albums.getLayout = function getLayout(page) {
+Cards.getLayout = function getLayout(page) {
   return (
     <Layout selected='cards'>{page}</Layout>
   )

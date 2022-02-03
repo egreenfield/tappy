@@ -1,16 +1,12 @@
 import Layout from '../../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
-import {getPlaylistContent, getUsersPlaylists} from '../../lib/spotify';
+import {AlbumData, getPlaylistContent, getUsersPlaylists} from '../../lib/spotify';
 import { Table, Space, Button, Modal } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
 import { startLinkAction } from '../../lib/cardActions';
 import LinkDialog from '../../components/LinkDialog';
 
-interface AlbumData {
-    name: string
-    images: {url:string}[]
-}
 interface TrackData {
     name:string;
     is_local:boolean;
