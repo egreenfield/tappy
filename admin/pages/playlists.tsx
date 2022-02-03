@@ -1,10 +1,10 @@
 import Layout from '../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
 import {getUsersPlaylists} from '../lib/spotify';
-import { Table, Space, Button, Modal, Tooltip } from 'antd';
+import { Space, Button, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { useEffect, useState } from 'react';
-import { startLinkAction } from '../lib/cardActions';
+import { useState } from 'react';
+import { linkCardToContent } from '../lib/cardActions';
 import LinkDialog from '../components/LinkDialog';
 import Link from 'next/link';
 import { FaLink as LinkIcon, FaExternalLinkAlt as Navigate } from 'react-icons/fa';
@@ -35,8 +35,8 @@ export default function Playlists({items}) {
   const { data: session } = useSession()
   const [linkAction,setLinkAction] = useState(undefined);
 
-  const linkCard = async (record) => {
-    let action = startLinkAction({
+  async function linkCard(record):Promise<void> {
+    let action = linkCardToContent({
       url:record.external_urls.spotify,
       title:record.name,
       cover:record.images[0]?.url,

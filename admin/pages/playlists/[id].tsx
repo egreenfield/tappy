@@ -4,7 +4,7 @@ import {AlbumData, getPlaylistContent, getUsersPlaylists} from '../../lib/spotif
 import { Table, Space, Button, Modal, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
-import { startLinkAction } from '../../lib/cardActions';
+import { linkCardToContent } from '../../lib/cardActions';
 import LinkDialog from '../../components/LinkDialog';
 import TopTable from '../../components/TopTable';
 
@@ -42,7 +42,7 @@ export default function PlaylistDetails(playlist:PlaylistDetailData) {
   const [linkAction,setLinkAction] = useState(undefined);
 
   const linkCard = async (playlist:PlaylistDetailData) => {
-    let action = startLinkAction({
+    let action = linkCardToContent({
       url:playlist.external_urls.spotify,
       title:playlist.name,
       cover:playlist.images[0]?.url,

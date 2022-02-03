@@ -4,7 +4,7 @@ import {getUsersPlaylists} from '../lib/spotify';
 import { Table, Space, Button, Modal, Tooltip, Popconfirm, message, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
-import { CardData, getCurrentCards, startLinkAction, unlinkCard } from '../lib/cardActions';
+import { CardData, getCurrentCards, identifyCardContent, unlinkCard } from '../lib/cardActions';
 import LinkDialog from '../components/LinkDialog';
 import Link from 'next/link';
 import { TiDelete} from 'react-icons/ti';
@@ -24,22 +24,8 @@ interface CardsProps {
   cards:CardData[]
 }
 export default function Cards({cards}:CardsProps) {
-  const [linkAction,setLinkAction] = useState(undefined);
+  const [cardAction,setCardAction] = useState(undefined);
   const [modifiedCards,setModifiedCards] = useState(cards);
-
-  const linkCard = async (record) => {
-    let action = startLinkAction({
-      url:record.external_urls.spotify,
-      title:record.name,
-      cover:record.images[0]?.url,
-      details: {
-        printed: false,
-        type: "playlist"
-      }
-    });
-    setLinkAction(action);
-    action.promise.finally(()=> setLinkAction(undefined))
-  }
 
   const startUnlinkCard = async (card:CardData) => {
 
@@ -50,8 +36,11 @@ export default function Cards({cards}:CardsProps) {
   }
 
   const identifyCard = async () => {
-
+    let action = identifyCardContent();
+    setCardAction(action);
+    action.promise.finally(()=> setCardAction(undefined))
   }
+  
   const columns: ColumnsType<CardData> = [
     {
       title: '',
@@ -108,7 +97,7 @@ export default function Cards({cards}:CardsProps) {
         <h1>Albums</h1>
           <TopTable columns={columns} 
             dataSource={modifiedCards.filter(c=>c.details.type == "album")} />          
-        <LinkDialog action={linkAction} />
+        <LinkDialog action={cardAction} />
         </Col>
     </Row>
       </section>

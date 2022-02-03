@@ -1,16 +1,16 @@
 
-export interface LinkAction {
+export interface CardAction {
     complete:boolean;
     cancelled:boolean;
     tapCount:number;
-    promise?:Promise<LinkAction>;
+    promise?:Promise<CardAction>;
     timeoutID?:NodeJS.Timeout;
     checkID?:NodeJS.Timer;
-    resolve?:(a:LinkAction)=>void,
-    reject?:(a:LinkAction)=>void
+    resolve?:(a:CardAction)=>void,
+    reject?:(a:CardAction)=>void
 }
 
-export interface LinkActionRequest {
+export interface Content {
     url:string;
     cover:string;
     title:string;
@@ -31,11 +31,11 @@ export interface CardData {
 //----------------------------------------------------------------
 // Client Side
 
-const handleTimeout = async (action:LinkAction) => {
+const handleTimeout = async (action:CardAction) => {
     completeAction(action,true);
 }
 
-const checkForTap = async (action:LinkAction) => {
+const checkForTap = async (action:CardAction) => {
     let response = await fetch('/api/card/last');
     let newTapData = await response.json()
     if (newTapData.count > action.tapCount) {
@@ -43,12 +43,12 @@ const checkForTap = async (action:LinkAction) => {
     }
   }    
 
-export function cancelLinkAction(action:LinkAction) {
+export function cancelLinkAction(action:CardAction) {
     if(action.complete == false)
         completeAction(action,true);
 }
 
-const completeAction = (action:LinkAction,canceled:boolean) => {
+const completeAction = (action:CardAction,canceled:boolean) => {
 
     action.complete = true;
     action.cancelled = canceled;
@@ -60,14 +60,17 @@ const completeAction = (action:LinkAction,canceled:boolean) => {
     }      
 
     if(canceled) {
+        let body = JSON.stringify({
+            type:"cancel"
+        });
         fetch('/api/card/link',{
             headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             },
             method: "POST",
-            body:"{}"
-          })        
+            body
+        })        
     }
     if(canceled) {
         action.reject(action);
@@ -85,24 +88,30 @@ export async function unlinkCard(card:CardData) {
         method: "DELETE",
     })    
 }
+export function linkCardToContent(contentInfo:Content):CardAction {
+    return startCardAction("linkToContent",contentInfo)
+}
 
-export function startLinkAction(request:LinkActionRequest):LinkAction {
+export function identifyCardContent():CardAction {
+    return startCardAction("identifyCardContent")
+}
 
-    let action:LinkAction = {
+export function startCardAction(type:string,content:any = {},timeout:number=undefined):CardAction {
+
+    let action:CardAction = {
         tapCount:0,
         complete:false,
         cancelled:false        
     };
 
     let body = JSON.stringify({
-        url:request.url,
-        cover:request.cover,
-        title:request.title,
-        details: request.details
+        type,
+        content,
+        timeout
     });
 
 
-    const execute = async (resolve:(a:LinkAction)=>void,reject:(a:LinkAction)=>void) => {
+    const execute = async (resolve:(a:CardAction)=>void,reject:(a:CardAction)=>void) => {
         let response = await fetch('/api/card/link',{
             headers: {
               'Accept': 'application/json',

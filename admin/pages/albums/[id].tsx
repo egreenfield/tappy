@@ -1,10 +1,10 @@
 import Layout from '../../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
 import {AlbumData, getAlbumDetail, TrackData} from '../../lib/spotify';
-import { Table, Space, Button, Modal, Row, Col } from 'antd';
+import { Button, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { useEffect, useState } from 'react';
-import { startLinkAction } from '../../lib/cardActions';
+import { useState } from 'react';
+import { linkCardToContent } from '../../lib/cardActions';
 import LinkDialog from '../../components/LinkDialog';
 import TopTable from '../../components/TopTable';
 
@@ -24,7 +24,7 @@ export default function AlbumDetails(album:AlbumData) {
   const [linkAction,setLinkAction] = useState(undefined);
 
   const linkCard = async (album:AlbumData) => {
-    let action = startLinkAction({
+    let action = linkCardToContent({
       url:album.external_urls.spotify,
       title:album.name,
       cover:album.images[0]?.url,
