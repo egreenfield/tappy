@@ -9,7 +9,8 @@
             "cover": "https://i.scdn.co/image/ab67706f00000003a2dba0d1f56bc9bdb28b5204",
             "title": "Folksy Covers",
             "details": {
-                "printed": false
+                "printed": false,
+                "type": "playlist"
             }
         },
         "136_4_95_158": {
@@ -17,7 +18,8 @@
             "cover": "https://i.scdn.co/image/ab67706c0000bebbc7a7a3cf3a830ec95d5e7020",
             "title": "the kitchen sink",
             "details": {
-                "printed": false
+                "printed": false,
+                "type": "playlist"
             }
         },
         "162_212_47_28": {
@@ -25,7 +27,8 @@
             "cover": "https://lineup-images.scdn.co/wrapped-2021-top100_LARGE-en.jpg",
             "title": "Your Top Songs 2021",
             "details": {
-                "printed": false
+                "printed": false,
+                "type": "playlist"
             }
         },
         "136_4_80_222": {
@@ -33,7 +36,8 @@
             "cover": "https://mosaic.scdn.co/640/ab67616d0000b2730cf212ffc3719550dfab899dab67616d0000b2737f570d8b2e794f1493dca2caab67616d0000b2738fdac781e93048350a5d20c1ab67616d0000b273c289ed4316aaab5a5b7376c1",
             "title": "Roadtrip",
             "details": {
-                "printed": false
+                "printed": false,
+                "type": "playlist"
             }
         },
         "136_4_58_152": {
@@ -41,9 +45,37 @@
             "cover": "https://i.scdn.co/image/ab67706f000000034e0be6cade5bd732df4ddc32",
             "title": "70s & 80s Acoustic",
             "details": {
-                "printed": false
+                "printed": false,
+                "type": "playlist"
+            }
+        },
+        "136_4_165_134": {
+            "url": "https://open.spotify.com/album/5XZ0VED1glyQNgjev1N9ie",
+            "cover": "https://i.scdn.co/image/ab67616d0000b2732ab02041be250c037b97c9eb",
+            "title": "The Truth",
+            "details": {
+                "printed": false,
+                "type": "album"
+            }
+        },
+        "136_4_161_24": {
+            "url": "https://open.spotify.com/playlist/3HiF3ZUGEuQZBBK4is5vpa",
+            "cover": "https://mosaic.scdn.co/640/ab67616d0000b2731a1679a314d4c3855881ed01ab67616d0000b2736aa9314b7ddfbd8f036ba3acab67616d0000b27372c5875a8e4b49075978cd04ab67616d0000b273d231bd1716b71b6444e25f89",
+            "title": "Random Songs",
+            "details": {
+                "printed": false,
+                "type": "playlist"
+            }
+        },
+        "136_4_131_154": {
+            "url": "https://open.spotify.com/playlist/3sD91mGTg2G2W4TPa3CbIS",
+            "cover": "https://i.scdn.co/image/ab67706c0000bebbc42b715385b1f96cd7aaaa8d",
+            "title": "My Peloton Music by ElyESG",
+            "details": {
+                "printed": false,
+                "type": "playlist"
             }
         }
     },
-    "lastCardRead": "136_4_73_140"
+    "lastCardRead": "136_4_131_154"
 }

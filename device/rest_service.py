@@ -39,7 +39,7 @@ class CardHandler():
         resp.text = (result)
         resp.content_type = falcon.MEDIA_JSON
 
-class CardLinkHandler():
+class CardActionHandler():
     def __init__(self,tappy):
         self.tappy = tappy
 
@@ -47,18 +47,22 @@ class CardLinkHandler():
         eventBody = req.media
         log.info(f'received event: {eventBody}')
         cardDetails = {}
-        if(eventBody.get("url") == None):
+        actionType = eventBody.get("type")
+
+        if actionType == "cancel":
             self.tappy.reader.overrideReadCallback(callback=None,timeout=0)
             self.tappy.beep(count=3,delay=.2)
-        else:
-            cardDetails["url"] = eventBody["url"]
-            cardDetails["cover"] = eventBody["cover"]
-            cardDetails["title"] = eventBody["title"]
-            cardDetails["details"] = eventBody["details"]
+
+        elif actionType == "linkToContent":
+            cardDetails = eventBody.get("content")
             timeout = eventBody.get("timeout") or 30
             self.tappy.reader.overrideReadCallback(callback=lambda uid : self.tappy.dataModel.updateCardData(uid,cardDetails),timeout=timeout,beep=True)
             self.tappy.beep(count=2,delay=.2)
-        print(f"link body is: {json.dumps(eventBody,indent=4)}")
+
+        elif actionType == "identifyCardContent":
+            timeout = eventBody.get("timeout") or 30
+            self.tappy.reader.overrideReadCallback(callback=lambda uid : None,timeout=timeout,beep=True)
+            self.tappy.beep(count=2,delay=.2)
 
         result = buildLastReadData(self.tappy.dataModel)
         resultJson = json.dumps(result,indent=4)
@@ -96,7 +100,7 @@ class RestService:
     def __init__(self,tappy):
         self.app = falcon.App()
         self.tappy = tappy
-        self.app.add_route("/api/card/link",CardLinkHandler(tappy))
+        self.app.add_route("/api/card/link",CardActionHandler(tappy))
         self.app.add_route("/api/card/last",LastCardHandler(tappy))
         self.app.add_route("/api/card/{id}",CardUpdateHandler(tappy))
         self.app.add_route("/api/card",CardHandler(tappy))
