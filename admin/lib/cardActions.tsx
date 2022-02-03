@@ -1,8 +1,11 @@
 
+
 export interface CardAction {
     complete:boolean;
     cancelled:boolean;
     tapCount:number;
+    tappedCard?:CardData;
+
     promise?:Promise<CardAction>;
     timeoutID?:NodeJS.Timeout;
     checkID?:NodeJS.Timer;
@@ -14,18 +17,15 @@ export interface Content {
     url:string;
     cover:string;
     title:string;
-    details:any;
+    details: {
+        printed:boolean;
+        type:string;
+    }
 }
 
 export interface CardData {
     id:string;
-    url:string;
-    cover:string;
-    title:string;
-    details: {
-        printed:string;
-        type:string;
-    }
+    content:Content;
 }
 
 //----------------------------------------------------------------
@@ -39,18 +39,19 @@ const checkForTap = async (action:CardAction) => {
     let response = await fetch('/api/card/last');
     let newTapData = await response.json()
     if (newTapData.count > action.tapCount) {
-      completeAction(action,false);
+      completeAction(action,false,newTapData);
     }
   }    
 
-export function cancelLinkAction(action:CardAction) {
+export function cancelCardAction(action:CardAction) {
     if(action.complete == false)
         completeAction(action,true);
 }
 
-const completeAction = (action:CardAction,canceled:boolean) => {
+const completeAction = (action:CardAction,canceled:boolean,newCardData:CardData = undefined) => {
 
     action.complete = true;
+    action.tappedCard = newCardData;
     action.cancelled = canceled;
     if(action.timeoutID != undefined) {
         clearTimeout(action.timeoutID);
@@ -101,7 +102,7 @@ export function startCardAction(type:string,content:any = {},timeout:number=unde
     let action:CardAction = {
         tapCount:0,
         complete:false,
-        cancelled:false        
+        cancelled:false 
     };
 
     let body = JSON.stringify({
@@ -146,5 +147,5 @@ export async function getCurrentCards():Promise<CardData[]> {
             method: "GET"
             });
         let cardMap = await response.json();
-        return Object.keys(cardMap).map<CardData>(id => ({id, ...cardMap[id]}))
+        return Object.keys(cardMap).map<CardData>(id => ({id, content:cardMap[id]}))
 }

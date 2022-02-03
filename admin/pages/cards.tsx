@@ -12,6 +12,7 @@ import { BsQuestionSquare} from 'react-icons/bs';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { IconContext } from 'react-icons/lib';
 import TopTable from '../components/TopTable';
+import CardInfoDialog from '../components/CardInfoDialog';
 
 
 // This gets called on every request
@@ -37,17 +38,25 @@ export default function Cards({cards}:CardsProps) {
 
   const identifyCard = async () => {
     let action = identifyCardContent();
+    console.log("SETTING ACTION:", action);
     setCardAction(action);
-    action.promise.finally(()=> setCardAction(undefined))
+    action.promise.then(()=> {
+      setCardAction({...action});
+    }).catch(()=> {
+      setCardAction(undefined);
+    })
   }
-  
+  const dismissDialog = () => {
+    setCardAction(undefined);
+  }
+
   const columns: ColumnsType<CardData> = [
     {
       title: '',
       key: 'key',
       align: 'right',
       width: 60,
-      render: (text,record) => <img src={record.cover} width="50" />
+      render: (text,record) => <img src={record.content.cover} width="50" />
     },
     {
       title: '',
@@ -73,7 +82,7 @@ export default function Cards({cards}:CardsProps) {
       title: 'Name',
       dataIndex: 'title',
       key: 'id',
-      render: (text,record) => (<Link  href={`/playlists/${record.id}`}>{text}</Link>)
+      render: (text,record) => (<Link  href={`/playlists/${record.id}`}>{record.content.title}</Link>)
     },
   ];
   
@@ -89,15 +98,15 @@ export default function Cards({cards}:CardsProps) {
         <Col span={11}>
         <h1>Playlists </h1>
           <TopTable columns={columns}           
-            dataSource={modifiedCards.filter(c=>c.details.type != "album")} />          
+            dataSource={modifiedCards.filter(c=>c.content.details.type != "album")} />          
         </Col>
         <Col span={1}>
         </Col>
         <Col span={12}>
         <h1>Albums</h1>
           <TopTable columns={columns} 
-            dataSource={modifiedCards.filter(c=>c.details.type == "album")} />          
-        <LinkDialog action={cardAction} />
+            dataSource={modifiedCards.filter(c=>c.content.details.type == "album")} />          
+        <CardInfoDialog action={cardAction} onComplete={dismissDialog}/>
         </Col>
     </Row>
       </section>

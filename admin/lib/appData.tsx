@@ -10,17 +10,6 @@ export class AppData  {
         this.changeCallback = undefined;
     }
 
-    setReaderCallback(callback:ReaderCallback) {
-        this.readerCallback = callback;
-        let that = this;
-        this.readerTimer = setTimeout(()=>{that.clearReaderCallback()},this.readerTimeout)
-        this.changeCallback();
-    }
-
-    clearReaderCallback() {
-        clearTimeout(this.readerTimer);
-    }
-
     loadConfigData() {
 
     }

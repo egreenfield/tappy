@@ -4,21 +4,21 @@ import {getUsersPlaylists} from '../lib/spotify';
 import { Table, Space, Button, Modal } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
-import { cancelLinkAction, LinkAction } from '../lib/cardActions';
+import { cancelCardAction, CardAction } from '../lib/cardActions';
 
 
 interface LinkDialogProps {
-    action:LinkAction;
+    action:CardAction;
 }
 
 export default function LinkDialog({action}:LinkDialogProps) {
     const handleCancel = ()=> {
-        cancelLinkAction(action);
+        cancelCardAction(action);
     }
     
     return (
     <>
-        <Modal
+       <Modal
             visible={action && action.complete == false}
             title="Ready to Link"
             onCancel={handleCancel}
