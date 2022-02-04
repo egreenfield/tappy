@@ -17,11 +17,11 @@ class DataModel:
         # note: should really be doing a deep copy here
         return dict(self.db['cards'])
 
-    def getCurrentSpeaker(self):
-        return self.db['speaker']
+    def getCurrentSpeakers(self):
+        return self.db['speakers']
 
-    def setCurrentSpeaker(self,newSpeaker):
-        self.db['speaker'] = newSpeaker
+    def setCurrentSpeakers(self,newSpeakers):
+        self.db['speakers'] = newSpeakers
         self.autoSave()
 
     def registerCardRead(self,id):

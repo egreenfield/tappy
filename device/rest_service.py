@@ -34,7 +34,7 @@ class DeviceHandler():
 
     def on_get(self,req,resp):
         devices = self.tappy.stereo.getDeviceNames()
-        active = self.tappy.dataModel.getCurrentSpeaker();
+        active = self.tappy.dataModel.getCurrentSpeakers();
 
         resultJson = json.dumps({"speakers":devices,"active":active},indent=4)
         resp.status = falcon.HTTP_200  # This is the default status        
@@ -45,8 +45,8 @@ class DeviceHandler():
     def on_post_active(self,req,resp):
         eventBody = req.media
         log.info(f'received event: {eventBody}')
-        speakerName = eventBody.get("name")
-        self.tappy.dataModel.setCurrentSpeaker(speakerName)
+        speakerName = eventBody.get("names")
+        self.tappy.dataModel.setCurrentSpeakers(speakerName)
         resp.status = falcon.HTTP_200  # This is the default status        
         resp.text = ("{}")
         resp.content_type = falcon.MEDIA_JSON

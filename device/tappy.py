@@ -31,7 +31,7 @@ class Tappy:
             self.beep(1)
             url = cardData["url"]
             log.info(f"playing card {cardData.get('title')}")
-        self.stereo.playUrl(self.dataModel.getCurrentSpeaker(),url)    
+        self.stereo.playUrl(self.dataModel.getCurrentSpeakers(),url)    
 
     def beep(self,count = 1,length=0.01,delay = 0.01):
         for i in range(1,1+count):
@@ -42,7 +42,7 @@ class Tappy:
     
     def stop(self):
         self.reader.stopReading()
-        self.stereo.stopPlaying(self.dataModel.getCurrentSpeaker())
+        self.stereo.stopPlaying(self.dataModel.getCurrentSpeakers())
         self.restService.stop()
         GPIO.cleanup()
 
