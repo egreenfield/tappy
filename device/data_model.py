@@ -20,6 +20,10 @@ class DataModel:
     def getCurrentSpeaker(self):
         return self.db['speaker']
 
+    def setCurrentSpeaker(self,newSpeaker):
+        self.db['speaker'] = newSpeaker
+        self.autoSave()
+
     def registerCardRead(self,id):
         self.db['lastCardRead'] = id
         self.readCount += 1

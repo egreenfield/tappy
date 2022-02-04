@@ -22,3 +22,8 @@ class Stereo:
     def stopPlaying(self,deviceName):
         device = soco.discovery.by_name(deviceName)
         device.stop()
+
+    def getDeviceNames(self):
+        devices=  soco.discover()
+        ds = list(map(lambda d: d.player_name,devices))
+        return ds

@@ -28,6 +28,30 @@ class LastCardHandler():
         resp.text = (resultJson)
         resp.content_type = falcon.MEDIA_JSON
 
+class DeviceHandler():
+    def __init__(self,tappy):
+        self.tappy = tappy
+
+    def on_get(self,req,resp):
+        devices = self.tappy.stereo.getDeviceNames()
+        active = self.tappy.dataModel.getCurrentSpeaker();
+
+        resultJson = json.dumps({"speakers":devices,"active":active},indent=4)
+        resp.status = falcon.HTTP_200  # This is the default status        
+        resp.text = (resultJson)
+        resp.content_type = falcon.MEDIA_JSON
+
+    
+    def on_post_active(self,req,resp):
+        eventBody = req.media
+        log.info(f'received event: {eventBody}')
+        speakerName = eventBody.get("name")
+        self.tappy.dataModel.setCurrentSpeaker(speakerName)
+        resp.status = falcon.HTTP_200  # This is the default status        
+        resp.text = ("{}")
+        resp.content_type = falcon.MEDIA_JSON
+
+
 class CardHandler():
     def __init__(self,tappy):
         self.tappy = tappy
@@ -38,7 +62,7 @@ class CardHandler():
         resp.status = falcon.HTTP_200  # This is the default status        
         resp.text = (result)
         resp.content_type = falcon.MEDIA_JSON
-
+    
 class CardActionHandler():
     def __init__(self,tappy):
         self.tappy = tappy
@@ -104,6 +128,8 @@ class RestService:
         self.app.add_route("/api/card/last",LastCardHandler(tappy))
         self.app.add_route("/api/card/{id}",CardUpdateHandler(tappy))
         self.app.add_route("/api/card",CardHandler(tappy))
+        self.app.add_route("/api/speakers",DeviceHandler(tappy))
+        self.app.add_route("/api/speakers/active",DeviceHandler(tappy),suffix="active")
     def stop(self):
         self.server.shutdown()
         self.thread.join()
