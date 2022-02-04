@@ -59,10 +59,15 @@ async function drawFrontOfCard( pdf:PDFKit.PDFDocument, card:CardData, left:numb
     .clip()
     .image(await loadImageUrlIntoBuffer(card.content.cover),left,top,{width:cardWidth})
     .restore()
-    .text(card.content.title,left+textMargin,top+cardWidth+textMargin,{ width:cardWidth-2*textMargin})
+    .save()
     .moveTo(left,top+cardWidth)
     .lineTo(left+cardWidth,top+cardWidth)
     .stroke([0xDD,0xDD,0xDD])
+    .restore()
+    .font('fonts/TitleFont.ttf')
+    .fontSize(14)
+    .fillColor([0x5a,0x59,0x59])
+    .text(card.content.title,left+2*textMargin,top+cardWidth+textMargin,{ width:cardWidth-3*textMargin-left, lineGap: 1, paragraphGap:1})
     ;
         
     pdf
@@ -89,7 +94,7 @@ async function generateOnePage(data:pdfGenerationData) {
             left = hMargin;
             top = bottom + vMargin;
         }
-        if(top+cardHeight > pageHeight) {
+        if(top+cardHeight >= pageHeight-2*vMargin) {
             top = vMargin;
             moreToPrint = true;
             break;
