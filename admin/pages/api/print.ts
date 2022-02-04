@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import PdfPrinter from 'pdfmake';
 import { getCurrentCards } from '../../lib/serverCardActions'
 import PDFDocument from 'pdfkit';
 import { CardData } from '../../lib/cardActions';
@@ -24,9 +23,35 @@ async function loadImageUrlIntoBuffer(url:string) {
     return buffer;
 }
 
+interface CardBounds {
+    left,top,right,bottom:number;
+}
 
+interface pdfGenerationData {
+    pdf:PDFKit.PDFDocument;
+    left:number;
+    top:number;
+    page:number;
+    nextCard:number;
+    cardsToPrint:CardData[];
+}
+
+
+async function drawBacksOfCards( pdf:PDFKit.PDFDocument, backs:CardBounds[]) {
+
+    for (let aBack of backs) {
+        let left = pageWidth-aBack.right;
+
+        pdf
+        .roundedRect(left,aBack.top,cardWidth,cardHeight,cornerRadius)
+        .stroke([0xAA,0xAA,0xAA])
+        ;
+    }
+
+}
 async function drawFrontOfCard( pdf:PDFKit.PDFDocument, card:CardData, left:number,top:number)  {
 
+    
     pdf
     .lineWidth(.5)
     .save()
@@ -34,39 +59,70 @@ async function drawFrontOfCard( pdf:PDFKit.PDFDocument, card:CardData, left:numb
     .clip()
     .image(await loadImageUrlIntoBuffer(card.content.cover),left,top,{width:cardWidth})
     .restore()
-    .roundedRect(left,top,cardWidth,cardHeight,mmToPt(2))
-    .stroke([0xAA,0xAA,0xAA])
+    .text(card.content.title,left+textMargin,top+cardWidth+textMargin,{ width:cardWidth-2*textMargin})
     .moveTo(left,top+cardWidth)
     .lineTo(left+cardWidth,top+cardWidth)
     .stroke([0xDD,0xDD,0xDD])
-
-    .text(card.content.title,left+textMargin,top+cardWidth+textMargin,{ width:cardWidth-2*textMargin})
     ;
+        
+    pdf
+    .roundedRect(left,top,cardWidth,cardHeight,cornerRadius)
+    .stroke([0xAA,0xAA,0xAA])
+    ;
+
     return {right:left + cardWidth,bottom:top+cardHeight}
 }
 
-async function generatePDF(cardsToPrint:CardData[]) {
-    
-    let pdf = new PDFDocument();
-    let left = hMargin;
-    let top = vMargin;
-    let bottom = top;
-    let right = left;
 
-    for(let aCard of cardsToPrint) {
+
+async function generateOnePage(data:pdfGenerationData) {
+    let {pdf,left,top,cardsToPrint,nextCard} = data;
+    let bottom = data.top;
+    let right = data.left;
+    let moreToPrint = false;
+    let backs:CardBounds[] = [];
+
+    for(;nextCard<data.cardsToPrint.length;nextCard++) {
+        
+        let aCard = cardsToPrint[nextCard];
         if(left+cardWidth > pageWidth-2*hMargin) {
             left = hMargin;
             top = bottom + vMargin;
         }
         if(top+cardHeight > pageHeight) {
             top = vMargin;
+            moreToPrint = true;
+            break;
             pdf.addPage();
         }
         ({bottom, right} = await drawFrontOfCard(pdf,aCard,left,top));
+        backs.push({left,top,right,bottom});
         left = right + hMargin;
-
     }
-    return pdf;
+
+    pdf.addPage()
+    await drawBacksOfCards(pdf,backs);
+    Object.assign(data,{left,top,nextCard});
+    return moreToPrint;
+}
+
+
+async function generatePDF(cardsToPrint:CardData[]) {
+    let data:pdfGenerationData = {
+        pdf: new PDFDocument(),
+        left: hMargin,
+        page:0,
+        top: vMargin,
+        nextCard:0,
+        cardsToPrint
+    }    
+    while(data.nextCard < data.cardsToPrint.length) {
+        let moreToPrint = await generateOnePage(data);
+        if (moreToPrint) {
+            data.pdf.addPage();
+        }
+    }
+    return data.pdf;
 }
 
   
@@ -85,7 +141,6 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     }
     let cardsToPrint = currentCards.filter(card => card.id in idsToPrintMap)
 
-    let pdf;
     try {
         let pdf = await generatePDF(cardsToPrint)
         res.status(200)
@@ -94,6 +149,6 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
         pdf.end();
     } catch(e) {
         console.log("error generating pdf:",e);
-        res.status(500).json({error:"pdf generation failed"})
+        res.status(500).json({error:"pdf generation failed:",e})
     }
 }
