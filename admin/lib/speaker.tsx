@@ -1,9 +1,9 @@
 
-export async function setActiveSpeaker(name:string) {
+export async function setActiveSpeakers(names:string[]) {
     let url = '/api/speakers/active';
 
     let body = JSON.stringify({
-        name
+        names
     });
 
     let response = await (await fetch(url,{

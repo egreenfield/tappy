@@ -17,7 +17,7 @@ import TopTable from '../components/TopTable';
 import CardInfoDialog from '../components/CardInfoDialog';
 import { getCurrentCards } from '../lib/serverCardActions';
 import { getSpeakers } from '../lib/serverSpeaker';
-import { setActiveSpeaker } from '../lib/speaker';
+import { setActiveSpeakers } from '../lib/speaker';
 
 
 // This gets called on every request
@@ -28,11 +28,11 @@ export async function getServerSideProps(ctx) {
 
 interface SpeakersProps {
   speakers:string[];
-  active:string;
+  active:string[];
 }
 export default function Speakers({speakers,active}:SpeakersProps) {
 
-    const [selected,setSelected] = useState([active]);
+    const [selected,setSelected] = useState(active);
 
   const columns: ColumnsType<CardData> = [
     {
@@ -43,7 +43,7 @@ export default function Speakers({speakers,active}:SpeakersProps) {
   
     const updateSelection = (sel) => {
         setSelected(sel);
-        setActiveSpeaker(sel[0]);
+        setActiveSpeakers(sel);
     }
 
     return (
@@ -51,7 +51,7 @@ export default function Speakers({speakers,active}:SpeakersProps) {
       <section>
         <h1>Speakers</h1>
           <TopTable columns={columns} 
-            rowSelection={{type:"radio",selectedRowKeys:selected, onChange:(rows)=>updateSelection(rows)}}
+            rowSelection={{type:"checkbox",selectedRowKeys:selected, onChange:(rows)=>updateSelection(rows)}}
             rowKey="name"  
             dataSource={speakers.map(v => ({name:v}))} />          
         {}

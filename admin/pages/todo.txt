@@ -18,6 +18,7 @@ DONE * figure out how to print labels
 DONE * implement "speakers" page
 * make text prettier
 * make speakers groupable
+* add "stop" button to speakers page
 * expand search to song + album
 * stain/finish box
 * sand off pencil marks inside box
