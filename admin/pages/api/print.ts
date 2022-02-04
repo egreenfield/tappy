@@ -1,86 +1,72 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import PdfPrinter from 'pdfmake';
 import { getCurrentCards } from '../../lib/serverCardActions'
-
-var fonts = {
-	Roboto: {
-		normal: 'fonts/Roboto-Regular.ttf',
-		bold: 'fonts/Roboto-Medium.ttf',
-		italics: 'fonts/Roboto-Italic.ttf',
-		bolditalics: 'fonts/Roboto-MediumItalic.ttf'
-	}
-};
+import PDFDocument from 'pdfkit';
+import { CardData } from '../../lib/cardActions';
 
 
-function mmToPt(mm:number) {
-    return mm*2.83465
-}
+const mmToPt = (mm:number) => mm*2.83465;
+const cardWidth = mmToPt(54.5);
+const cardHeight = mmToPt(85.8);
+const textMargin = mmToPt(2);
+const cornerRadius = mmToPt(3);
+const pageWidth = mmToPt(215.9);
+const pageHeight = mmToPt(279.4);
+const hMargin = mmToPt(10);
+const vMargin = mmToPt(5);
 
-async function  getDoc() {
 
-    const response = await fetch('https://i.scdn.co/image/ab67706f00000003a2dba0d1f56bc9bdb28b5204');
+async function loadImageUrlIntoBuffer(url:string) {
+
+    const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const b64 = "data:image/jpeg;base64," + buffer.toString("base64url")
-    console.log("url is",b64);
-
-    var docDefinition = {
-        pageSize: 'LETTER',
-        pageMargins: [ 72/4, 72/4, 72/4, 72/4 ],
-        content: [
-            {
-                svg: 
-                `<svg>
-                    <rect width="54mm" stroke="black" stroke-width="1" fill-opacity="0" height="85mm" rx="2mm" ry="2mm"/>
-                </svg>`,
-                absolutePosition: { x: 10, y: 10 }
-            },
-            { 
-                image: 'img1',
-                width: mmToPt(54),
-                height: mmToPt(54),
-                absolutePosition: { x: 10, y: 10 }
-            },
-            {
-                text: 'This is a long title that is part of a text block This is a long title that is part of a text block',
-                absolutePosition: { x: 10, y: mmToPt(54) },
-                width: mmToPt(54),
-                height: mmToPt(85-54),
-            },
-        ],
-        images: {
-            img1: b64,
-        },
-        styles: {
-            header: {
-                fontSize: 18,
-                bold: true,
-                margin: [0, 0, 0, 10]
-            },
-            subheader: {
-                fontSize: 16,
-                bold: true,
-                margin: [0, 10, 0, 5]
-            },
-            tableExample: {
-                margin: [0, 5, 0, 15]
-            },
-            tableHeader: {
-                bold: true,
-                fontSize: 13,
-                color: 'black'
-            }
-        },
-    };
-    return docDefinition;
+    return buffer;
 }
 
-async function generatePDF(definition:any) {
+
+async function drawFrontOfCard( pdf:PDFKit.PDFDocument, card:CardData, left:number,top:number)  {
+
+    pdf
+    .lineWidth(.5)
+    .save()
+    .roundedRect(left,top,cardWidth,cardHeight,cornerRadius)
+    .clip()
+    .image(await loadImageUrlIntoBuffer(card.content.cover),left,top,{width:cardWidth})
+    .restore()
+    .roundedRect(left,top,cardWidth,cardHeight,mmToPt(2))
+    .stroke([0xAA,0xAA,0xAA])
+    .moveTo(left,top+cardWidth)
+    .lineTo(left+cardWidth,top+cardWidth)
+    .stroke([0xDD,0xDD,0xDD])
+
+    .text(card.content.title,left+textMargin,top+cardWidth+textMargin,{ width:cardWidth-2*textMargin})
+    ;
+    return {right:left + cardWidth,bottom:top+cardHeight}
+}
+
+async function generatePDF(cardsToPrint:CardData[]) {
     
-    
-    var printer = new PdfPrinter(fonts);
-    var doc = printer.createPdfKitDocument(await getDoc() as any);
-    return doc;
+    let pdf = new PDFDocument();
+    let left = hMargin;
+    let top = vMargin;
+    let bottom = top;
+    let right = left;
+
+    for(let aCard of cardsToPrint) {
+        if(left+cardWidth > pageWidth-2*hMargin) {
+            left = hMargin;
+            top = bottom + vMargin;
+        }
+        if(top+cardHeight > pageHeight) {
+            top = vMargin;
+            pdf.addPage();
+        }
+        ({bottom, right} = await drawFrontOfCard(pdf,aCard,left,top));
+        left = right + hMargin;
+
+    }
+    return pdf;
 }
 
   
@@ -101,7 +87,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
 
     let pdf;
     try {
-        let pdf = await generatePDF(cardsToPrint);
+        let pdf = await generatePDF(cardsToPrint)
         res.status(200)
         res.setHeader("Content-Type",'application/pdf');
         pdf.pipe(res);
