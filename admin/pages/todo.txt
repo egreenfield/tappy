@@ -12,13 +12,17 @@ DONE * move dialog to component
 DONE * implement "albums" page
 DONE * add list component.
 DONE * implement launch on start
-* implement "speakers" page
-* implement "cards" page
-* implement "what card is this?" action
-* figure out how to print labels
+DONE * implement "cards" page
+DONE * implement "what card is this?" action
+DONE * figure out how to print labels
+DONE * implement "speakers" page
+* expand search to song + album
+* make text prettier
+DONE * make speakers groupable
 * stain/finish box
 * sand off pencil marks inside box
 * move all react behavior to client side
+* add "stop" button to speakers page
 
 
 
