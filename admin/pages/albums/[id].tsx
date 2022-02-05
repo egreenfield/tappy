@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { linkCardToContent } from '../../lib/cardActions';
 import LinkDialog from '../../components/LinkDialog';
 import TopTable from '../../components/TopTable';
+import { FaLink as LinkIcon } from 'react-icons/fa';
 
 
 // This gets called on every request
@@ -30,7 +31,8 @@ export default function AlbumDetails(album:AlbumData) {
       cover:album.images[0]?.url,
       details: {
         printed: false,
-        type: "album"
+        type: "album",
+        "artist": album.artists && album.artists.length? album.artists[0].name:"Unknown"
       }
     });
     setLinkAction(action);
@@ -48,14 +50,15 @@ export default function AlbumDetails(album:AlbumData) {
   
   if (session) {
     return (
-    <section>
+    <>
         <Row>
           <Col>
             <img src={album.images[0].url} width="150" />
           </Col>
           <Col style={{paddingLeft: 10}}>
             <h1>{album.name}</h1>      
-            <Button type="primary" onClick={()=>linkCard(album)}>Link Card</Button>
+            <h4 style={{marginTop:-10, marginBottom:10}}>{album.artists && album.artists.length? album.artists[0].name:""}</h4>      
+            <Button type="primary"  icon={<LinkIcon style={{marginTop:4}} />} onClick={()=>linkCard(album)}></Button>
           </Col>
         </Row>
         <Row>
@@ -65,7 +68,7 @@ export default function AlbumDetails(album:AlbumData) {
           </Col>
         </Row>
 
-    </section>
+    </>
   )
   }
   return (

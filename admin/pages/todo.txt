@@ -18,12 +18,14 @@ DONE * figure out how to print labels
 DONE * implement "speakers" page
 DONE * make text prettier
 DONE * make speakers groupable
-* expand search to song + album
-* add artist to albums and covers
-* stain/finish box
-* sand off pencil marks inside box
+DONE * expand search to song + album
+DONE * add artist to albums and covers
+* expand playlists to my music
 * move all react behavior to client side
+DONE * stain/finish box
+DONE * sand off pencil marks inside box
 * add "stop" button to speakers page
+* fix useLayoutEffect bug
 
 
 look for icons at https://react-icons.github.io/react-icons

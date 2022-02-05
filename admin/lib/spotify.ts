@@ -52,9 +52,9 @@ const getAccessToken = async (refresh_token) => {
     let url = new URL(SEARCH_ENDPOINT);
     let params = new URLSearchParams();
     params.set("q",searchText);
-    params.set("type","artist");
+    params.set("type","artist,album,track");
     url.search = params.toString();
-    let artists = []
+    let result = { artists:[], albums: [], tracks:[]}
 
     try {
       let results = await fetch( url.toString(), {
@@ -65,11 +65,13 @@ const getAccessToken = async (refresh_token) => {
       });
       let json = await results.json();
       console.log("results:",json)
-      artists = json.artists.items;    
+        result.artists = json.artists.items;    
+        result.albums = json.albums.items;
+        result.tracks = json.tracks.items;
       } catch(e) {
       console.log("got an error:",e);
     }
-    return artists;
+    return result;
   }
   
   export interface TrackData {
@@ -80,6 +82,7 @@ const getAccessToken = async (refresh_token) => {
     name: string
     images: {url:string}[]
     tracks?:TrackData[];
+    artists: ArtistDetail[];
     external_urls: {
       spotify:string;
     }
@@ -137,6 +140,7 @@ const getAccessToken = async (refresh_token) => {
       id,
       name:albumDetail.name,
       images:albumDetail.images,
+      artists:albumDetail.artists,
       tracks:albumTracks.items,
       external_urls:albumDetail.external_urls         
     }

@@ -20,6 +20,7 @@ export interface Content {
     details: {
         printed:boolean;
         type:string;
+        artist:string;
     }
 }
 

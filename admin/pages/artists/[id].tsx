@@ -27,14 +27,15 @@ export default function ArtistDetails(detail:ArtistDetail) {
     const { data: session } = useSession()
    const [linkAction,setLinkAction] = useState(undefined);
 
-  const linkCard = async (playlist:AlbumData) => {
+  const linkCard = async (album:AlbumData) => {
     let action = linkCardToContent({
-      url:playlist.external_urls.spotify,
-      title:playlist.name,
-      cover:playlist.images[0]?.url,
+      url:album.external_urls.spotify,
+      title:album.name,
+      cover:album.images[0]?.url,
       details: {
         printed: false,
-        type:"album"
+        type:"album",
+        "artist": album.artists && album.artists.length? album.artists[0].name:"Unknown"
       }
     });
     setLinkAction(action);

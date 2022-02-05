@@ -90,7 +90,7 @@ export default function Cards({cards}:CardsProps) {
     {
       title: 'Name',
       dataIndex: 'title',
-      render: (text,record) => (<Link  href={`/playlists/${record.id}`}>{record.content.title}</Link>)
+      render: (text,record) => (<>{record.content.title}</>)
     },
   ];
   

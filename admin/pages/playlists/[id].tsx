@@ -48,7 +48,9 @@ export default function PlaylistDetails(playlist:PlaylistDetailData) {
       cover:playlist.images[0]?.url,
       details: {
         printed: false,
-        type:"playlis"
+        artist: "Playlist",
+        type:"playlist",
+        
       }
     });
     setLinkAction(action);

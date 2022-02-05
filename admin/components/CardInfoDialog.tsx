@@ -35,11 +35,18 @@ export default function CardInfoDialog({action,onComplete}:CardInfoDialogProps) 
             <div>
             {
                 loadDone? 
+                (record?.content) == undefined?
+                (
+                    <>
+                        <p>{record?.id}</p>
+                        <p>This card is not linked to any music.</p>
+                    </>
+                ):
                     (<>
-                        <img src={record.content.cover} width={100}/>
-                        <h1>{record.content.title}</h1>
-                        <p>{record.content.details.type}</p>
-                        <p>{record.id}</p>
+                        <img src={record?.content.cover} width={100}/>
+                        <h1>{record?.content.title}</h1>
+                        <p>{record?.content.details.type}</p>
+                        <p>{record?.id}</p>
                     </>
                 
                 ):

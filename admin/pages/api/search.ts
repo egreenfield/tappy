@@ -17,10 +17,8 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse<Da
     const session = await getSession({ req })
     let items = []
     if(session && session.token.accessToken) {
-        let artists = await searchForArtists(session.token.accessToken,req.query["q"] as string);
-        res.status(200).json({
-            artists:artists
-        })
+        let result = await searchForArtists(session.token.accessToken,req.query["q"] as string);
+        res.status(200).json(result)
     } else {
         res.status(401).json({error: "not authorized"})
     }

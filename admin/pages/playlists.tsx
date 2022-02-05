@@ -42,6 +42,7 @@ export default function Playlists({items}) {
       cover:record.images[0]?.url,
       details: {
         printed: false,
+        artist: "Playlist",
         type: "playlist"
       }
     });

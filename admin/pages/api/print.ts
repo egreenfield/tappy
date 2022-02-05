@@ -51,7 +51,14 @@ async function drawBacksOfCards( pdf:PDFKit.PDFDocument, backs:CardBounds[]) {
 }
 async function drawFrontOfCard( pdf:PDFKit.PDFDocument, card:CardData, left:number,top:number)  {
 
-    
+
+    let titleHeight = pdf
+    .save()
+    .font('fonts/TitleFont.ttf')
+    .fontSize(14)
+    .heightOfString(card.content.title,{ width:cardWidth-3*textMargin-left, lineGap: 1, paragraphGap:1})
+
+    pdf.restore()
     pdf
     .lineWidth(.5)
     .save()
@@ -68,6 +75,11 @@ async function drawFrontOfCard( pdf:PDFKit.PDFDocument, card:CardData, left:numb
     .fontSize(14)
     .fillColor([0x5a,0x59,0x59])
     .text(card.content.title,left+2*textMargin,top+cardWidth+textMargin,{ width:cardWidth-3*textMargin-left, lineGap: 1, paragraphGap:1})
+    .moveDown()
+    .font('fonts/BodyFont.ttf')
+    .fontSize(10)
+    .text(card.content.details.artist,left+2*textMargin,top+cardWidth+textMargin+titleHeight,{ width:cardWidth-3*textMargin-left, lineGap: 1, paragraphGap:1})
+    .image('content/brand.png',left + cardWidth-mmToPt(8),top + cardHeight - mmToPt(8),{width:mmToPt(5)})
     ;
         
     pdf
