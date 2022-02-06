@@ -6,6 +6,5 @@ export const search = async (artist:string) => {
     }).toString();
 
     let response = await (await fetch(url)).json();
-    console.log("response is",response);
     return response;
   }    

@@ -22,8 +22,8 @@ export default function Layout({ children, selected }:{children:any[],selected:s
       <Header style={{ padding: '0px 20px' }}>
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[selected]} onClick={({key}) => navigate(key)}>
           <Menu.Item key=""><AiOutlineHome /></Menu.Item>
-          <Menu.Item key="music">music</Menu.Item>
-          <Menu.Item key="playlists">playlists</Menu.Item>
+          <Menu.Item key="music">search</Menu.Item>
+          <Menu.Item key="playlists">my music</Menu.Item>
           <Menu.Item key="cards">cards</Menu.Item>
           <Menu.Item key="speakers">speakers</Menu.Item>
           <Menu.Item key="account">account</Menu.Item>

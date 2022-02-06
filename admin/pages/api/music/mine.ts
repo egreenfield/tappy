@@ -8,7 +8,6 @@ type Data = {
     error?:string;
     playlists?: any[];
     albums?: any[];
-    artists?: any[];
   }
   
 export default async function handler(req:NextApiRequest, res:NextApiResponse<Data>) {

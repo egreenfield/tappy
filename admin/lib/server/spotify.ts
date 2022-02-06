@@ -6,7 +6,9 @@ const basic = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
 
 
 const TOKEN_ENDPOINT =            'https://accounts.spotify.com/api/token';
-const PLAYLISTS_ENDPOINT =        'https://api.spotify.com/v1/me/playlists';
+const PLAYLISTS_ENDPOINT =        'https://api.spotify.com/v1/me/playlists?limit=50';
+const ALBUMS_ENDPOINT =        'https://api.spotify.com/v1/me/albums?limit=50';
+const ARTISTS_ENDPOINT =        'https://api.spotify.com/v1/me/following?type=artist&limit=50';
 const PLAYLIST_CONTENT_ENDPOINT = 'https://api.spotify.com/v1/playlists/';
 const SEARCH_ENDPOINT =           'https://api.spotify.com/v1/search';
 const ARTIST_DETAIL_ENDPOINT = 'https://api.spotify.com/v1/artists/';
@@ -39,14 +41,31 @@ export const getUsersPlaylists = async (refresh_token) => {
 
 export const getUsersMusic = async(refresh_token) => {
   const {access_token} = await getAccessToken(refresh_token);
-  let playlistResults = await fetch(PLAYLISTS_ENDPOINT, {
+  let playlistP = fetch(PLAYLISTS_ENDPOINT, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
   });
-  return {
-    playlists: (await playlistResults.json()).items
+  let albumsP = fetch(ALBUMS_ENDPOINT, {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+  let artistsP = fetch(ARTISTS_ENDPOINT, {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+  let responses = await Promise.all([playlistP,albumsP,artistsP]);
+  let [playlists,albums,artists] = await Promise.all(responses.map(r=>r.json()));
+
+
+  let result = {
+    artists: artists.artists.items,
+    playlists: playlists.items,
+    albums: albums.items.map((i) => i.album)
   }
+  return result;
 }
 
 export const getPlaylistContent = async(refresh_token:string,id:string) => {

@@ -1,7 +1,7 @@
 import Layout from '../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
 import {getUsersPlaylists} from '../lib/server/spotify';
-import { Space, Button, Tooltip } from 'antd';
+import { Table, Space, Button, Tooltip, Tabs, Row, Col, Divider } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useState } from 'react';
 import { linkCardToContent } from '../lib/client/cardActions';
@@ -29,7 +29,6 @@ export default function Playlists() {
   const {music,error} = useLibrary();
 
 
-
   async function linkCard(record):Promise<void> {
     let action = linkCardToContent({
       url:record.external_urls.spotify,
@@ -45,39 +44,46 @@ export default function Playlists() {
     action.promise.finally(()=> setLinkAction(undefined))
   }
 
-  const columns: ColumnsType<PlaylistData> = [
-    {
-      title: '',
-      key: 'key',
-      align: 'right',
-      width: 60,
-      render: (text,record) => <img src={record.images[0]?.url} width="50" />
-    },
-    {
-      title: '',
-      width: 60,
-      key: 'id',
-      render: (text, record) => (
-        <IconContext.Provider value={{ color: "#7777FF" }}>
-          <Space size="middle">
-            <Tooltip title="Open in Spotify">
-              <Navigate cursor="pointer" onClick={()=> window.location.href = record.external_urls.spotify}/>
-            </Tooltip>
-            <Tooltip title="Link to Card">
-              <LinkIcon cursor="pointer" onClick={()=> linkCard(record)} />
-            </Tooltip>
-          </Space>
-        </IconContext.Provider>
-      ),
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'id',
-      render: (text,record) => (<Link  href={`/playlists/${record.id}`}>{text}</Link>)
-    },
-  ];
-  
+  const makeColumns = (linkPrefix:string,linkable:boolean=true): ColumnsType<PlaylistData> => {
+    return [
+      {
+        title: '',
+        key: 'key',
+        align: 'right',
+        width: 60,
+        render: (text,record) => <img src={record.images?.length? record.images[0].url:""} width="50" />
+      },
+      {
+        title: '',
+        width: 60,
+        key: 'id',
+        render: (text, record) => (
+          <IconContext.Provider value={{ color: "#7777FF" }}>
+            <Space size="middle">
+              <Tooltip title="Open in Spotify">
+                <Navigate cursor="pointer" onClick={()=> window.location.href = record.external_urls.spotify}/>
+              </Tooltip>
+              {linkable? <Tooltip title="Link to Card">
+                            <LinkIcon cursor="pointer" onClick={()=> linkCard(record)} />
+                          </Tooltip>: <></>
+              }
+            </Space>
+          </IconContext.Provider>
+        ),
+      },
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'id',
+        render: (text,record) => (<Link  href={linkPrefix + record.id}>{record.name || ""}</Link>)
+      },
+    ];
+  }
+
+  const playlistColumns = makeColumns("/playlists/"); 
+  const albumColumns = makeColumns("/albums/"); 
+  const artistColumns = makeColumns("/artists/",false); 
+
   if (session) {
 
     if(error) {
@@ -87,19 +93,39 @@ export default function Playlists() {
       return <div>loading...</div>;
     }
     return (
-    <>
-      <h1>Playlists</h1>
-      <section>
-          <TopTable columns={columns} dataSource={music.playlists} rowKey="id" />          
-        <LinkDialog action={linkAction} />
-      </section>
-    </>
+    <Row>
+      <Col span={24}>
+        <Tabs defaultActiveKey='"Playlists'>
+          <Tabs.TabPane tab="Playlists" key="Playlists">
+            <Col span={24}>
+              <Table columns={playlistColumns} 
+                pagination={{ position: ["topRight", "bottomRight"] }} 
+                dataSource={music.playlists} rowKey="id" />          
+            </Col>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Albums" key="Albums">
+            <Col span={24}>
+            <Table columns={albumColumns} 
+                pagination={{ position: ["topRight", "bottomRight"] }} 
+                dataSource={music.albums} rowKey="id" />          
+            </Col>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Artists" key="Artists">
+            <Col span={24}>
+            <Table columns={artistColumns} 
+                pagination={{ position: ["topRight", "bottomRight"] }} 
+                dataSource={music.artists} rowKey="id" />          
+            </Col>
+          </Tabs.TabPane>
+        </Tabs>
+      </Col>
+      <LinkDialog action={linkAction} />
+    </Row>
     )
   }
   return (
     <section>
-      <h1>Playlists</h1>
-      <p>Sign in to see your playlists</p>
+      <p>Sign in to see your music</p>
       <Button type="primary" onClick={()=>{signIn("spotify")}}>Sign in</Button>
     </section>
   )

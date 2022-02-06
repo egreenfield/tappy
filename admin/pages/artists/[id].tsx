@@ -1,7 +1,7 @@
 import Layout from '../../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
 import {AlbumData, ArtistDetail, getArtistDetail, getPlaylistContent, getUsersPlaylists} from '../../lib/server/spotify';
-import { Table, Space, Button, Modal, Tooltip } from 'antd';
+import { Table, Space, Button, Modal, Tooltip, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
 import { linkCardToContent } from '../../lib/client/cardActions';
@@ -77,12 +77,22 @@ export default function ArtistDetails(detail:ArtistDetail) {
   
   if (session) {
     return (
-    <section>
-        <img src={detail.images[0].url} width="150" />
-        <h1>{detail.name}</h1>      
-        <TopTable columns={columns} dataSource={detail.albums} />          
-        <LinkDialog action={linkAction} />
-    </section>
+        <>
+            <Row>
+            <Col>
+                <img src={detail.images[0].url} width="150" />
+            </Col>
+            <Col style={{paddingLeft: 10}}>
+                <h1>{detail.name}</h1>      
+            </Col>
+            </Row>
+            <Row>
+                <Col span={24}>
+                <TopTable columns={columns} dataSource={detail.albums} />          
+                <LinkDialog action={linkAction} />
+            </Col>
+            </Row>
+        </>            
   )
   }
   return (
