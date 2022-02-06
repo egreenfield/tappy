@@ -23,7 +23,7 @@ interface PlaylistData {
 }
 
 
-export default function Playlists() {
+export default function MyMusic() {
   const { data: session } = useSession()
   const [linkAction,setLinkAction] = useState(undefined);
   const {music,error} = useLibrary();
@@ -132,8 +132,8 @@ export default function Playlists() {
 
 }
 
-Playlists.getLayout = function getLayout(page) {
+MyMusic.getLayout = function getLayout(page) {
   return (
-    <Layout selected='playlists'>{page}</Layout>
+    <Layout selected='my_music'>{page}</Layout>
   )
 }

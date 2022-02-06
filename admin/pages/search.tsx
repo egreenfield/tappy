@@ -137,6 +137,6 @@ return (
 
 Music.getLayout = function getLayout(page) {
   return (
-    <Layout selected='music'>{page}</Layout>
+    <Layout selected='search'>{page}</Layout>
   )
 }
