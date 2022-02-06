@@ -2,7 +2,7 @@
 //----------------------------------------------------------------
 // Server Side
 
-import { CardData } from "./cardActions";
+import { CardData } from "../client/cardActions";
 
 export async function getCurrentCards():Promise<CardData[]> {
     let response = await fetch('http://10.0.0.99:8000/api/card',{

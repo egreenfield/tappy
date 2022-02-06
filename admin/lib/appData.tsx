@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CardData, CardDataMap } from "./cardActions";
+import { CardData, CardDataMap } from "./client/cardActions";
 
 
 export class AppData  {

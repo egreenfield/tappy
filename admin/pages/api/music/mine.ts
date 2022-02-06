@@ -1,25 +1,25 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
-import { searchForArtists } from '../../lib/server/spotify'
+import { getUsersMusic, getUsersPlaylists } from '../../../lib/server/spotify'
 
 
 
 type Data = {
     error?:string;
-    artists?:any[];
-}
+    playlists?: any[];
+    albums?: any[];
+    artists?: any[];
+  }
   
 export default async function handler(req:NextApiRequest, res:NextApiResponse<Data>) {
-    if (req.method != "POST") {
+    if (req.method != "GET") {
         res.status(500)
     }
- 
     const session = await getSession({ req })
-    let items = []
     if(session && session.token.accessToken) {
-        let result = await searchForArtists(session.token.accessToken,req.query["q"] as string);
-        res.status(200).json(result)
+        let response = await getUsersMusic(session.token.accessToken);
+        res.status(200).json(response)
     } else {
-        res.status(401).json({error: "not authorized"})
+        res.status(500).json({error: "not signed in"})
     }
 }

@@ -3,8 +3,8 @@ import Sidebar from '../components/sidebar'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { Avatar, Button, Col, ConfigProvider, Input, List, Row, Tabs } from 'antd'
 import { ChangeEvent, KeyboardEvent, useState } from 'react'
-import { searchForArtists } from '../lib/spotify'
-import { search } from '../lib/search'
+import { searchForArtists } from '../lib/server/spotify'
+import { search } from '../lib/client/search'
 
 export default function Music() {
   const { data: session } = useSession()

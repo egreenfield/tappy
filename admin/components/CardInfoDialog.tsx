@@ -1,10 +1,10 @@
 import Layout from '../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
-import {getUsersPlaylists} from '../lib/spotify';
+import {getUsersPlaylists} from '../lib/server/spotify';
 import { Table, Space, Button, Modal } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
-import { cancelCardAction, CardAction } from '../lib/cardActions';
+import { cancelCardAction, CardAction } from '../lib/client/cardActions';
 
 
 interface CardInfoDialogProps {

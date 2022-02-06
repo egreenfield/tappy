@@ -1,10 +1,10 @@
 import Layout from '../../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
-import {AlbumData, getAlbumDetail, TrackData} from '../../lib/spotify';
+import {AlbumData, getAlbumDetail, TrackData} from '../../lib/server/spotify';
 import { Button, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useState } from 'react';
-import { linkCardToContent } from '../../lib/cardActions';
+import { linkCardToContent } from '../../lib/client/cardActions';
 import LinkDialog from '../../components/LinkDialog';
 import TopTable from '../../components/TopTable';
 import { FaLink as LinkIcon } from 'react-icons/fa';

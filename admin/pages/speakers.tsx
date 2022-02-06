@@ -1,10 +1,10 @@
 import Layout from '../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
-import {getUsersPlaylists} from '../lib/spotify';
+import {getUsersPlaylists} from '../lib/server/spotify';
 import { Table, Space, Button, Modal, Tooltip, Popconfirm, message, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
-import { CardData, identifyCardContent, sendCardPrintJob, unlinkCard } from '../lib/cardActions';
+import { CardData, identifyCardContent, sendCardPrintJob, unlinkCard } from '../lib/client/cardActions';
 import LinkDialog from '../components/LinkDialog';
 import Link from 'next/link';
 import { TiDelete} from 'react-icons/ti';
@@ -15,9 +15,9 @@ import { BsPrinter } from 'react-icons/bs';
 import { IconContext } from 'react-icons/lib';
 import TopTable from '../components/TopTable';
 import CardInfoDialog from '../components/CardInfoDialog';
-import { getCurrentCards } from '../lib/serverCardActions';
-import { getSpeakers } from '../lib/serverSpeaker';
-import { setActiveSpeakers } from '../lib/speaker';
+import { getCurrentCards } from '../lib/server/serverCardActions';
+import { getSpeakers } from '../lib/server/serverSpeaker';
+import { setActiveSpeakers } from '../lib/client/speaker';
 
 
 // This gets called on every request

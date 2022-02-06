@@ -1,15 +1,17 @@
 import Layout from '../components/layout'
 import { getSession, useSession, signIn, signOut } from "next-auth/react"
-import {getUsersPlaylists} from '../lib/spotify';
+import {getUsersPlaylists} from '../lib/server/spotify';
 import { Space, Button, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useState } from 'react';
-import { linkCardToContent } from '../lib/cardActions';
+import { linkCardToContent } from '../lib/client/cardActions';
 import LinkDialog from '../components/LinkDialog';
 import Link from 'next/link';
 import { FaLink as LinkIcon, FaExternalLinkAlt as Navigate } from 'react-icons/fa';
 import { IconContext } from 'react-icons/lib';
 import TopTable from '../components/TopTable';
+import useSWR from 'swr';
+import { useLibrary } from '../lib/client/loaders';
 
 
 interface PlaylistData {
@@ -20,20 +22,13 @@ interface PlaylistData {
   images: {url:string}[]
 }
 
-// This gets called on every request
-export async function getServerSideProps(ctx) {
-  let session = await getSession(ctx) 
-  let items = []
-  if(session && session.token.accessToken) {
-    const response = await getUsersPlaylists(session.token.accessToken);
-    items = (await response.json()).items;  
-  }
-  return { props: { items } }
-}
 
-export default function Playlists({items}) {
+export default function Playlists() {
   const { data: session } = useSession()
   const [linkAction,setLinkAction] = useState(undefined);
+  const {music,error} = useLibrary();
+
+
 
   async function linkCard(record):Promise<void> {
     let action = linkCardToContent({
@@ -84,11 +79,18 @@ export default function Playlists({items}) {
   ];
   
   if (session) {
+
+    if(error) {
+      return <div>error!</div>;
+    }
+    if(!music) {
+      return <div>loading...</div>;
+    }
     return (
     <>
       <h1>Playlists</h1>
       <section>
-          <TopTable columns={columns} dataSource={items} />          
+          <TopTable columns={columns} dataSource={music.playlists} rowKey="id" />          
         <LinkDialog action={linkAction} />
       </section>
     </>

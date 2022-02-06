@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getCurrentCards } from '../../lib/serverCardActions'
+import { getCurrentCards } from '../../lib/server/serverCardActions'
 import PDFDocument from 'pdfkit';
-import { CardData } from '../../lib/cardActions';
+import { CardData } from '../../lib/client/cardActions';
 
 
 const mmToPt = (mm:number) => mm*2.83465;
