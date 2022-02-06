@@ -82,7 +82,7 @@ export default function PlaylistDetails(playlist:PlaylistDetailData) {
         </Col>
         <Col style={{paddingLeft: 10}}>
           <h2>{playlist.name}</h2>      
-          <h1 style={{marginTop:-10, marginBottom:20}}>{playlist.description}</h1>      
+          <h2 style={{marginTop:-10, marginBottom:20}} dangerouslySetInnerHTML={{ __html:playlist.description}} />
           <Button type="primary" onClick={()=>linkCard(playlist)}>Link Card</Button>
         </Col>
         </Row>

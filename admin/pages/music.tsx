@@ -13,6 +13,7 @@ export default function Music() {
   const [artists,setArtists] = useState([]);
   const [albums,setAlbums] = useState([]);
   const [tracks,setTracks] = useState([]);
+  const [playlists,setPlaylists] = useState([]);
   const [tab,setTab] = useState(["Artists"]);
   const [searchText,setSeachText] = useState("");
 
@@ -21,6 +22,7 @@ export default function Music() {
     setArtists(results.artists);
     setAlbums(results.albums);
     setTracks(results.tracks);
+    setPlaylists(results.playlists);
   }
 
   const handleSearchChange = async (event:ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +99,23 @@ export default function Music() {
                 )}
                 />
               </Col>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Playlists" key="Playlists">
+            <Col span={24}>
+              <List
+              bordered
+              itemLayout="horizontal"
+              dataSource={playlists}
+              renderItem={item => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={<Avatar src={item.images?.length? item.images[0].url : ""} />}
+                    title={<a href={`/playlists/${item.id}`}>{item.name}</a>}
+                  />
+                </List.Item>
+                )}
+              />
+            </Col>
             </Tabs.TabPane>
           </Tabs>
           </Col>

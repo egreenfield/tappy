@@ -84,9 +84,9 @@ export async function searchForArtists(refresh_token:string,searchText:string) {
   let url = new URL(SEARCH_ENDPOINT);
   let params = new URLSearchParams();
   params.set("q",searchText);
-  params.set("type","artist,album,track");
+  params.set("type","artist,album,track,playlist");
   url.search = params.toString();
-  let result = { artists:[], albums: [], tracks:[]}
+  let result = { artists:[], albums: [], tracks:[],playlists:[]}
 
   try {
     let results = await fetch( url.toString(), {
@@ -100,6 +100,7 @@ export async function searchForArtists(refresh_token:string,searchText:string) {
       result.artists = json.artists.items;    
       result.albums = json.albums.items;
       result.tracks = json.tracks.items;
+      result.playlists = json.playlists.items;
     } catch(e) {
     console.log("got an error:",e);
   }
