@@ -20,12 +20,20 @@ DONE * make text prettier
 DONE * make speakers groupable
 DONE * expand search to song + album
 DONE * add artist to albums and covers
-* expand playlists to my music
-* move all react behavior to client side
+DONE * expand playlists to my music
+DONE * add search to import page
+DONE * save match on server side
+DONE * cache import results server side
+DONE * import into library 
+DONE * keyboard commands
 DONE * stain/finish box
 DONE * sand off pencil marks inside box
-* add "stop" button to speakers page
+* show which cards are linked
+* add 'save' section for printing (before linking)
+* move all react behavior to client side
 * fix useLayoutEffect bug
+* move more code to SWR
+* clean up import page.
 
 
 look for icons at https://react-icons.github.io/react-icons

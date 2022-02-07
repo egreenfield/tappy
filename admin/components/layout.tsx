@@ -26,6 +26,7 @@ export default function Layout({ children, selected }:{children:any[],selected:s
           <Menu.Item key="my_music">my music</Menu.Item>
           <Menu.Item key="cards">cards</Menu.Item>
           <Menu.Item key="speakers">speakers</Menu.Item>
+          <Menu.Item key="import">import</Menu.Item>
           <Menu.Item key="account">account</Menu.Item>
         </Menu>        
       </Header>

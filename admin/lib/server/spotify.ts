@@ -13,6 +13,8 @@ const PLAYLIST_CONTENT_ENDPOINT = 'https://api.spotify.com/v1/playlists/';
 const SEARCH_ENDPOINT =           'https://api.spotify.com/v1/search';
 const ARTIST_DETAIL_ENDPOINT = 'https://api.spotify.com/v1/artists/';
 const ALBUM_DETAIL_ENDPOINT = 'https://api.spotify.com/v1/albums/';
+const SAVE_ALBUM_ENDPOINT = 'https://api.spotify.com/v1/me/albums';
+const SAVE_ARTIST_ENDPOINT = 'https://api.spotify.com/v1/me/following';
 
 const getAccessToken = async (refresh_token) => {
     const response = await fetch(TOKEN_ENDPOINT, {
@@ -77,15 +79,17 @@ export const getPlaylistContent = async(refresh_token:string,id:string) => {
   });
 }
 
-export async function searchForArtists(refresh_token:string,searchText:string) {
+export async function searchContent(refresh_token:string,searchText:string,type="artist,album,track,playlist") {
   
   const {access_token} = await getAccessToken(refresh_token);
 
   let url = new URL(SEARCH_ENDPOINT);
   let params = new URLSearchParams();
   params.set("q",searchText);
-  params.set("type","artist,album,track,playlist");
+  params.set("type",type);
   url.search = params.toString();
+  console.log("searching",url.toString());
+  
   let result = { artists:[], albums: [], tracks:[],playlists:[]}
 
   try {
@@ -96,11 +100,11 @@ export async function searchForArtists(refresh_token:string,searchText:string) {
       },      
     });
     let json = await results.json();
-    console.log("results:",json)
-      result.artists = json.artists.items;    
-      result.albums = json.albums.items;
-      result.tracks = json.tracks.items;
-      result.playlists = json.playlists.items;
+    console.log("searchTerm: '" + searchText+"', results:",json)
+      result.artists = json.artists?.items;    
+      result.albums = json.albums?.items;
+      result.tracks = json.tracks?.items;
+      result.playlists = json.playlists?.items;
     } catch(e) {
     console.log("got an error:",e);
   }
@@ -179,3 +183,24 @@ export async function getAlbumDetail(refresh_token:string,id:string):Promise<Alb
   }
 }
 
+
+
+export async function saveAlbum(refresh_token:string,id:string) {
+  const {access_token} = await getAccessToken(refresh_token);
+  return fetch(SAVE_ALBUM_ENDPOINT+"?ids="+id, {
+    method:"PUT",
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+}
+
+export async function saveArtist(refresh_token:string,id:string) {
+  const {access_token} = await getAccessToken(refresh_token);
+  return fetch(SAVE_ARTIST_ENDPOINT+"?ids="+id+"&type=artist", {
+    method:"PUT",
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+}

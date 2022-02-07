@@ -61,7 +61,9 @@ export default function MyMusic() {
           <IconContext.Provider value={{ color: "#7777FF" }}>
             <Space size="middle">
               <Tooltip title="Open in Spotify">
-                <Navigate cursor="pointer" onClick={()=> window.location.href = record.external_urls.spotify}/>
+              <a href={record.external_urls.spotify} target="_blank">
+                <Navigate cursor="pointer" />
+              </a>
               </Tooltip>
               {linkable? <Tooltip title="Link to Card">
                             <LinkIcon cursor="pointer" onClick={()=> linkCard(record)} />

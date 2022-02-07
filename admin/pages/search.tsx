@@ -3,7 +3,6 @@ import Sidebar from '../components/sidebar'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { Avatar, Button, Col, ConfigProvider, Input, List, Row, Tabs } from 'antd'
 import { ChangeEvent, KeyboardEvent, useState } from 'react'
-import { searchForArtists } from '../lib/server/spotify'
 import { search } from '../lib/client/search'
 import { RiSearchLine as SearchIcon } from 'react-icons/ri';
 

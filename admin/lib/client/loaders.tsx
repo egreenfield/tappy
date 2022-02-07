@@ -10,3 +10,7 @@ import useSWR from "swr";
     return {music,error}
   }
   
+
+  export async function getAlbumDetail(id:string) {
+      return await (await fetch("/api/music/album/"+id)).json()
+  }
