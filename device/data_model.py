@@ -9,6 +9,18 @@ class DataModel:
         self.readCount = 0
         self.loadDB()
 
+    def setBookmark(self,id,content):
+        self.db['bookmarks'][id] = content
+        self.autoSave()
+
+    def getBookmark(self,id):
+        return self.db['bookmarks'].get(id)
+    
+    def getAllBookmarks(self):
+        return dict(self.db['bookmarks'])
+    def deleteAllBookmarks(self):
+        self.db['bookmarks'] = {}
+
     def getCard(self,uid):
         data = self.db['cards'].get(uid)
         return None if data == None else dict(data)
@@ -55,6 +67,9 @@ class DataModel:
     def loadDB(self):
         file = open(self.dbPath)
         self.db = json.load(file)
+        if(self.db.get('bookmarks') == None):
+            self.db['bookmarks'] = {}
+        
         #log.info(f"loaded cardmap as {self.db['cards']}")
 
     def saveDB(self):

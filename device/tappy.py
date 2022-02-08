@@ -11,9 +11,12 @@ log = logging.getLogger(__name__)
 class Tappy:
     def __init__(self):
         self.buzzer = 26
+        self.buzzerVCC = 22
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.buzzer, GPIO.OUT)
         GPIO.output(self.buzzer, GPIO.HIGH)
+        GPIO.setup(self.buzzerVCC, GPIO.OUT)
+        GPIO.output(self.buzzerVCC, GPIO.HIGH)
 
         self.dataModel = DataModel()
         self.reader = CardReader(self, lambda uid : self.cardTapped(uid))
