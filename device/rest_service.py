@@ -96,6 +96,12 @@ class BookmarkHandler():
         resp.text = ("{}")
         resp.content_type = falcon.MEDIA_JSON
 
+    def on_delete_single(self,req,resp,id):
+        self.tappy.dataModel.deleteBookmark(id)
+        resp.status = falcon.HTTP_200  # This is the default status        
+        resp.text = ("{}")
+        resp.content_type = falcon.MEDIA_JSON
+
 class CardActionHandler():
     def __init__(self,tappy):
         self.tappy = tappy
@@ -180,6 +186,7 @@ class RestService:
         self.app.add_route("/api/card/{id}",CardUpdateHandler(tappy))
         self.app.add_route("/api/card",CardHandler(tappy))
         self.app.add_route("/api/bookmarks",BookmarkHandler(tappy))
+        self.app.add_route("/api/bookmarks/{id}",BookmarkHandler(tappy),suffix="single")
         self.app.add_route("/api/speakers",DeviceHandler(tappy))
         self.app.add_route("/api/speakers/active",DeviceHandler(tappy),suffix="active")
     def stop(self):

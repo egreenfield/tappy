@@ -15,7 +15,11 @@ class DataModel:
 
     def getBookmark(self,id):
         return self.db['bookmarks'].get(id)
-    
+
+    def deleteBookmark(self,id):
+        self.db['bookmarks'].pop(id,None);
+        self.autoSave()
+
     def getAllBookmarks(self):
         return dict(self.db['bookmarks'])
     def deleteAllBookmarks(self):
