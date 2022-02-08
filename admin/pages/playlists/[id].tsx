@@ -4,9 +4,12 @@ import {AlbumData, getPlaylistContent, getUsersPlaylists} from '../../lib/server
 import { Table, Space, Button, Modal, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
-import { linkCardToContent } from '../../lib/client/cardActions';
+import {  linkCardToContent } from '../../lib/client/cardActions';
 import LinkDialog from '../../components/LinkDialog';
 import TopTable from '../../components/TopTable';
+import { FaLink as LinkIcon } from 'react-icons/fa';
+import {BsFillBookmarkFill as BookmarkIcon } from 'react-icons/bs';
+import { bookmarkContent } from '../../lib/client/bookmarkActions';
 
 interface TrackData {
     name:string;
@@ -18,7 +21,7 @@ interface PlaylistEntryData {
 }
 
 interface PlaylistDetailData {
-  key: number;  
+  id: string;  
   name: string;
   description: string;
   images: {url:string}[]
@@ -41,6 +44,20 @@ export default function PlaylistDetails(playlist:PlaylistDetailData) {
   const { data: session } = useSession()
   const [linkAction,setLinkAction] = useState(undefined);
 
+  const startBookmark = async(playlist:PlaylistDetailData) => {
+    await bookmarkContent(playlist.id,{
+      url:playlist.external_urls.spotify,
+      title:playlist.name,
+      cover:playlist.images[0]?.url,
+      details: {
+        printed: false,
+        artist: "Playlist",
+        type:"playlist",
+        
+      }
+    });
+  }
+
   const linkCard = async (playlist:PlaylistDetailData) => {
     let action = linkCardToContent({
       url:playlist.external_urls.spotify,
@@ -60,7 +77,7 @@ export default function PlaylistDetails(playlist:PlaylistDetailData) {
   const columns: ColumnsType<PlaylistEntryData> = [
     {
       title: '',
-      key: 'key',
+      key: 'id',
       align: 'right',
       width: 100,
       render: (text,record) => <img src={record.track.album.images[0]?.url} width="50" />
@@ -83,7 +100,8 @@ export default function PlaylistDetails(playlist:PlaylistDetailData) {
         <Col style={{paddingLeft: 10}}>
           <h2>{playlist.name}</h2>      
           <h2 style={{marginTop:-10, marginBottom:20}} dangerouslySetInnerHTML={{ __html:playlist.description}} />
-          <Button type="primary" onClick={()=>linkCard(playlist)}>Link Card</Button>
+          <Button type="primary"  icon={<LinkIcon style={{marginTop:4}} />} style={{marginRight:2}} onClick={()=>linkCard(playlist)}></Button>
+            <Button type="primary"  icon={<BookmarkIcon style={{marginTop:4}} />} onClick={()=>startBookmark(playlist)}></Button>
         </Col>
         </Row>
         <Row>
