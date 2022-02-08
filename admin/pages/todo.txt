@@ -29,7 +29,9 @@ DONE * keyboard commands
 DONE * stain/finish box
 DONE * sand off pencil marks inside box
 * show which cards are linked
-* add 'save' section for printing (before linking)
+* make bookmarks linkable
+DONE * fix bookmark printing
+* make it possible to delete one or all bookmarks
 * move all react behavior to client side
 * fix useLayoutEffect bug
 * move more code to SWR

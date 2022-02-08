@@ -138,7 +138,9 @@ export function startCardAction(type:string,content:any = {},timeout:number=unde
     return action;
 }
 
-export async function sendCardPrintJob(cardIDs:string[]) {
+
+
+export async function sendCardPrintJob(cardIDs:string[],type:string) {
     let idString = cardIDs.join(",");
-    window.open("/api/print?ids="+idString,"_blank");
+    window.open("/api/print?ids="+idString+"&type="+type,"_blank");
 }

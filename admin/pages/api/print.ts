@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getCurrentCards } from '../../lib/server/serverCardActions'
 import PDFDocument from 'pdfkit';
 import { CardData } from '../../lib/client/cardActions';
+import { getBookmarks } from '../../lib/server/serverBookmarks';
 
 
 const mmToPt = (mm:number) => mm*2.83465;
@@ -150,7 +151,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
         return;
     }
 
-    let currentCards = await getCurrentCards();
+    let currentCards = req.query["type"] == "card"? (await getCurrentCards()):await getBookmarks();
     let idsToPrint = (req.query["ids"] as string).split(",") 
     let idsToPrintMap = {}
     for (let anID of idsToPrint) {
