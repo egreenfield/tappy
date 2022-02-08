@@ -6,6 +6,8 @@ from threading import Thread
 from werkzeug.serving import run_simple
 from werkzeug.serving import make_server
 
+from card_reader import ReadConfig
+
 log = logging.getLogger(__name__)
 
 def buildLastReadData(dataModel):
@@ -105,18 +107,36 @@ class CardActionHandler():
         actionType = eventBody.get("type")
 
         if actionType == "cancel":
-            self.tappy.reader.overrideReadCallback(callback=None,timeout=0)
+            self.tappy.reader.cancelReadConfig()
             self.tappy.beep(count=3,delay=.2)
 
         elif actionType == "linkToContent":
             cardDetails = eventBody.get("content")
             timeout = eventBody.get("timeout") or 30
-            self.tappy.reader.overrideReadCallback(callback=lambda uid : self.tappy.dataModel.updateCardData(uid,cardDetails),timeout=timeout,beep=True)
+            self.tappy.reader.pushReadConfig(
+                config=ReadConfig(
+                    readComplete=lambda uid,tapCount : self.tappy.dataModel.updateCardData(uid,cardDetails),
+                    read=None,
+                    timeout=timeout,
+                    maxReads=1,
+                    beep=True,
+                    autoRemove=True
+                )
+            )
             self.tappy.beep(count=2,delay=.2)
 
         elif actionType == "identifyCardContent":
             timeout = eventBody.get("timeout") or 30
-            self.tappy.reader.overrideReadCallback(callback=lambda uid : None,timeout=timeout,beep=True)
+            self.tappy.reader.pushReadConfig(
+                config=ReadConfig(
+                    readComplete=None,
+                    read=None,
+                    timeout=timeout,
+                    maxReads=1,
+                    beep=True,
+                    autoRemove=True
+                )
+            )
             self.tappy.beep(count=2,delay=.2)
 
         result = buildLastReadData(self.tappy.dataModel)

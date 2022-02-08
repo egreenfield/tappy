@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 from data_model import DataModel
-from card_reader import CardReader
+from card_reader import CardReader, ReadConfig
 from rest_service import RestService
 from stereo import Stereo
 
@@ -19,22 +19,34 @@ class Tappy:
         GPIO.output(self.buzzerVCC, GPIO.HIGH)
 
         self.dataModel = DataModel()
-        self.reader = CardReader(self, lambda uid : self.cardTapped(uid))
+        self.reader = CardReader(self, 
+                                    readConfig=ReadConfig(
+                                        read=lambda uid,readCount : self.cardTapped(uid,readCount),
+                                        readComplete=lambda uid,readCount : self.cardGone(uid,readCount),
+                                        timeout=0,
+                                        beep=False,
+                                        maxReads=2
+                                    ))
         self.restService = RestService(self)
         self.stereo = Stereo(self)
 
-    def cardTapped(self, uid):
-        log.info(f"Card read UID: {uid}")
+    def cardTapped(self, uid,readCount):
         cardData = self.dataModel.getCard(uid)
         if cardData == None:
-            self.beep(count=2,length=.1)
-            log.info("no playlist associated with card")
+            if(readCount == 1):
+                self.beep(count=2,length=.1)
+                log.info("no playlist associated with card")
             return
         else:
             self.beep(1)
-            url = cardData["url"]
-            log.info(f"playing card {cardData.get('title')}")
-        self.stereo.playUrl(self.dataModel.getCurrentSpeakers(),url)    
+
+    def cardGone(self, uid,readCount):
+        cardData = self.dataModel.getCard(uid)
+        if cardData == None:
+            return
+        url = cardData["url"]
+        log.info(f"playing card shuffle={readCount > 1} {cardData.get('title')}")
+        self.stereo.playUrl(self.dataModel.getCurrentSpeakers(),url,shuffle=(readCount > 1))    
 
     def beep(self,count = 1,length=0.01,delay = 0.01):
         for i in range(1,1+count):

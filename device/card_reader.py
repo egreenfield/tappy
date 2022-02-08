@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+from pyclbr import Function
+from tokenize import Number
+from xmlrpc.client import boolean
 import mfrc522 as MFRC522
 import logging
 import time
@@ -8,27 +12,48 @@ kNoCard = 0
 kHasCard = 1
 kMaybeCard = 2
 
+@dataclass
+class ReadConfig:
+    read:Function
+    readComplete:Function
+    timeout:float
+    maxReads:int
+    beep:boolean
+    autoRemove:boolean=False
 
 class CardReader:
-    def __init__(self,tappy,readCallback):
+    def __init__(self,tappy,readConfig):
         self.MIFAREReader = MFRC522.MFRC522()
         self.dataModel = tappy.dataModel
         self.tappy = tappy
-        self.readCallback = readCallback
         self.state = kNoCard
         self.continue_reading = True
-        self.overrideCallback = None
-        self.overrideTimeout = 0
-        self.overrideTimestamp = 0
+
+        self.lastRead = 0
+        self.readCount = 0
+        self.lastUID = ""
+        self.readConfig = [(readConfig,0)]
+    
+    @property
+    def config(self):
+        return self.readConfig[-1][0]
+
+    @property
+    def callbackTimestamp(self):
+        return self.readConfig[-1][1]
+
     def stopReading(self):
         self.continue_reading = False
 
-    def overrideReadCallback(self,callback,timeout = 5,beep = True):
-        log.info(f"overriding read callback with {timeout} timeout")
-        self.overrideTimestamp = time.time()
-        self.overrideTimeout = timeout
-        self.overrideCallback = callback
-        self.overrideBeep = beep
+    def cancelReadConfig(self):
+        if(len(self.readConfig) > 1):
+            self.readConfig.pop()
+        else:
+            log.warn("ERROR: Cancel Read Config called with only the base read config on the stack")
+
+    def pushReadConfig(self,config):
+        log.info(f"overriding read callback with {config.timeout} timeout")
+        self.readConfig.append((config,time.time()))
 
     def readCard(self):
         # Get the UID of the card
@@ -37,20 +62,36 @@ class CardReader:
         # If we have the UID, continue
         if status != self.MIFAREReader.MI_OK:
             return
+        self.lastRead = time.time()
         uid = str(uid[0])+"_"+str(uid[1])+"_"+str(uid[2])+"_"+str(uid[3])
+        self.lastUID = uid
         self.dataModel.registerCardRead(uid)
-        if (self.overrideCallback != None):
-            log.info("override callback found")
-            if(time.time() - self.overrideTimestamp > self.overrideTimeout):
-                log.info(f"override callback timed out {time.time() - self.overrideTimestamp} vs {self.overrideTimeout}")
-                self.overrideCallback = None
-        if (self.overrideCallback != None):
-            if self.overrideBeep:
+        while self.config.timeout > 0:
+            log.info("timeout read config found")
+            if(time.time() - self.callbackTimestamp > self.config.timeout):
+                log.info(f"override callback timed out {time.time() - self.callbackTimestamp} vs {self.config.timeout}")
+                self.readConfig.pop()
+            else:
+                break
+        if self.config.beep:
                 self.tappy.beep(3)
-            self.overrideCallback(uid)
-            self.overrideCallback = None
-        else:
-            self.readCallback(uid)
+        if self.config.read:
+            self.config.read(uid,self.readCount)
+
+    def readComplete(self):
+        if(self.config.readComplete):
+            self.config.readComplete(self.lastUID,self.readCount)
+        if (self.config.autoRemove):
+            self.readConfig.pop()
+
+    def checkForContinue(self):
+        if(self.readCount >= self.config.maxReads):
+            return;
+
+        now = time.time()
+        if(now - self.lastRead > 1):
+            self.readCount += 1
+            self.readCard()
 
     def updateState(self,status):
         if(self.state == kNoCard):
@@ -58,17 +99,21 @@ class CardReader:
                 # SWITCH
                 log.info("*** NEW CARD")
                 self.state = kHasCard
+                self.readCount = 1
                 self.readCard()
         if(self.state == kMaybeCard):
             if(status == self.MIFAREReader.MI_ERR):
                 # SWITCH
                 log.info("*** CARD GONE")
+                self.readComplete()
                 self.state = kNoCard
             else:
                 self.state = kHasCard
         if(self.state == kHasCard):
             if(status == self.MIFAREReader.MI_ERR):
                 self.state = kMaybeCard            
+            else:
+                self.checkForContinue()
 
     def lookForCard(self):
 

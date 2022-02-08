@@ -7,13 +7,13 @@ class Stereo:
     def __init__(self,tappy):
         self.tappy = tappy
 
-    def playUrl(self,deviceNames,url):
+    def playUrl(self,deviceNames,url,shuffle=True):
         log.info(f"playing {url}")
         device = self.makeGroup(deviceNames) #soco.discovery.by_name(deviceNames[0])
         device.stop()
         device.clear_queue()
         share_link = ShareLinkPlugin(device)
-        device.shuffle = True
+        device.shuffle = shuffle
         device.repeat = True
         result = share_link.add_share_link_to_queue(url)
         log.info(result)
