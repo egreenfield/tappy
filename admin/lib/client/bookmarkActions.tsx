@@ -1,7 +1,10 @@
-import { Content } from "./cardActions";
+import { message } from "antd";
+import { CardData, Content } from "./cardActions";
 
 export async function bookmarkContent(id:string,content:Content) {
-    let body = JSON.stringify({
+  message.loading({content: "Bookmarking...",key:"bookmarking"});
+  message.success({content: "Bookmarked", duration: 3,key:"bookmarking"});
+  let body = JSON.stringify({
         id,
         content,
     });
@@ -27,4 +30,19 @@ export async function getBookmarks() {
       })  
     let responseData = await response.json()    
     return responseData;
+}
+export async function deleteBookmark(bookmark:CardData) {
+  throw(new Error("Delete Bookmark unimplemented on the server"))
+}
+
+export async function deleteBookmarks() {
+  let response = await fetch('/api/bookmarks',{
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: "DELETE"
+    })  
+  let responseData = await response.json()    
+  return responseData;
 }
