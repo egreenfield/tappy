@@ -1,3 +1,4 @@
+from random import Random, random
 import falcon
 import logging
 import json
@@ -51,7 +52,6 @@ class DeviceHandler():
         resp.text = ("{}")
         resp.content_type = falcon.MEDIA_JSON
 
-
 class CardHandler():
     def __init__(self,tappy):
         self.tappy = tappy
@@ -63,6 +63,37 @@ class CardHandler():
         resp.text = (result)
         resp.content_type = falcon.MEDIA_JSON
     
+class BookmarkHandler():
+    def __init__(self,tappy):
+        self.tappy = tappy
+
+    def on_post(self,req,resp):
+        eventBody = req.media
+        log.info(f'received event: {eventBody}')
+        cardDetails = {}
+        actionType = eventBody.get("type")
+        content = eventBody.get("content")
+        id = eventBody.get("id")
+
+        self.tappy.dataModel.setBookmark(id,content)
+
+        resp.status = falcon.HTTP_200  # This is the default status        
+        resp.text = ("{}")
+        resp.content_type = falcon.MEDIA_JSON
+
+    def on_get(self,req,resp):
+        bookmarks = self.tappy.dataModel.getAllBookmarks()
+        result = json.dumps(bookmarks,indent=4)
+        resp.status = falcon.HTTP_200  # This is the default status        
+        resp.text = (result)
+        resp.content_type = falcon.MEDIA_JSON
+
+    def on_delete(self,req,resp):
+        self.tappy.dataModel.deleteAllBookmarks()
+        resp.status = falcon.HTTP_200  # This is the default status        
+        resp.text = ("{}")
+        resp.content_type = falcon.MEDIA_JSON
+
 class CardActionHandler():
     def __init__(self,tappy):
         self.tappy = tappy
@@ -128,6 +159,7 @@ class RestService:
         self.app.add_route("/api/card/last",LastCardHandler(tappy))
         self.app.add_route("/api/card/{id}",CardUpdateHandler(tappy))
         self.app.add_route("/api/card",CardHandler(tappy))
+        self.app.add_route("/api/bookmarks",BookmarkHandler(tappy))
         self.app.add_route("/api/speakers",DeviceHandler(tappy))
         self.app.add_route("/api/speakers/active",DeviceHandler(tappy),suffix="active")
     def stop(self):
