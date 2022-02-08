@@ -52,6 +52,7 @@ export default function Bookmarks({bookmarks}:BookmarksProps) {
     const removeBookmark = async (bookmark:CardData) => {
         message.loading({content: "Removing...",key:"deleting"});
         await deleteBookmark(bookmark);
+        setModifiedBookmarks(modifiedBookmarks.filter(v => v != bookmark));
         message.success({content: "Success", duration: 3,key:"deleting"});    
     }
 

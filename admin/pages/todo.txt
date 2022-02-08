@@ -28,14 +28,18 @@ DONE * import into library
 DONE * keyboard commands
 DONE * stain/finish box
 DONE * sand off pencil marks inside box
-* show which cards are linked
-* make bookmarks linkable
+DONE * make bookmarks linkable
 DONE * fix bookmark printing
-* make it possible to delete one or all bookmarks
-* move all react behavior to client side
+DONE * make it possible to delete all bookmarks
+DONE * make it possible to delete one  bookmark
+DONE * delete individual bookmarks
+DONE * long tap for shuffle
+* show which cards are linked
+* move all react behavior to client side (or move web server to box (i.e., move to zero 2))
 * fix useLayoutEffect bug
 * move more code to SWR
 * clean up import page.
+
 
 
 look for icons at https://react-icons.github.io/react-icons

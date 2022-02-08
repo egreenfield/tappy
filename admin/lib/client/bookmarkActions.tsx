@@ -32,7 +32,15 @@ export async function getBookmarks() {
     return responseData;
 }
 export async function deleteBookmark(bookmark:CardData) {
-  throw(new Error("Delete Bookmark unimplemented on the server"))
+  let response = await fetch(`/api/bookmarks/${bookmark.id}`,{
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: "DELETE"
+  })  
+  let responseData = await response.json()    
+  return responseData;
 }
 
 export async function deleteBookmarks() {

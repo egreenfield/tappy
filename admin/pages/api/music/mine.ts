@@ -13,7 +13,6 @@ type Data = {
   }
   
 export default async function handler(req:NextApiRequest, res:NextApiResponse<Data>) {
-    console.log("REQUEST IS",req.method)
     if (req.method == "GET") {
         const session = await getSession({ req })
         if(session && session.token.accessToken) {
