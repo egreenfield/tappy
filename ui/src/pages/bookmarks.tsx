@@ -7,7 +7,6 @@ import LinkDialog from '../components/LinkDialog';
 import { TiDelete} from 'react-icons/ti';
 import { BsPrinter } from 'react-icons/bs';
 import { AiOutlineDelete as DeleteIcon } from 'react-icons/ai';
-
 import { IconContext } from 'react-icons/lib';
 import { FaLink as LinkIcon } from 'react-icons/fa';
 import { deleteBookmark, deleteBookmarks } from '../lib/bookmarkActions';

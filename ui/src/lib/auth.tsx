@@ -9,9 +9,11 @@ const SCOPES = "user-read-email,playlist-read-private,user-library-read,user-fol
 export interface DefaultSession extends Record<string, unknown> {
     token:string;
 }
-
+export interface UseSessionOptions<R extends boolean> {
+    required: R
+    onUnauthenticated?: () => void
+}
 export interface Session extends Record<string, unknown>, DefaultSession {}
-
 export type SessionContextValue<R extends boolean = false> = R extends true
   ?
       | { data: Session; status: "authenticated" }
@@ -24,6 +26,7 @@ export type SessionContextValue<R extends boolean = false> = R extends true
 const SessionContext = React.createContext<SessionContextValue | undefined>(
   undefined
 )
+
 
 export interface SessionProviderProps {
     children: React.ReactNode
@@ -58,11 +61,6 @@ export function SessionProvider({children}: SessionProviderProps) {
     )
 }
 
-export interface UseSessionOptions<R extends boolean> {
-    required: R
-    /** Defaults to `signIn` */
-    onUnauthenticated?: () => void
-}
       
 export function useSession<R extends boolean>(options?: UseSessionOptions<R>) {
     // @ts-expect-error Satisfy TS if branch on line below
@@ -96,8 +94,7 @@ export function useSession<R extends boolean>(options?: UseSessionOptions<R>) {
 }
 
 export function signIn() {
-    window.location.href = `${AUTH_ENDPOINT}?show_dialog=true&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPES}`
-
+    window.location.href = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPES}`
 }
 export function signOut() {
     window.localStorage.removeItem("token")
