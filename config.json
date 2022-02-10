@@ -1,5 +1,7 @@
 {
-    "speaker": "Study",
+    "speakers": [
+        "Kitchen"
+    ],
     "status": "active",
     "sleepStart": 0,
     "sleepDuration": 0,
@@ -10,6 +12,7 @@
             "title": "Folksy Covers",
             "details": {
                 "printed": false,
+                "artist": "Various",
                 "type": "playlist"
             }
         },
@@ -19,6 +22,7 @@
             "title": "the kitchen sink",
             "details": {
                 "printed": false,
+                "artist": "Various",
                 "type": "playlist"
             }
         },
@@ -28,6 +32,7 @@
             "title": "Your Top Songs 2021",
             "details": {
                 "printed": false,
+                "artist": "Various",
                 "type": "playlist"
             }
         },
@@ -37,6 +42,7 @@
             "title": "Roadtrip",
             "details": {
                 "printed": false,
+                "artist": "Various",
                 "type": "playlist"
             }
         },
@@ -55,16 +61,8 @@
             "title": "The Truth",
             "details": {
                 "printed": false,
+                "artist": "Precious Bryant",
                 "type": "album"
-            }
-        },
-        "136_4_161_24": {
-            "url": "https://open.spotify.com/playlist/37i9dQZF1DXcDxnC0UqHJa",
-            "cover": "https://i.scdn.co/image/ab67706f00000003a2dba0d1f56bc9bdb28b5204",
-            "title": "Folksy Covers",
-            "details": {
-                "printed": false,
-                "type": "playlist"
             }
         },
         "136_4_131_154": {
@@ -73,9 +71,112 @@
             "title": "My Peloton Music by ElyESG",
             "details": {
                 "printed": false,
+                "artist": "Various",
+                "type": "playlist"
+            }
+        },
+        "136_4_13_85": {
+            "url": "https://open.spotify.com/album/17mrdCgqrWfqpJlaCNGCdF",
+            "title": "The Dream Of The Blue Turtles",
+            "cover": "https://i.scdn.co/image/ab67616d0000b273804c1bb88d714079e12d80e1",
+            "details": {
+                "printed": false,
+                "artist": "Sting",
+                "type": "album"
+            }
+        },
+        "136_4_161_24": {
+            "url": "https://open.spotify.com/playlist/37i9dQZF1DXcDxnC0UqHJa",
+            "title": "Folksy Covers",
+            "cover": "https://i.scdn.co/image/ab67706f00000003a2dba0d1f56bc9bdb28b5204",
+            "details": {
+                "printed": false,
+                "artist": "Playlist",
+                "type": "playlist"
+            }
+        },
+        "136_4_24_102": {
+            "url": "https://open.spotify.com/album/17A6Kj40fOQPLlrGqPtm7o",
+            "title": "Tears Of Joy",
+            "cover": "https://i.scdn.co/image/ab67616d0000b273054a47ce909400e0172dcd81",
+            "details": {
+                "printed": false,
+                "type": "album",
+                "artist": "Tuck & Patti"
+            }
+        },
+        "136_4_153_219": {
+            "url": "https://open.spotify.com/playlist/7dSpsUhsGTc6vovL9GSbTC",
+            "title": "The NuYorican Funk Experience (Original)",
+            "cover": "https://mosaic.scdn.co/640/ab67616d0000b2731d2d5d6aefe21b0df755856aab67616d0000b2736e7deb549afa628b0397ac40ab67616d0000b273e17486f52723a99a55ce0c65ab67616d0000b273fb9f87b818775d42fd160c1e",
+            "details": {
+                "printed": false,
+                "artist": "Playlist",
+                "type": "playlist"
+            }
+        },
+        "136_4_70_198": {
+            "url": "https://open.spotify.com/playlist/0BM8s7c8CP1joMqt3eMX5d",
+            "title": "Bay Area Funk",
+            "cover": "https://mosaic.scdn.co/640/ab67616d0000b27369c75ed120aca16fb267a083ab67616d0000b273b0d19194f5f12df33d91f116ab67616d0000b273b4bc2533c38fa12159af3ae2ab67616d0000b273ff76435b896e528f6f0d7daa",
+            "details": {
+                "printed": false,
+                "artist": "Playlist",
+                "type": "playlist"
+            }
+        },
+        "136_4_105_95": {
+            "url": "https://open.spotify.com/playlist/3eEuHiwSvRpb51dv1vMKKp",
+            "title": "Studio One Rockers",
+            "cover": "https://mosaic.scdn.co/640/ab67616d0000b2730cad116a6aa32b6c204859feab67616d0000b2732c00ab380cbfc424ae17c2fdab67616d0000b2736d9a548232a4daab47c0d18dab67616d0000b273cdc703517127be06ba8e3044",
+            "details": {
+                "printed": false,
+                "artist": "Playlist",
+                "type": "playlist"
+            }
+        },
+        "136_4_52_175": {
+            "url": "https://open.spotify.com/playlist/4TNuDLvJDlnz8JS1akmT9k",
+            "title": "Millennium Funk Party",
+            "cover": "https://i.scdn.co/image/ab67706c0000bebbcabdc1027bfc4ff785afd343",
+            "details": {
+                "printed": false,
+                "artist": "Playlist",
                 "type": "playlist"
             }
         }
     },
-    "lastCardRead": "136_4_161_24"
+    "lastCardRead": "136_4_52_175",
+    "bookmarks": {
+        "6224OswhSjksMzuczhYfEJ": {
+            "url": "https://open.spotify.com/playlist/6224OswhSjksMzuczhYfEJ",
+            "title": "The Nuyorcican Funk Experience Part 2",
+            "cover": "https://mosaic.scdn.co/640/ab67616d0000b2734e6b2430b4a5907b1abfa529ab67616d0000b2734ebc05932bea739ba9830797ab67616d0000b2736e7deb549afa628b0397ac40ab67616d0000b273e041cd4ee489e1aa3bc88ed7",
+            "details": {
+                "printed": false,
+                "artist": "Playlist",
+                "type": "playlist"
+            }
+        },
+        "3eEuHiwSvRpb51dv1vMKKp": {
+            "url": "https://open.spotify.com/playlist/3eEuHiwSvRpb51dv1vMKKp",
+            "title": "Studio One Rockers",
+            "cover": "https://mosaic.scdn.co/640/ab67616d0000b2730cad116a6aa32b6c204859feab67616d0000b2732c00ab380cbfc424ae17c2fdab67616d0000b2736d9a548232a4daab47c0d18dab67616d0000b273cdc703517127be06ba8e3044",
+            "details": {
+                "printed": false,
+                "artist": "Playlist",
+                "type": "playlist"
+            }
+        },
+        "2syfVoifYY8PLdYWtj56JM": {
+            "url": "https://open.spotify.com/playlist/2syfVoifYY8PLdYWtj56JM",
+            "title": "This Is Alice Music, Vol 1-12",
+            "cover": "https://mosaic.scdn.co/640/ab67616d0000b2734139c9208eeed67d2a211bebab67616d0000b27342fa77fe8680d28cd82c44edab67616d0000b2738b661bd40fbd8c6fbb26e3dfab67616d0000b273b556adc596e66e220f632154",
+            "details": {
+                "printed": false,
+                "artist": "Playlist",
+                "type": "playlist"
+            }
+        }
+    }
 }
