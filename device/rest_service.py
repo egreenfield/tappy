@@ -179,7 +179,7 @@ class CardUpdateHandler():
 
 class RestService:
     def __init__(self,tappy):
-        self.app = falcon.App()
+        self.app = falcon.App(cors_enable=True)
         self.tappy = tappy
         self.app.add_route("/api/card/link",CardActionHandler(tappy))
         self.app.add_route("/api/card/last",LastCardHandler(tappy))
