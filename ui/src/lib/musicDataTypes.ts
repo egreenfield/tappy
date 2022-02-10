@@ -11,14 +11,25 @@ export interface Image {
     url:string;
 }
 
-export interface Artist extends Entity {
-}
 
 export interface Album extends Entity {
+    artists?:Artist[];
+    tracks?:Track[];
 }
+
+export interface Artist extends Entity {
+    albums?:Album[];
+}
+
 export interface Track extends Entity {
     album:Album;
 }
 
+export interface PlaylistEntry {
+    track: Track;
+}
+  
 export interface Playlist extends Entity {
+    description:string;
+    tracks: {items:PlaylistEntry[]}
 }

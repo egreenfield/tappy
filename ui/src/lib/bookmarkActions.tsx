@@ -20,17 +20,6 @@ export async function bookmarkContent(id:string,content:Content) {
     return responseData;
 }
 
-export async function getBookmarks() {
-    let response = await fetch('/api/bookmarks',{
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        method: "GET"
-      })  
-    let responseData = await response.json()    
-    return responseData;
-}
 export async function deleteBookmark(bookmark:CardData) {
   let response = await fetch(`/api/bookmarks/${bookmark.id}`,{
     headers: {

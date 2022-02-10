@@ -3,7 +3,7 @@ import { ChangeEvent, KeyboardEvent, useState } from 'react'
 import { RiSearchLine as SearchIcon } from 'react-icons/ri';
 import {  signIn, useSession } from '../lib/auth';
 import { Artist,Album,Track, Playlist } from '../lib/musicDataTypes';
-import { searchContent } from '../lib/search';
+import { searchContent } from '../lib/musicService';
 
 export default function Search() {
 
