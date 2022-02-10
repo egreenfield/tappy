@@ -3,6 +3,9 @@ export interface Entity {
     name:string;
     id:string;
     images:Image[];
+    external_urls:{
+        spotify:string;
+    }
 }
 export interface Image {
     url:string;

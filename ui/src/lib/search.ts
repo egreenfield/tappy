@@ -1,5 +1,7 @@
 import { Album, Artist, Playlist, Track } from "./musicDataTypes";
-const SEARCH_ENDPOINT = "";
+import SpotifyApi from "spotify-web-api-node";
+
+const SEARCH_ENDPOINT =           'https://api.spotify.com/v1/search';
 
 export interface SearchResults {
     albums?:Album[];
@@ -8,9 +10,10 @@ export interface SearchResults {
     tracks?:Track[];
 }
 export async function searchContent(
+    token:string,
     searchText:string,
-    type="artist,album,track,playlist") :Promise<SearchResults> {
-        const access_token = "";
+    type="artist,album,track,playlist",
+    ) :Promise<SearchResults> {
 
     let url = new URL(SEARCH_ENDPOINT);
     let params = new URLSearchParams();
@@ -19,12 +22,14 @@ export async function searchContent(
     url.search = params.toString();
     console.log("searching",url.toString());
     
+//    let api = new SpotifyApi();
+    
     let result = { artists:[], albums: [], tracks:[],playlists:[]}
     
     try {
         let results = await fetch( url.toString(), {
         headers: {
-            Authorization: `Bearer ${access_token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": 'application/json'
         },      
         });

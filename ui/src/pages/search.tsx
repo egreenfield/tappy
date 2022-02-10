@@ -1,7 +1,7 @@
 import { Avatar, Button, Col, ConfigProvider, Input, List, Row, Tabs } from 'antd'
 import { ChangeEvent, KeyboardEvent, useState } from 'react'
 import { RiSearchLine as SearchIcon } from 'react-icons/ri';
-import { isSignedIn, signIn } from '../lib/auth';
+import {  signIn, useSession } from '../lib/auth';
 import { Artist,Album,Track, Playlist } from '../lib/musicDataTypes';
 import { searchContent } from '../lib/search';
 
@@ -14,8 +14,10 @@ export default function Search() {
   const [tab,setTab] = useState(["Artists"]);
   const [searchText,setSeachText] = useState("");
 
+  const {data:session} = useSession()
+
   const handleSearch = async () => {
-    let results = await searchContent(searchText)
+    let results = await searchContent(session!.token, searchText)
     setArtists(results.artists!);
     setAlbums(results.albums!);
     setTracks(results.tracks!);
@@ -31,7 +33,7 @@ export default function Search() {
   );
   
 
-  if (isSignedIn()) {
+  if (session) {
   return (
     <Row>
       <Col span={24}>
