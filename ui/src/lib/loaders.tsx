@@ -1,11 +1,12 @@
 //-----
 // Client
 
-import useSWR from "swr";
+import useSWR, { KeyedMutator } from "swr";
 import { Album, Artist, Playlist } from "./musicDataTypes";
-import { getArtistDetails, getPlaylistContent, getUsersMusic } from "./musicService";
+import { getAlbumDetails, getArtistDetails, getPlaylistContent, getUsersMusic } from "./musicService";
 import { getSpeakerData } from "./speakers";
 import { getBookmarks, getCards } from "./tappyBox";
+import { CardData } from "./tappyDataTypes";
   
 
   const fetcher = (url:string) => fetch(url).then((res) => res.json())
@@ -16,21 +17,19 @@ import { getBookmarks, getCards } from "./tappyBox";
   }
   
 
-  export async function getAlbumDetail(id:string) {
-      return await (await fetch("/api/music/album/"+id)).json()
-  }
-
-
-
-
-export function useCurrentCards() {
-  console.log("use current cards");
-  const {data:cards,error} = useSWR(["cards"],getCards,{revalidateOnMount:true});
+let cardsMutator:KeyedMutator<CardData[]>;
+  export function refreshCards() {cardsMutator && cardsMutator();}
+  export function useCurrentCards() {
+  const {data:cards,mutate,error} = useSWR(["cards"],getCards,{revalidateOnMount:true});
+  cardsMutator = mutate;
   return {cards,error};
 }
 
+let bookmarkMutate:KeyedMutator<CardData[]>;
+export function refreshBookmarks() {bookmarkMutate && bookmarkMutate();}
 export function useBookmarks() {
-  const {data:bookmarks,error} = useSWR(["bookmarks"],getBookmarks,{revalidateOnMount:true});
+  const {data:bookmarks,mutate,error} = useSWR(["bookmarks"],getBookmarks,{revalidateOnMount:true});
+  bookmarkMutate = mutate;
   return {bookmarks,error};
 }
 
@@ -50,6 +49,6 @@ export function useArtist(token:string|undefined,id:string|undefined) {
 }
 
 export function useAlbum(token:string|undefined,id:string|undefined) {
-  const {data:album,error} = useSWR<Album>([token,id],getAlbumDetail,{revalidateOnMount:true});
+  const {data:album,error} = useSWR<Album>([token,id],getAlbumDetails,{revalidateOnMount:true});
   return {album,error};
 }

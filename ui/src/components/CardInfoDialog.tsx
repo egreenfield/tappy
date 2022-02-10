@@ -14,7 +14,6 @@ export default function CardInfoDialog({action,onComplete}:CardInfoDialogProps) 
     }
     const loadDone = action && action.tappedCard;
     const record = action?.tappedCard;
-    console.log("record is",record);
     return (
     <>
         <Modal

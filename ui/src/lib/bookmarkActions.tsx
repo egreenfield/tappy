@@ -1,7 +1,9 @@
 import { message } from "antd";
+import { refreshBookmarks } from "./loaders";
 import { CardData, Content } from "./tappyDataTypes";
 
 export async function bookmarkContent(id:string,content:Content) {
+
   message.loading({content: "Bookmarking...",key:"bookmarking"});
   message.success({content: "Bookmarked", duration: 3,key:"bookmarking"});
   let body = JSON.stringify({
@@ -17,6 +19,9 @@ export async function bookmarkContent(id:string,content:Content) {
         },      
   })
   let responseData = await deviceResponse.json()    
+
+  refreshBookmarks();
+
   return responseData;
 }
 
@@ -29,6 +34,8 @@ export async function deleteBookmark(bookmark:CardData) {
           },      
     })
   let responseData = await response.json()    
+
+  refreshBookmarks();
   return responseData;
 }
 
@@ -42,5 +49,7 @@ export async function deleteBookmarks() {
         },      
   })
   let responseData = await response.json()    
+
+  refreshBookmarks();
   return responseData;
 }

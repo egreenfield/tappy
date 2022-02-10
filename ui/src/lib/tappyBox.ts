@@ -10,7 +10,6 @@ export async function getCards(_:String) {
     method: "GET"
     });
     let cardMap = await response.json();
-    console.log("GC: got ",cardMap);
     return Object.keys(cardMap).map<CardData>(id => ({id, content:cardMap[id]}))
 }
 

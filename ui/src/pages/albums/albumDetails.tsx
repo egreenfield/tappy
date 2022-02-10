@@ -14,15 +14,6 @@ import { CardAction, linkCardToContent } from '../../lib/cardActions';
 import { Album, Track } from '../../lib/musicDataTypes';
 
 
-// // This gets called on every request
-// export async function getServerSideProps(ctx) {
-//   let session = await getSession(ctx) 
-//   let detail:AlbumData = undefined
-//   if(session && session.token.accessToken) {
-//     detail = await getAlbumDetail(session.token.accessToken,ctx.params.id);
-//   }
-//   return { props: detail || {} }
-// }
 
 export default function AlbumDetails() {
   let { id } = useParams();

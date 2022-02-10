@@ -1,5 +1,9 @@
+import { refreshCards } from "./loaders";
 import { CardData, Content } from "./tappyDataTypes";
 
+//----------------------------------------------------------------------------------------------------
+// Types
+//----------------------------------------------------------------------------------------------------
 
 export interface CardAction {
     complete:boolean;
@@ -14,27 +18,28 @@ export interface CardAction {
     reject?:(a:CardAction)=>void
 }
 
-//----------------------------------------------------------------
-// Client Side
+//----------------------------------------------------------------------------------------------------
+// Helpers
+//----------------------------------------------------------------------------------------------------
 
-const handleTimeout = async (action:CardAction) => {
+async function handleTimeout(action:CardAction) {
     completeAction(action,true);
 }
 
-const checkForTap = async (action:CardAction) => {
-    let response = await fetch('/api/card/last');
+async function checkForTap(action:CardAction) {
+    let response = await fetch("http://10.0.0.99:8000/api/card/last",{
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    });
     let newTapData = await response.json()
     if (newTapData.count > action.tapCount) {
       completeAction(action,false,newTapData);
     }
   }    
 
-export function cancelCardAction(action:CardAction) {
-    if(action.complete == false)
-        completeAction(action,true);
-}
-
-const completeAction = (action:CardAction,canceled:boolean,newCardData:CardData|undefined = undefined) => {
+function completeAction(action:CardAction,canceled:boolean,newCardData:CardData|undefined = undefined) {
 
     action.complete = true;
     action.tappedCard = newCardData;
@@ -45,20 +50,21 @@ const completeAction = (action:CardAction,canceled:boolean,newCardData:CardData|
     if(action.checkID != undefined) {
         clearInterval(action.checkID);
     }      
-
     if(canceled) {
-        let body = JSON.stringify({
-            type:"cancel"
-        });
-        fetch('/api/card/link',{
+        fetch("http://10.0.0.99:8000/api/card/link",{
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             method: "POST",
-            body
+            body:JSON.stringify({
+                type:"cancel"
+            })
         })        
     }
+
+    refreshCards();
+
     if(canceled) {
         action.reject!(action);
     } else {
@@ -66,8 +72,15 @@ const completeAction = (action:CardAction,canceled:boolean,newCardData:CardData|
     }
 }
 
+export function cancelCardAction(action:CardAction) {
+    if(action.complete == false)
+        completeAction(action,true);
+}
+
+
+
 export async function unlinkCard(card:CardData) {
-    return fetch('/api/card/'+card.id,{
+    return fetch("http://10.0.0.99:8000/api/card/"+card.id,{
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -99,7 +112,7 @@ export function startCardAction(type:string,content:any = {},timeout:number|unde
 
 
     const execute = async (resolve:(a:CardAction)=>void,reject:(a:CardAction)=>void) => {
-        let response = await fetch('/api/card/link',{
+        let response = await fetch("http://10.0.0.99:8000/api/card/link",{
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
