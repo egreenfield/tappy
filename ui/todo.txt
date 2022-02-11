@@ -1,3 +1,5 @@
-* figure out how to invalidat SWR (i.e., when a bookmark is added, or a card)
+* fix not redirecting to index.html
+    OR fix cherrypy blocking remote connections not on 127.0.0.1
+DONE * figure out how to invalidat SWR (i.e., when a bookmark is added, or a card)
 * fix login/logout when token expires.
 * client side printing!
