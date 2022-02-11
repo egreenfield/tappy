@@ -41,6 +41,7 @@ export function SessionProvider({children}: SessionProviderProps) {
         if (!token && hash) {
             token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token"))!.split("=")[1]
     
+            console.log("Getting token, hash is ",hash)
             window.location.hash = ""
             window.localStorage.setItem("token", token);
         }    

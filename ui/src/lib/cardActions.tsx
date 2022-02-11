@@ -1,3 +1,4 @@
+import { fetchJ, headers } from "./common";
 import { refreshCards } from "./loaders";
 import { CardData, Content } from "./tappyDataTypes";
 
@@ -29,20 +30,15 @@ async function handleTimeout(action:CardAction) {
 }
 
 async function checkForTap(action:CardAction) {
-    let response = await fetch(`${CARD_ENDPOINT}/last`,{
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
+    let newTapData = await fetchJ(`${CARD_ENDPOINT}/last`,{
+        headers,
     });
-    let newTapData = await response.json()
     if (newTapData.count > action.tapCount) {
       completeAction(action,false,newTapData);
     }
   }    
 
 function completeAction(action:CardAction,canceled:boolean,newCardData:CardData|undefined = undefined) {
-
     action.complete = true;
     action.tappedCard = newCardData;
     action.cancelled = canceled;
@@ -54,10 +50,7 @@ function completeAction(action:CardAction,canceled:boolean,newCardData:CardData|
     }      
     if(canceled) {
         fetch(`${CARD_ENDPOINT}/link`,{
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
+            headers,
             method: "POST",
             body:JSON.stringify({
                 type:"cancel"
@@ -78,16 +71,10 @@ export function cancelCardAction(action:CardAction) {
     if(action.complete == false)
         completeAction(action,true);
 }
-
-
-
 export async function unlinkCard(card:CardData) {
     return fetch(`${CARD_ENDPOINT}/${card.id}`,{
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
         method: "DELETE",
+        headers,
     })    
 }
 export function linkCardToContent(contentInfo:Content):CardAction {
@@ -106,33 +93,25 @@ export function startCardAction(type:string,content:any = {},timeout:number|unde
         cancelled:false 
     };
 
-    let body = JSON.stringify({
-        type,
-        content,
-        timeout
-    });
 
 
     const execute = async (resolve:(a:CardAction)=>void,reject:(a:CardAction)=>void) => {
-        let response = await fetch(`${CARD_ENDPOINT}/link`,{
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
+        let responseData = await fetchJ(`${CARD_ENDPOINT}/link`,{
             method: "POST",
-            body
-          })  
-          
-        let responseData = await response.json()    
+            headers,
+            body: JSON.stringify({
+                type,
+                content,
+                timeout
+            })
+          })            
         action.tapCount = responseData.count;      
         action.timeoutID = setTimeout(()=>{handleTimeout(action)},30000);
         action.checkID = setInterval(() => {checkForTap(action)},1000);
         action.reject = reject;
         action.resolve = resolve;
     }
-
     action.promise = new Promise(execute);
-
     return action;
 }
 
