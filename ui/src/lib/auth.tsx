@@ -1,5 +1,7 @@
+import { parse } from "path/posix";
 import React, { useEffect, useState } from "react";
 
+const TOKEN_LOCAL_STORAGE_NAME = "token";
 const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID
 const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
 const RESPONSE_TYPE = "token"
@@ -31,23 +33,61 @@ export interface SessionProviderProps {
     children: React.ReactNode
 }
 
+interface TokenStorage {
+    token:string;
+    tokenExpiration:string;
+}
+
 export function SessionProvider({children}: SessionProviderProps) {
     const [session,setSession] = useState<Session | undefined>(undefined);
 
     useEffect(() => {
         const hash = window.location.hash
-        let token = window.localStorage.getItem("token")
+        let tokenStorage = window.localStorage.getItem(TOKEN_LOCAL_STORAGE_NAME)
+        let tokenData:TokenStorage|undefined = undefined;
+        
+        if(tokenStorage) {
+            try {
+                tokenData = tokenStorage && JSON.parse(tokenStorage);
+            } catch(e) {
+                window.localStorage.removeItem(TOKEN_LOCAL_STORAGE_NAME);
+            }
+        }
+        let token;
+        let expiration:Date|undefined = undefined;
+        let now = new Date();
+
+        if (tokenData) {
+            token = tokenData.token;
+            expiration = new Date(tokenData.tokenExpiration);
+            if(expiration < now) {
+                token = undefined;
+            }
+        }
     
         if (!token && hash) {
-            token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token"))!.split("=")[1]
-    
-            console.log("Getting token, hash is ",hash)
-            window.location.hash = ""
-            window.localStorage.setItem("token", token);
+            let params = new URLSearchParams(hash.substring(1));
+            token = params.get("access_token");
+            if(token) {
+                expiration = new Date()
+                expiration.setTime(now.getTime() + parseInt(params.get("expires_in") || "100000")*1000);                
+                window.location.hash = ""
+                tokenData = {
+                    token,
+                    tokenExpiration:expiration.toString()
+                }
+                window.localStorage.setItem(TOKEN_LOCAL_STORAGE_NAME JSON.stringify(tokenData));
+            }
         }    
-        if(token)
+        if(token && expiration) {
             setSession({token})
+            let timeout = setTimeout(()=> {
+                setSession(undefined);
+            },(expiration.getTime()-now.getTime()))
+            return signOut;
+        }
     }, [])  
+
     const value: any = React.useMemo(
         () => ({
           data: session,
@@ -100,7 +140,7 @@ export function signIn() {
     window.location.href = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${redirectUrl}&response_type=${RESPONSE_TYPE}&scope=${SCOPES}`
 }
 export function signOut() {
-    window.localStorage.removeItem("token")
+    window.localStorage.removeItem(TOKEN_LOCAL_STORAGE_NAME)
     window.location.reload()
 }
 
