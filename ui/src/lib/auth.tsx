@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID
-const REDIRECT_URI = "http://localhost:3000"
 const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
 const RESPONSE_TYPE = "token"
 const SCOPES = "user-read-email,playlist-read-private,user-library-read,user-follow-read,user-library-modify,user-follow-modify"
@@ -94,10 +93,14 @@ export function useSession<R extends boolean>(options?: UseSessionOptions<R>) {
 }
 
 export function signIn() {
-    window.location.href = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPES}`
+    let loc = window.location;
+    let redirectUrl = `${loc.protocol}//${loc.host}`
+    console.log(`redirect: ${redirectUrl}`)
+    window.location.href = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${redirectUrl}&response_type=${RESPONSE_TYPE}&scope=${SCOPES}`
 }
 export function signOut() {
     window.localStorage.removeItem("token")
+    window.location.reload()
 }
 
 
