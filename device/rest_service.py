@@ -196,7 +196,8 @@ class RestService:
         app.add_route("/api/speakers/active",DeviceHandler(tappy),suffix="active")
 
 
-        buildPath = "/home/pi/tappy/ui/build/" #os.path.ab os.path.join(os.path.dirname(__file__), '../ui/build')
+        #buildPath = "/home/pi/dev/tappy/ui/build/" #os.path.ab os.path.join(os.path.dirname(__file__), '../ui/build')
+        buildPath = os.path.abspath("../ui/build")
         print(f"buildPath is {buildPath}")
         contentServer = SharedDataMiddleware(app,exports={
             '/': buildPath
