@@ -13,6 +13,7 @@ import { useCurrentCards } from '../lib/loaders';
 import { CardData } from '../lib/tappyDataTypes';
 import { sendCardPrintJob } from '../lib/print';
 import { filterByList } from '../lib/utils';
+import PrintPanel from '../components/PrintPanel';
 
 
 
@@ -21,6 +22,8 @@ export default function Cards() {
   const [modifiedCards,setModifiedCards] = useState<CardData[]>([]);
   const [playlistRows,setPlaylistRows] = useState<string[]>([]);
   const [albumRows,setAlbumRows] = useState<string[]>([]);
+  const [showPrint,setShowPrint] = useState<boolean>(false);
+  const [cardsToPrint,setCardsToPrint] = useState<CardData[]|undefined>(undefined);
 
   let {cards,error} = useCurrentCards();
 
@@ -40,7 +43,8 @@ export default function Cards() {
   const printCards = ()=> {
     console.log("printing",playlistRows,albumRows);
     let toPrint = playlistRows.concat(albumRows);
-    sendCardPrintJob(filterByList(modifiedCards,"id",toPrint as string[]),"card");
+    setShowPrint(!showPrint);
+    setCardsToPrint(filterByList(modifiedCards,"id",toPrint as string[]));
 
   }
 
@@ -106,6 +110,7 @@ export default function Cards() {
             </h1>
           </Col>
       </Row>
+      <PrintPanel active={showPrint} cardsToPrint={cardsToPrint}/>
       <section>
       <Row>
         <Col span={11}>
