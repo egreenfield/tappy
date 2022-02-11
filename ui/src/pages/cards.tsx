@@ -1,7 +1,7 @@
 import {  Space, Button, Popconfirm, message, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useEffect, useState } from 'react';
-import { CardAction, identifyCardContent, sendCardPrintJob, unlinkCard } from '../lib/cardActions';
+import { CardAction, identifyCardContent, unlinkCard } from '../lib/cardActions';
 import { TiDelete} from 'react-icons/ti';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { BsPrinter } from 'react-icons/bs';
@@ -11,6 +11,7 @@ import TopTable from '../components/TopTable';
 import CardInfoDialog from '../components/CardInfoDialog';
 import { useCurrentCards } from '../lib/loaders';
 import { CardData } from '../lib/tappyDataTypes';
+import { sendCardPrintJob } from '../lib/print';
 
 
 

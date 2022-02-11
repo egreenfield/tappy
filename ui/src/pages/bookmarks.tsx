@@ -2,7 +2,7 @@ import Layout from '../components/layout'
 import { Table, Space, Button, Modal, Tooltip, Popconfirm, message, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { useEffect, useState } from 'react';
-import { CardAction, linkCardToContent, sendCardPrintJob } from '../lib/cardActions';
+import { CardAction, linkCardToContent } from '../lib/cardActions';
 import LinkDialog from '../components/LinkDialog';
 import { TiDelete} from 'react-icons/ti';
 import { BsPrinter } from 'react-icons/bs';
@@ -12,6 +12,7 @@ import { FaLink as LinkIcon } from 'react-icons/fa';
 import { deleteBookmark, deleteBookmarks } from '../lib/bookmarkActions';
 import { CardData, Content } from '../lib/tappyDataTypes';
 import { useBookmarks } from '../lib/loaders';
+import { sendCardPrintJob } from '../lib/print';
 
 
 

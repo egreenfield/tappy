@@ -76,7 +76,7 @@ export function SessionProvider({children}: SessionProviderProps) {
                     token,
                     tokenExpiration:expiration.toString()
                 }
-                window.localStorage.setItem(TOKEN_LOCAL_STORAGE_NAME JSON.stringify(tokenData));
+                window.localStorage.setItem(TOKEN_LOCAL_STORAGE_NAME, JSON.stringify(tokenData));
             }
         }    
         if(token && expiration) {
