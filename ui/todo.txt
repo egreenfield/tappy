@@ -3,3 +3,12 @@
 DONE * figure out how to invalidat SWR (i.e., when a bookmark is added, or a card)
 * fix login/logout when token expires.
 * client side printing!
+
+
+
+Install:
+
+https://superuser.com/questions/270911/run-rsync-with-root-permission-on-remote-machine/630046
+- install lighttpd
+- setup lighttpd.conf
+

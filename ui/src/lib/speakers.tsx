@@ -15,7 +15,7 @@ export async function setActiveSpeakers(speakers:string[]) {
 }
 
 export async function getSpeakerData(_:String) {
-  let deviceResponse = await fetch(`${SPEAKER_ENDPOINT}/speakers`,{
+  let deviceResponse = await fetch(`${SPEAKER_ENDPOINT}`,{
       method: 'GET',
       headers: {
           'Accept': 'application/json',
