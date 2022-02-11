@@ -13,6 +13,7 @@ import { deleteBookmark, deleteBookmarks } from '../lib/bookmarkActions';
 import { CardData, Content } from '../lib/tappyDataTypes';
 import { useBookmarks } from '../lib/loaders';
 import { sendCardPrintJob } from '../lib/print';
+import { filterByList } from '../lib/utils';
 
 
 
@@ -33,7 +34,7 @@ export default function Bookmarks() {
   const printBookmarks = ()=> {
     console.log("printing",playlistRows,albumRows);
     let toPrint = playlistRows.concat(albumRows);
-    sendCardPrintJob(toPrint as string[],"bookmark");
+    sendCardPrintJob(filterByList(modifiedBookmarks,"id",toPrint as string[]),"bookmark");
   }
   const deleteAllBookmarks = async () => {
     message.loading({content: "Removing...",key:"deleting"});

@@ -12,6 +12,7 @@ import CardInfoDialog from '../components/CardInfoDialog';
 import { useCurrentCards } from '../lib/loaders';
 import { CardData } from '../lib/tappyDataTypes';
 import { sendCardPrintJob } from '../lib/print';
+import { filterByList } from '../lib/utils';
 
 
 
@@ -39,7 +40,7 @@ export default function Cards() {
   const printCards = ()=> {
     console.log("printing",playlistRows,albumRows);
     let toPrint = playlistRows.concat(albumRows);
-    sendCardPrintJob(toPrint,"card");
+    sendCardPrintJob(filterByList(modifiedCards,"id",toPrint as string[]),"card");
 
   }
 
