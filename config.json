@@ -1,6 +1,7 @@
 {
     "speakers": [
-        "Kitchen"
+        "Kitchen",
+        "Study"
     ],
     "status": "active",
     "sleepStart": 0,
