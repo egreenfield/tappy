@@ -14,6 +14,7 @@ import { CardData, Content } from '../lib/tappyDataTypes';
 import { useBookmarks } from '../lib/loaders';
 import { sendCardPrintJob } from '../lib/print';
 import { filterByList } from '../lib/utils';
+import PrintPanel from '../components/PrintPanel';
 
 
 
@@ -21,6 +22,9 @@ export default function Bookmarks() {
   const [modifiedBookmarks,setModifiedBookmarks] = useState<CardData[]>([]);
   const [playlistRows,setPlaylistRows] = useState<React.Key[]>([]);
   const [albumRows,setAlbumRows] = useState<React.Key[]>([]);
+  const [showPrint,setShowPrint] = useState<boolean>(false);
+  const [cardsToPrint,setCardsToPrint] = useState<CardData[]|undefined>(undefined);
+
   const [linkAction,setLinkAction] = useState<CardAction|undefined>(undefined);
 
   let {bookmarks,error} = useBookmarks();
@@ -34,7 +38,9 @@ export default function Bookmarks() {
   const printBookmarks = ()=> {
     console.log("printing",playlistRows,albumRows);
     let toPrint = playlistRows.concat(albumRows);
-    sendCardPrintJob(filterByList(modifiedBookmarks,"id",toPrint as string[]),"bookmark");
+    //sendCardPrintJob(filterByList(modifiedBookmarks,"id",toPrint as string[]),"bookmark");
+    setShowPrint(!showPrint);
+    setCardsToPrint(filterByList(modifiedBookmarks,"id",toPrint as string[]));
   }
   const deleteAllBookmarks = async () => {
     message.loading({content: "Removing...",key:"deleting"});
@@ -95,7 +101,7 @@ export default function Bookmarks() {
   
     return (
     <>
-      <Row>
+      <Row justify="start">
           <Col span={24}>
           <h1>Bookmarks
             <Button 
@@ -116,6 +122,7 @@ export default function Bookmarks() {
             </h1>
           </Col>
       </Row>
+      <PrintPanel active={showPrint} cardsToPrint={cardsToPrint}/>
       <Row>
         <Col span={11}>
         <h1>Playlists </h1>
