@@ -1,8 +1,8 @@
 
 import { Modal } from 'antd';
-import PDFDocument from 'pdfkit';
 import { CardData } from './tappyDataTypes';
-
+/*
+import PDFDocument from 'pdfkit';
 
 const mmToPt = (mm:number) => mm*2.83465;
 const cardWidth = mmToPt(54.5);
@@ -147,7 +147,7 @@ async function generatePDF(cardsToPrint:CardData[]) {
 
   
 
-
+*/
 export async function sendCardPrintJob(cardsToPrint:CardData[],type:string) {
 
     try {
@@ -155,7 +155,7 @@ export async function sendCardPrintJob(cardsToPrint:CardData[],type:string) {
             content: "hello, world",
             onOk: ()=> {destroy()}
         })
-        let pdf = await generatePDF(cardsToPrint)
+//        let pdf = await generatePDF(cardsToPrint)
     } catch(e) {
     }
 
