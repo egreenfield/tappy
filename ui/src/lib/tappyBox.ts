@@ -1,8 +1,11 @@
+import { BOOKMARK_ENDPOINT } from "./bookmarkActions";
+import { CARD_ENDPOINT } from "./cardActions";
 import { CardData } from "./tappyDataTypes";
+
 
 export async function getCards(_:String) {
     console.log("get cards")
-    let response = await fetch('http://10.0.0.99:8000/api/card',{
+    let response = await fetch(CARD_ENDPOINT,{
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -15,7 +18,7 @@ export async function getCards(_:String) {
 
 
 export async function getBookmarks(_:String) {
-    let response = await fetch('http://10.0.0.99:8000/api/bookmarks',{
+    let response = await fetch(BOOKMARK_ENDPOINT,{
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'

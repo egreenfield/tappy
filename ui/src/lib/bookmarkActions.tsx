@@ -2,6 +2,8 @@ import { message } from "antd";
 import { refreshBookmarks } from "./loaders";
 import { CardData, Content } from "./tappyDataTypes";
 
+export const BOOKMARK_ENDPOINT=`http://${process.env.REACT_APP_APPSERVER_DOMAIN}/api/bookmarks`
+
 export async function bookmarkContent(id:string,content:Content) {
 
   message.loading({content: "Bookmarking...",key:"bookmarking"});
@@ -10,7 +12,7 @@ export async function bookmarkContent(id:string,content:Content) {
         id,
         content,
     });
-    let deviceResponse = await fetch("http://10.0.0.99:8000/api/bookmarks",{
+    let deviceResponse = await fetch(BOOKMARK_ENDPOINT,{
       method: 'POST',
       body,
       headers: {
@@ -26,7 +28,7 @@ export async function bookmarkContent(id:string,content:Content) {
 }
 
 export async function deleteBookmark(bookmark:CardData) {
-    let response = await fetch(`http://10.0.0.99:8000/api/bookmarks/${bookmark.id}`,{
+    let response = await fetch(`${BOOKMARK_ENDPOINT}/${bookmark.id}`,{
         method: 'DELETE',
         headers: {
             'Accept': 'application/json',
@@ -40,7 +42,7 @@ export async function deleteBookmark(bookmark:CardData) {
 }
 
 export async function deleteBookmarks() {
-  let response = await fetch("http://10.0.0.99:8000/api/bookmarks",{
+  let response = await fetch(BOOKMARK_ENDPOINT,{
     method: 'DELETE',
     body: "",
     headers: {

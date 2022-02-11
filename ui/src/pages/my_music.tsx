@@ -1,7 +1,6 @@
-import Layout from '../components/layout'
-import { Table, Space, Button, Tooltip, Tabs, Row, Col, Divider } from 'antd';
+import { Table, Space, Button, Tooltip, Tabs, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CardAction, linkCardToContent } from '../lib/cardActions';
 import LinkDialog from '../components/LinkDialog';
 import { FaLink as LinkIcon, FaExternalLinkAlt as Navigate } from 'react-icons/fa';
@@ -65,13 +64,13 @@ export default function MyMusic() {
         key: 'key',
         align: 'right',
         width: 60,
-        render: (text,record) => <img src={record.images?.length? record.images[0].url:""} width="50" />
+        render: (_,record) => <img alt="" src={record.images?.length? record.images[0].url:""} width="50" />
       },
       {
         title: '',
         width: 60,
         key: 'id',
-        render: (text, record) => (
+        render: (_, record) => (
           <IconContext.Provider value={{ color: "#7777FF" }}>
             <Space size="middle">
               <Tooltip title="Open in Spotify">

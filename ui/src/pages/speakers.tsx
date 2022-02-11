@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import TopTable from '../components/TopTable';
 import { useSpeakers } from '../lib/loaders';
 import { setActiveSpeakers } from '../lib/speakers';
-import { CardData } from '../lib/tappyDataTypes';
 
 
 export default function Speakers() {
@@ -11,7 +10,7 @@ export default function Speakers() {
   const [selected,setSelected] = useState<string[]>([]);
   const [speakers,setSpeakers] = useState<string[]>([]);
 
-  const {speakerData,error} = useSpeakers();
+  const {speakerData} = useSpeakers();
 
   useEffect(()=> {
     if(speakerData) {

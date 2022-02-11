@@ -1,6 +1,8 @@
 import { refreshCards } from "./loaders";
 import { CardData, Content } from "./tappyDataTypes";
 
+export const CARD_ENDPOINT=`http://${process.env.REACT_APP_APPSERVER_DOMAIN}/api/card`
+
 //----------------------------------------------------------------------------------------------------
 // Types
 //----------------------------------------------------------------------------------------------------
@@ -27,7 +29,7 @@ async function handleTimeout(action:CardAction) {
 }
 
 async function checkForTap(action:CardAction) {
-    let response = await fetch("http://10.0.0.99:8000/api/card/last",{
+    let response = await fetch(`${CARD_ENDPOINT}/last`,{
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -51,7 +53,7 @@ function completeAction(action:CardAction,canceled:boolean,newCardData:CardData|
         clearInterval(action.checkID);
     }      
     if(canceled) {
-        fetch("http://10.0.0.99:8000/api/card/link",{
+        fetch(`${CARD_ENDPOINT}/link`,{
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -80,7 +82,7 @@ export function cancelCardAction(action:CardAction) {
 
 
 export async function unlinkCard(card:CardData) {
-    return fetch("http://10.0.0.99:8000/api/card/"+card.id,{
+    return fetch(`${CARD_ENDPOINT}/${card.id}`,{
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -112,7 +114,7 @@ export function startCardAction(type:string,content:any = {},timeout:number|unde
 
 
     const execute = async (resolve:(a:CardAction)=>void,reject:(a:CardAction)=>void) => {
-        let response = await fetch("http://10.0.0.99:8000/api/card/link",{
+        let response = await fetch(`${CARD_ENDPOINT}/link`,{
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
