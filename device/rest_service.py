@@ -5,8 +5,6 @@ import json
 from threading import Thread
 from werkzeug.serving import run_simple
 from werkzeug.serving import make_server
-from werkzeug.middleware.shared_data import SharedDataMiddleware
-from werkzeug.exceptions import NotFound
 import os
 
 from card_reader import ReadConfig
@@ -199,17 +197,14 @@ class RestService:
         #buildPath = "/home/pi/dev/tappy/ui/build/" #os.path.ab os.path.join(os.path.dirname(__file__), '../ui/build')
         buildPath = os.path.abspath("../ui/build")
         print(f"buildPath is {buildPath}")
-        contentServer = SharedDataMiddleware(app,exports={
-            '/': buildPath
-        })
 
-        self.app = contentServer
+        self.app = app#contentServer
 
     def stop(self):
         self.server.shutdown()
         self.thread.join()
 
     def start(self):
-        self.server = make_server('', 80, self.app, threaded=True)
+        self.server = make_server('', 8000, self.app, threaded=True)
         self.thread = Thread(target=lambda : self.server.serve_forever())
         self.thread.start()
