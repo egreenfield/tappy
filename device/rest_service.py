@@ -5,6 +5,9 @@ import json
 from threading import Thread
 from werkzeug.serving import run_simple
 from werkzeug.serving import make_server
+from werkzeug.middleware.shared_data import SharedDataMiddleware
+from werkzeug.exceptions import NotFound
+import os
 
 from card_reader import ReadConfig
 
@@ -179,21 +182,33 @@ class CardUpdateHandler():
 
 class RestService:
     def __init__(self,tappy):
-        self.app = falcon.App(cors_enable=True)
+
+
+        app = falcon.App(cors_enable=True)
         self.tappy = tappy
-        self.app.add_route("/api/card/link",CardActionHandler(tappy))
-        self.app.add_route("/api/card/last",LastCardHandler(tappy))
-        self.app.add_route("/api/card/{id}",CardUpdateHandler(tappy))
-        self.app.add_route("/api/card",CardHandler(tappy))
-        self.app.add_route("/api/bookmarks",BookmarkHandler(tappy))
-        self.app.add_route("/api/bookmarks/{id}",BookmarkHandler(tappy),suffix="single")
-        self.app.add_route("/api/speakers",DeviceHandler(tappy))
-        self.app.add_route("/api/speakers/active",DeviceHandler(tappy),suffix="active")
+        app.add_route("/api/card/link",CardActionHandler(tappy))
+        app.add_route("/api/card/last",LastCardHandler(tappy))
+        app.add_route("/api/card/{id}",CardUpdateHandler(tappy))
+        app.add_route("/api/card",CardHandler(tappy))
+        app.add_route("/api/bookmarks",BookmarkHandler(tappy))
+        app.add_route("/api/bookmarks/{id}",BookmarkHandler(tappy),suffix="single")
+        app.add_route("/api/speakers",DeviceHandler(tappy))
+        app.add_route("/api/speakers/active",DeviceHandler(tappy),suffix="active")
+
+
+        buildPath = "/home/pi/tappy/ui/build/" #os.path.ab os.path.join(os.path.dirname(__file__), '../ui/build')
+        print(f"buildPath is {buildPath}")
+        contentServer = SharedDataMiddleware(app,exports={
+            '/': buildPath
+        })
+
+        self.app = contentServer
+
     def stop(self):
         self.server.shutdown()
         self.thread.join()
 
     def start(self):
-        self.server = make_server('', 8000, self.app, threaded=True)
+        self.server = make_server('', 80, self.app, threaded=True)
         self.thread = Thread(target=lambda : self.server.serve_forever())
         self.thread.start()
