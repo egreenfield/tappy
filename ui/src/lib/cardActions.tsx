@@ -2,7 +2,7 @@ import { fetchJ, headers } from "./common";
 import { refreshCards } from "./loaders";
 import { CardData, Content } from "./tappyDataTypes";
 
-export const CARD_ENDPOINT=`http://${process.env.REACT_APP_APPSERVER_DOMAIN}/api/card`
+export const CARD_ENDPOINT=`${process.env.REACT_APP_APPSERVER_PREFIX}/api/card`
 
 //----------------------------------------------------------------------------------------------------
 // Types

@@ -3,7 +3,7 @@ import { refreshBookmarks } from "./loaders";
 import { CardData, Content } from "./tappyDataTypes";
 import { fetchJ, headers } from "./common";
 
-export const BOOKMARK_ENDPOINT=`http://${process.env.REACT_APP_APPSERVER_DOMAIN}/api/bookmarks`
+export const BOOKMARK_ENDPOINT=`${process.env.REACT_APP_APPSERVER_PREFIX}/api/bookmarks`
 
 export async function bookmarkContent(id:string,content:Content) {
 

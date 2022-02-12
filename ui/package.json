@@ -31,7 +31,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "rsync -av build/ pi@musicbox.local:/var/www/html --rsync-path=\"sudo rsync\"" 
+    "deploy": "rsync -av build/ pi@10.0.0.99:/var/www/html --rsync-path=\"sudo rsync\"" 
   },
   "eslintConfig": {
     "extends": [
