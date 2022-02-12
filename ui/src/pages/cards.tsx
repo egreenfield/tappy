@@ -11,7 +11,6 @@ import TopTable from '../components/TopTable';
 import CardInfoDialog from '../components/CardInfoDialog';
 import { useCurrentCards } from '../lib/loaders';
 import { CardData } from '../lib/tappyDataTypes';
-import { sendCardPrintJob } from '../lib/print';
 import { filterByList } from '../lib/utils';
 import PrintPanel from '../components/PrintPanel';
 
@@ -41,7 +40,6 @@ export default function Cards() {
     setModifiedCards(modifiedCards.filter(v => v != card));
   }
   const printCards = ()=> {
-    console.log("printing",playlistRows,albumRows);
     let toPrint = playlistRows.concat(albumRows);
     setShowPrint(!showPrint);
     setCardsToPrint(filterByList(modifiedCards,"id",toPrint as string[]));
@@ -50,7 +48,6 @@ export default function Cards() {
 
   const identifyCard = async () => {
     let action = identifyCardContent();
-    console.log("SETTING ACTION:", action);
     setCardAction(action);
     action.promise!.then(()=> {
       setCardAction({...action});

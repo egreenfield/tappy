@@ -1,4 +1,3 @@
-import Layout from '../components/layout'
 import { Table, Space, Button, Modal, Tooltip, Popconfirm, message, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { useEffect, useState } from 'react';
@@ -12,7 +11,6 @@ import { FaLink as LinkIcon } from 'react-icons/fa';
 import { deleteBookmark, deleteBookmarks } from '../lib/bookmarkActions';
 import { CardData, Content } from '../lib/tappyDataTypes';
 import { useBookmarks } from '../lib/loaders';
-import { sendCardPrintJob } from '../lib/print';
 import { filterByList } from '../lib/utils';
 import PrintPanel from '../components/PrintPanel';
 
@@ -36,9 +34,7 @@ export default function Bookmarks() {
   },[bookmarks])
 
   const printBookmarks = ()=> {
-    console.log("printing",playlistRows,albumRows);
     let toPrint = playlistRows.concat(albumRows);
-    //sendCardPrintJob(filterByList(modifiedBookmarks,"id",toPrint as string[]),"bookmark");
     setShowPrint(!showPrint);
     setCardsToPrint(filterByList(modifiedBookmarks,"id",toPrint as string[]));
   }

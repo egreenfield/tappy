@@ -12,18 +12,28 @@ const pageHeight = mmToPt(279.4);
 const hMargin = mmToPt(10);
 const vMargin = mmToPt(5);
 
+const TITLE_FONT_URL = "/static/assets/fonts/TitleFont.ttf";
+const TITLE_FONT_NAME = "titleFont";
+const BODY_FONT_URL = "/static/assets/fonts/BodyFont.ttf";
+const BODY_FONT_NAME = "bodyFont";
+const BRAND_URL = "/static/assets/brand.png"
 
+let titleFont:ArrayBuffer|undefined = undefined;
+let bodyFont:ArrayBuffer|undefined = undefined;
+let fontsLoaded:boolean = false;
+
+async function loadFonts() {
+    let titleFontP = fetch(TITLE_FONT_URL)
+    .then(response => response.arrayBuffer())
+    let bodyFontP =  fetch(BODY_FONT_URL)
+    .then(response => response.arrayBuffer())
+
+    let data = await Promise.all([titleFontP,bodyFontP]);
+    titleFont = data[0];
+    bodyFont = data[1];
+}
 async function loadImageUrlIntoBuffer(url:string) {
 
-    return getDataUri(url);
-
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    return buffer;
-}
-
-function getDataUri(url:string):Promise<string> {
     return new Promise((resolve,reject) => {
         var image = new Image();
         image.crossOrigin='Anonymous';
@@ -35,10 +45,6 @@ function getDataUri(url:string):Promise<string> {
     
             canvas.getContext('2d')?.drawImage(image, 0, 0);
             let pngUrl = canvas.toDataURL('image/png');
-            let dataUrl = pngUrl.replace(/^data:image\/(png|jpg);base64,/, '');
-
-            console.log("urls:", {png:{url:pngUrl}, data:{url:dataUrl}})
-            // ... or get as Data URI
             resolve(pngUrl);
         };
     
@@ -79,13 +85,14 @@ async function drawBacksOfCards( pdf:PDFKit.PDFDocument, backs:CardBounds[]) {
 }
 async function drawFrontOfCard( pdf:PDFKit.PDFDocument, card:CardData, left:number,top:number)  {
 
-    return {right:left + cardWidth,bottom:top+cardHeight}
 
-    let titleHeight = pdf
+    let titleHeight = 
+     pdf
     .save()
-//    .font('fonts/TitleFont.ttf')
+    .font(TITLE_FONT_NAME)
     .fontSize(14)
-    .heightOfString(card.content.title,{ width:cardWidth-3*textMargin-left, lineGap: 1, paragraphGap:1})
+    .heightOfString(card.content.title,{ width:cardWidth-3*textMargin, lineGap: 1, paragraphGap:1})
+
 
     pdf.restore()
 
@@ -101,20 +108,20 @@ async function drawFrontOfCard( pdf:PDFKit.PDFDocument, card:CardData, left:numb
     .lineTo(left+cardWidth,top+cardWidth)
     .stroke([0xDD,0xDD,0xDD])
     .restore()
-//    .font('fonts/TitleFont.ttf')
+    .font(TITLE_FONT_NAME)
     .fontSize(14)
     .fillColor([0x5a,0x59,0x59])
-    .text(card.content.title,left+2*textMargin,top+cardWidth+textMargin,{ width:cardWidth-3*textMargin-left, lineGap: 1, paragraphGap:1})
+    .text(card.content.title,left+2*textMargin,top+cardWidth+textMargin,{ width:cardWidth-3*textMargin, lineGap: 1, paragraphGap:1})
     .moveDown()
-//    .font('fonts/BodyFont.ttf')
+    .font(BODY_FONT_NAME)
     .fontSize(10)
-    .text(card.content.details.artist,left+2*textMargin,top+cardWidth+textMargin+titleHeight,{ width:cardWidth-3*textMargin-left, lineGap: 1, paragraphGap:1})
-//    .image('content/brand.png',left + cardWidth-mmToPt(8),top + cardHeight - mmToPt(8),{width:mmToPt(5)})
+    .text(card.content.details.artist,left+2*textMargin,top+cardWidth+textMargin+titleHeight,{ width:cardWidth-3*textMargin, lineGap: 1, paragraphGap:1})
+    .image(await loadImageUrlIntoBuffer(BRAND_URL),left + cardWidth-mmToPt(8),top + cardHeight - mmToPt(8),{width:mmToPt(5)})
     ;
         
     pdf
     .roundedRect(left,top,cardWidth,cardHeight,cornerRadius)
-    .stroke([0xDD,0xDD,0xDD])
+    .stroke([0xF8,0xF8,0xF8])
     ;
 
     return {right:left + cardWidth,bottom:top+cardHeight}
@@ -162,15 +169,14 @@ async function generatePDF(cardsToPrint:CardData[],pdf:PDFKit.PDFDocument|undefi
         pdf = new g.PDFDocument();
 
     let data:pdfGenerationData = {
-        pdf: new g.PDFDocument(),
+        pdf: pdf? pdf:new g.PDFDocument(),
         left: hMargin,
         page:0,
         top: vMargin,
         nextCard:0,
         cardsToPrint
     }    
-    console.log("PDF is",data.pdf);
-
+    
     while(data.nextCard < data.cardsToPrint.length) {
         let moreToPrint = await generateOnePage(data);
         if (moreToPrint) {
@@ -181,21 +187,24 @@ async function generatePDF(cardsToPrint:CardData[],pdf:PDFKit.PDFDocument|undefi
 }
 
   
-export function generatePDFUrl(cardsToPrint:CardData[]):Promise<string> {
+export async function generatePDFUrl(cardsToPrint:CardData[]):Promise<string> {
+
+    if(fontsLoaded == false) {
+        await loadFonts();
+    }
 
     return new Promise((resolve,reject) => {
         let g:any = window;
         let blobStream = g.blobStream;
-        let pdf = new g.PDFDocument();
+        let pdf:PDFKit.PDFDocument = new g.PDFDocument();
+        pdf.registerFont(TITLE_FONT_NAME,titleFont!)
+        pdf.registerFont(BODY_FONT_NAME,bodyFont!)
+        
         generatePDF(cardsToPrint,pdf).then(pdf => {
-            console.log("PDF finished generating");
             let stream = blobStream();
             pdf.pipe(stream);
             stream.on('finish', function() {              
-                // or get a blob URL for display in the browser
-                console.log("stream closed");
                 const url = stream.toBlobURL('application/pdf');
-                console.log("pdf url is",{url});
                 resolve(url);
             });       
             pdf.on('data',function() {"DATA SENT" })   
@@ -204,17 +213,4 @@ export function generatePDFUrl(cardsToPrint:CardData[]):Promise<string> {
             pdf.end();
         })    
     });
-}
-
-export async function sendCardPrintJob(cardsToPrint:CardData[],type:string) {
-
-    try {
-        let {destroy} = Modal.info({
-            content: "hello, world",
-            onOk: ()=> {destroy()}
-        })
-        let pdf = await generatePDF(cardsToPrint)
-    } catch(e) {
-    }
-
 }
