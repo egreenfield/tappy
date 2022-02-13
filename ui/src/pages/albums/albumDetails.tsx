@@ -1,4 +1,3 @@
-import Layout from '../../components/layout'
 import { Button, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useState } from 'react';
@@ -18,7 +17,7 @@ import { Album, Track } from '../../lib/musicDataTypes';
 export default function AlbumDetails() {
   let { id } = useParams();
   const { data: session } = useSession()
-  const {album,error} = useAlbum(session?.token,id);
+  const {album} = useAlbum(session?.token,id);
 
   const [linkAction,setLinkAction] = useState<CardAction|undefined>(undefined);
 
@@ -66,7 +65,7 @@ export default function AlbumDetails() {
     <>
         <Row>
           <Col>
-            <img src={album.images[0].url} width="150" />
+            <img src={album.images[0].url} width="150" alt=""/>
           </Col>
           <Col style={{paddingLeft: 10}}>
             <h1>{album.name}</h1>      

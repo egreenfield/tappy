@@ -1,4 +1,3 @@
-import Layout from '../../components/layout'
 import { Button, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useState } from 'react';
@@ -30,7 +29,7 @@ export default function PlaylistDetails() {
   
   let { id } = useParams();
   const { data: session } = useSession()
-  const {playlist,error} = usePlaylist(session?.token,id)
+  const {playlist} = usePlaylist(session?.token,id)
   const [linkAction,setLinkAction] = useState<CardAction|undefined>(undefined);
 
   const startBookmark = async(playlist:Playlist) => {
@@ -69,7 +68,7 @@ export default function PlaylistDetails() {
       key: 'id',
       align: 'right',
       width: 100,
-      render: (text,record) => <img src={record.track.album.images[0]?.url} width="50" />
+      render: (text,record) => <img alt="" src={record.track.album.images[0]?.url} width="50" />
     },
     {
       title: 'Name',
@@ -86,7 +85,7 @@ export default function PlaylistDetails() {
           <>
             <Row>
               <Col>
-              <img src={playlist.images[0].url} width="150" />
+              <img alt="" src={playlist.images[0].url} width="150" />
             </Col>
             <Col style={{paddingLeft: 10}}>
               <h2>{playlist.name}</h2>      

@@ -1,5 +1,3 @@
-
-import { Modal } from 'antd';
 import { CardData } from './tappyDataTypes';
 
 const mmToPt = (mm:number) => mm*2.83465;
@@ -147,7 +145,6 @@ async function generateOnePage(data:pdfGenerationData) {
             top = vMargin;
             moreToPrint = true;
             break;
-            pdf.addPage();
         }
         ({bottom, right} = await drawFrontOfCard(pdf,aCard,left,top));
         backs.push({left,top,right,bottom});
@@ -165,7 +162,7 @@ async function generateOnePage(data:pdfGenerationData) {
 async function generatePDF(cardsToPrint:CardData[],pdf:PDFKit.PDFDocument|undefined = undefined) {
     let g:any = window;
 
-    if(pdf == undefined)
+    if(pdf === undefined)
         pdf = new g.PDFDocument();
 
     let data:pdfGenerationData = {
@@ -189,7 +186,7 @@ async function generatePDF(cardsToPrint:CardData[],pdf:PDFKit.PDFDocument|undefi
   
 export async function generatePDFUrl(cardsToPrint:CardData[]):Promise<string> {
 
-    if(fontsLoaded == false) {
+    if(fontsLoaded === false) {
         await loadFonts();
     }
 

@@ -1,4 +1,4 @@
-import { Table, Space, Button, Modal, Tooltip, Popconfirm, message, Row, Col } from 'antd';
+import { Table, Space, Button, Popconfirm, message, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { useEffect, useState } from 'react';
 import { CardAction, linkCardToContent } from '../lib/cardActions';
@@ -25,7 +25,7 @@ export default function Bookmarks() {
 
   const [linkAction,setLinkAction] = useState<CardAction|undefined>(undefined);
 
-  let {bookmarks,error} = useBookmarks();
+  let {bookmarks} = useBookmarks();
 
   useEffect(()=> {
     if(bookmarks) {
@@ -48,7 +48,7 @@ export default function Bookmarks() {
     const removeBookmark = async (bookmark:CardData) => {
         message.loading({content: "Removing...",key:"deleting"});
         await deleteBookmark(bookmark);
-        setModifiedBookmarks(modifiedBookmarks.filter(v => v != bookmark));
+        setModifiedBookmarks(modifiedBookmarks.filter(v => v.id !== bookmark.id));
         message.success({content: "Success", duration: 3,key:"deleting"});    
     }
 
@@ -69,7 +69,7 @@ export default function Bookmarks() {
       title: '',
       align: 'right',
       width: 60,
-      render: (text,record) => <img src={record.content.cover} width="50" />
+      render: (text,record) => <img src={record.content.cover} width="50" alt="" />
     },
     {
       title: '',
@@ -102,7 +102,7 @@ export default function Bookmarks() {
           <h1>Bookmarks
             <Button 
               type='primary' 
-              disabled={playlistRows.length == 0 && albumRows.length == 0}
+              disabled={playlistRows.length === 0 && albumRows.length === 0}
               onClick={printBookmarks} style={{marginLeft: 5, paddingTop: 6, paddingLeft:10, paddingRight:10}} ><BsPrinter  /> 
             </Button>
             <Popconfirm
@@ -124,7 +124,7 @@ export default function Bookmarks() {
         <h1>Playlists </h1>
           <Table columns={columns} rowKey="id"
             rowSelection={{type:"checkbox",selectedRowKeys:playlistRows,onChange:(rows)=>setPlaylistRows(rows)}}
-            dataSource={modifiedBookmarks.filter(c=>c.content.details.type != "album")} />          
+            dataSource={modifiedBookmarks.filter(c=>c.content.details.type !== "album")} />          
         </Col>
         <Col span={1}>
         </Col>
@@ -132,7 +132,7 @@ export default function Bookmarks() {
             <h1>Albums</h1>
             <Table columns={columns} rowKey="id"
                 rowSelection={{type:"checkbox",selectedRowKeys:albumRows,onChange:(rows)=>setAlbumRows(rows)}}
-                dataSource={modifiedBookmarks.filter(c=>c.content.details.type == "album")} />          
+                dataSource={modifiedBookmarks.filter(c=>c.content.details.type === "album")} />          
             </Col>
         </Row>
         <LinkDialog action={linkAction} />

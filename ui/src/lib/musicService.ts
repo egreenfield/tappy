@@ -130,7 +130,7 @@ export const getUsersMusic = async(accessToken:string) => {
     const ALBUMS_ENDPOINT =        'https://api.spotify.com/v1/me/albums?limit=50';
     const ARTISTS_ENDPOINT =        'https://api.spotify.com/v1/me/following?type=artist&limit=50';
 
-    if (accessToken == undefined) {
+    if (accessToken === undefined) {
         return {artists:[],playlists:[],albums:[]}
     }
     

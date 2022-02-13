@@ -1,6 +1,5 @@
 import { Col, Row, Spin } from 'antd';
 import { useEffect, useState } from 'react';
-import { cancelCardAction, CardAction } from '../lib/cardActions';
 import { generatePDFUrl } from '../lib/print';
 import { CardData } from '../lib/tappyDataTypes';
 
@@ -19,7 +18,8 @@ export default function PrintPanel({active,cardsToPrint}:PrintPanelProps) {
             let pdfPromise = generatePDFUrl(cardsToPrint);
             let showPDF = true;
             pdfPromise.then((newUrl) => {
-                setPdfUrl(newUrl);
+                if(showPDF)
+                    setPdfUrl(newUrl);
             });
             return ()=> {showPDF = false};
         }
@@ -38,7 +38,7 @@ export default function PrintPanel({active,cardsToPrint}:PrintPanelProps) {
                         <Spin size="large" />
                     ):
                     (
-                        <iframe width="100%" height="800px" src={pdfUrl}></iframe>                        
+                        <iframe title="print preview" width="100%" height="800px" src={pdfUrl}></iframe>                        
                     )
                 }
             </Col> 

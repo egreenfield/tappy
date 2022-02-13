@@ -16,3 +16,6 @@ https://superuser.com/questions/270911/run-rsync-with-root-permission-on-remote-
 - install lighttpd
 - setup lighttpd.conf
 
+
+check styles import from layout.tsx -- is it sitll working?
+(was import styles from './layout.module.css')

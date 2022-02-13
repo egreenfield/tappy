@@ -24,7 +24,7 @@ export default function Cards() {
   const [showPrint,setShowPrint] = useState<boolean>(false);
   const [cardsToPrint,setCardsToPrint] = useState<CardData[]|undefined>(undefined);
 
-  let {cards,error} = useCurrentCards();
+  let {cards} = useCurrentCards();
 
   useEffect(()=> {
     if(cards) {
@@ -37,7 +37,7 @@ export default function Cards() {
     message.loading({content: "Removing...",key:"deleting"});
     await unlinkCard(card);
     message.success({content: "Success", duration: 3,key:"deleting"});
-    setModifiedCards(modifiedCards.filter(v => v != card));
+    setModifiedCards(modifiedCards.filter(v => v.id !== card.id));
   }
   const printCards = ()=> {
     let toPrint = playlistRows.concat(albumRows);
@@ -64,7 +64,7 @@ export default function Cards() {
       title: '',
       align: 'right',
       width: 60,
-      render: (text,record) => <img src={record.content.cover} width="50" />
+      render: (text,record) => <img src={record.content.cover} width="50" alt="" />
     },
     {
       title: '',
@@ -101,7 +101,7 @@ export default function Cards() {
             </Button>
             <Button 
               type='primary' 
-              disabled={playlistRows.length == 0 && albumRows.length == 0}
+              disabled={playlistRows.length === 0 && albumRows.length === 0}
               onClick={printCards} style={{marginLeft: 5, paddingTop: 6, paddingLeft:10, paddingRight:10}} ><BsPrinter  /> 
             </Button>
             </h1>
@@ -114,7 +114,7 @@ export default function Cards() {
         <h1>Playlists </h1>
           <TopTable columns={columns} rowKey="id"
             rowSelection={{type:"checkbox",selectedRowKeys:playlistRows,onChange:(rows:string[])=>setPlaylistRows(rows)}}
-            dataSource={modifiedCards.filter(c=>c.content.details.type != "album")} />          
+            dataSource={modifiedCards.filter(c=>c.content.details.type !== "album")} />          
         </Col>
         <Col span={1}>
         </Col>
@@ -122,7 +122,7 @@ export default function Cards() {
         <h1>Albums</h1>
           <TopTable columns={columns} rowKey="id"
             rowSelection={{type:"checkbox",selectedRowKeys:albumRows,onChange:(rows:string[])=>setAlbumRows(rows)}}
-            dataSource={modifiedCards.filter(c=>c.content.details.type == "album")} />          
+            dataSource={modifiedCards.filter(c=>c.content.details.type === "album")} />          
         <CardInfoDialog action={cardAction} onComplete={dismissDialog}/>
         </Col>
     </Row>

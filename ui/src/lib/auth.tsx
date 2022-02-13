@@ -1,4 +1,3 @@
-import { parse } from "path/posix";
 import React, { useEffect, useState } from "react";
 
 const TOKEN_LOCAL_STORAGE_NAME = "token";
@@ -28,6 +27,7 @@ const SessionContext = React.createContext<SessionContextValue | undefined>(
   undefined
 )
 
+let timeoutID:NodeJS.Timeout|undefined;
 
 export interface SessionProviderProps {
     children: React.ReactNode
@@ -81,7 +81,7 @@ export function SessionProvider({children}: SessionProviderProps) {
         }    
         if(token && expiration) {
             setSession({token})
-            let timeout = setTimeout(()=> {
+            timeoutID = setTimeout(()=> {
                 setSession(undefined);
             },(expiration.getTime()-now.getTime()))
             return signOut;
@@ -142,9 +142,8 @@ export function signIn() {
 export function signOut() {
     window.localStorage.removeItem(TOKEN_LOCAL_STORAGE_NAME)
     window.location.reload()
-}
-
-
-interface AuthProps {
-    children:any[] | any
+    if(timeoutID) {
+        clearTimeout(timeoutID);
+        timeoutID = undefined;
+    }
 }

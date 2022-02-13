@@ -42,10 +42,10 @@ function completeAction(action:CardAction,canceled:boolean,newCardData:CardData|
     action.complete = true;
     action.tappedCard = newCardData;
     action.cancelled = canceled;
-    if(action.timeoutID != undefined) {
+    if(action.timeoutID !== undefined) {
         clearTimeout(action.timeoutID);
     }
-    if(action.checkID != undefined) {
+    if(action.checkID !== undefined) {
         clearInterval(action.checkID);
     }      
     if(canceled) {
@@ -68,7 +68,7 @@ function completeAction(action:CardAction,canceled:boolean,newCardData:CardData|
 }
 
 export function cancelCardAction(action:CardAction) {
-    if(action.complete == false)
+    if(action.complete === false)
         completeAction(action,true);
 }
 export async function unlinkCard(card:CardData) {

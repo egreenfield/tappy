@@ -17,7 +17,7 @@ export default function CardInfoDialog({action,onComplete}:CardInfoDialogProps) 
     return (
     <>
         <Modal
-            visible={action != undefined}
+            visible={action !== undefined}
             title="Ready to Link"
             onCancel={handleCancel}
             onOk={handleCancel}
@@ -29,7 +29,7 @@ export default function CardInfoDialog({action,onComplete}:CardInfoDialogProps) 
             <div>
             {
                 loadDone? 
-                (record?.content) == undefined?
+                (record?.content) === undefined?
                 (
                     <>
                         <p>{record?.id}</p>
@@ -37,7 +37,7 @@ export default function CardInfoDialog({action,onComplete}:CardInfoDialogProps) 
                     </>
                 ):
                     (<>
-                        <img src={record?.content.cover} width={100}/>
+                        <img src={record?.content.cover} width={100} alt=""/>
                         <h1>{record?.content.title}</h1>
                         <p>{record?.content.details.type}</p>
                         <p>{record?.id}</p>

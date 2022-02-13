@@ -9,8 +9,6 @@ import { getBookmarks, getCards } from "./tappyBox";
 import { CardData } from "./tappyDataTypes";
   
 
-  const fetcher = (url:string) => fetch(url).then((res) => res.json())
-
   export function useLibrary(accessToken:string|undefined) {
     const {data:music,error} = useSWR(accessToken,getUsersMusic,{revalidateOnMount:true});
     return {music,error}

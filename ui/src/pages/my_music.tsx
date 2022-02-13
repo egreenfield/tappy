@@ -74,7 +74,7 @@ export default function MyMusic() {
           <IconContext.Provider value={{ color: "#7777FF" }}>
             <Space size="middle">
               <Tooltip title="Open in Spotify">
-              <a href={record.external_urls.spotify} target="_blank">
+              <a href={record.external_urls.spotify} target="_blank" rel="noreferrer">
                 <Navigate cursor="pointer" />
               </a>
               </Tooltip>

@@ -1,16 +1,18 @@
-import styles from './layout.module.css'
+import './layout.module.css'
 import { Layout as AntLayout, Menu } from 'antd';
-import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom'; 
-import { AiOutlineHome, AiFillHome } from 'react-icons/ai';
-import { useState } from 'react';
+import {Route, Routes, useLocation, useNavigate } from 'react-router-dom'; 
+import { AiOutlineHome } from 'react-icons/ai';
 
-const { Header, Content, Footer } = AntLayout;
+const { Header, Content } = AntLayout;
 
 type RouteType = ReturnType<typeof Route>;
 
 interface LayoutProperties{
   children:RouteType[] | RouteType;
 }
+
+
+
 export default function Layout({children}:LayoutProperties) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,8 +20,6 @@ export default function Layout({children}:LayoutProperties) {
   const onNavigate = (section:string) => {
     navigate(section)
   }
-  const [selected,setselected] = useState('');
-
   return (
   <AntLayout>
       <Header style={{ padding: '0px 20px' }}>

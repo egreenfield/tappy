@@ -1,4 +1,3 @@
-import Layout from '../../components/layout'
 import {  Space, Button, Tooltip, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useState } from 'react';
@@ -17,7 +16,7 @@ export default function ArtistDetails() {
 
     let { id } = useParams();
     const { data: session } = useSession()
-    const {artist,error} = useArtist(session?.token,id);
+    const {artist} = useArtist(session?.token,id);
 
     const [linkAction,setLinkAction] = useState<CardAction|undefined>(undefined);
 
@@ -42,7 +41,7 @@ export default function ArtistDetails() {
       key: 'key',
       align: 'right',
       width: 100,
-      render: (text,record) => <img src={record.images[0]?.url} width="50" />
+      render: (text,record) => <img src={record.images[0]?.url} width="50" alt="" />
     },
     {
         title: '',
@@ -74,7 +73,7 @@ export default function ArtistDetails() {
         <>
             <Row>
             <Col>
-                <img src={artist.images[0].url} width="150" />
+                <img src={artist.images[0].url} width="150" alt="" />
             </Col>
             <Col style={{paddingLeft: 10}}>
                 <h1>{artist.name}</h1>      

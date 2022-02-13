@@ -14,7 +14,7 @@ export default function LinkDialog({action}:LinkDialogProps) {
     return (
     <>
        <Modal
-            visible={action && action.complete == false}
+            visible={action && action.complete === false}
             title="Ready to Link"
             onCancel={handleCancel}
             centered
