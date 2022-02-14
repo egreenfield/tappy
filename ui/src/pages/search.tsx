@@ -57,7 +57,7 @@ export default function Search() {
                 <List.Item>
                   <List.Item.Meta
                     avatar={<Avatar src={item.images?.length? item.images[0].url : ""} />}
-                    title={<a href={`/artists/${item.id}`}>{item.name}</a>}
+                    title={<div style={{textAlign:"left"}}><a href={`/artists/${item.id}`}>{item.name}</a></div>}
                   />
                 </List.Item>
               )}
@@ -74,7 +74,11 @@ export default function Search() {
                 <List.Item>
                   <List.Item.Meta
                     avatar={<Avatar src={item.images?.length? item.images[0].url : ""} />}
-                    title={<a href={`/albums/${item.id}`}>{item.name}</a>}
+                    title={<div style={{textAlign:"left"}}>
+                            <a href={`/albums/${item.id}`}>{item.name}</a>
+                            <p style={{fontSize:".8em"}}>{item.artists?.length? item.artists[0].name:""}</p>
+                            </div>
+                          }
                   />
                 </List.Item>
                 )}
@@ -91,7 +95,7 @@ export default function Search() {
                 <List.Item>
                   <List.Item.Meta
                     avatar={<Avatar src={item.album?.images?.length? item.album.images[0].url : ""} />}
-                    title={<a href={`/albums/${item.album?.id}`}>{item.name}</a>}
+                    title={<div style={{textAlign:"left"}}><a href={`/albums/${item.album?.id}`}>{item.name}</a></div>}
                   />
                   </List.Item>
                 )}
@@ -108,7 +112,7 @@ export default function Search() {
                 <List.Item>
                   <List.Item.Meta
                     avatar={<Avatar src={item.images?.length? item.images[0].url : ""} />}
-                    title={<a href={`/playlists/${item.id}`}>{item.name}</a>}
+                    title={<div style={{textAlign:"left"}}><a href={`/playlists/${item.id}`}>{item.name}</a></div>}
                   />
                 </List.Item>
                 )}

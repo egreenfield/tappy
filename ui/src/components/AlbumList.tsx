@@ -54,7 +54,12 @@ export function AlbumList({pagedAlbumList,linkCard,startBookmark}:AlbumListPrope
             title: 'Name',
             dataIndex: 'name',
             key: 'id',
-            render: (text,record) => (<Link  to={linkPrefix + record.id}>{record.name || ""}</Link>)
+            render: (text,record) => (
+                <>
+                    <Link style={{fontSize:"1.2em"}}  to={linkPrefix + record.id}>{record.name || ""}</Link>
+                    <p style={{fontSize:".8em"}}>{record.artists?.length? record.artists[0].name:""}</p>
+                </>
+            )
           },
         ];
       }    

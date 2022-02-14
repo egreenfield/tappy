@@ -3,10 +3,11 @@ DONE * fix not redirecting to index.html
 DONE * figure out how to invalidat SWR (i.e., when a bookmark is added, or a card)
 DONE * fix login/logout when token expires.
 DONE * client side printing!
+DONE * paging
 * add artist to album lists
-* paging
 * search my music
 * show/filter tracks that have been associated
+* clean up paging UX
 
 
 
