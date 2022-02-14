@@ -1,4 +1,4 @@
-import { Table, Space, Button, Tooltip, Tabs, Row, Col } from 'antd';
+import { Space, Button, Tooltip, Tabs, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useState } from 'react';
 import { CardAction, linkCardToContent } from '../lib/cardActions';
@@ -10,17 +10,10 @@ import { IconContext } from 'react-icons/lib';
 import { useLibrary } from '../lib/loaders';
 import { bookmarkContent } from '../lib/bookmarkActions';
 import { signIn, useSession } from '../lib/auth';
-import { Entity } from '../lib/musicDataTypes';
+import { Entity, entityType } from '../lib/musicDataTypes';
 import { Link } from 'react-router-dom';
-
-
-interface PlaylistData {
-  key: number;  
-  id:string;
-  name: string;
-  external_urls: {spotify:string}
-  images: {url:string}[]
-}
+import { AlbumList } from '../components/AlbumList';
+import { PagedTable } from '../components/PagedTable';
 
 
 export default function MyMusic() {
@@ -37,7 +30,7 @@ export default function MyMusic() {
       details: {
         printed: false,
         artist: "Playlist",
-        type: "playlist"
+        type: entityType(record)
       }
     });
   }
@@ -50,14 +43,14 @@ export default function MyMusic() {
       details: {
         printed: false,
         artist: "Playlist",
-        type: "playlist"
+        type: entityType(record)
       }
     });
     setLinkAction(action);
     action.promise!.finally(()=> setLinkAction(undefined))
   }
 
-  const makeColumns = (linkPrefix:string,linkable:boolean=true): ColumnsType<PlaylistData> => {
+  const makeColumns = <T extends Entity>(linkPrefix:string,linkable:boolean=true): ColumnsType<T> => {
     return [
       {
         title: '',
@@ -100,7 +93,6 @@ export default function MyMusic() {
   }
 
   const playlistColumns = makeColumns("/playlists/"); 
-  const albumColumns = makeColumns("/albums/"); 
   const artistColumns = makeColumns("/artists/",false); 
 
   if (session) {
@@ -117,23 +109,23 @@ export default function MyMusic() {
         <Tabs defaultActiveKey='"Playlists'>
           <Tabs.TabPane tab="Playlists" key="Playlists">
             <Col span={24}>
-              <Table columns={playlistColumns} 
-                pagination={{ position: ["topRight", "bottomRight"] }} 
-                dataSource={music.playlists} rowKey="id" />          
+              <PagedTable columns={playlistColumns}                 
+                pagedList={music.playlists}
+                rowKey="id" />          
             </Col>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Albums" key="Albums">
             <Col span={24}>
-            <Table columns={albumColumns} 
-                pagination={{ position: ["topRight", "bottomRight"] }} 
-                dataSource={music.albums} rowKey="id" />          
+              <AlbumList 
+                  pagedAlbumList={music.albums} 
+                  linkCard={linkCard} startBookmark={startBookmark} />
             </Col>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Artists" key="Artists">
             <Col span={24}>
-            <Table columns={artistColumns} 
-                pagination={{ position: ["topRight", "bottomRight"] }} 
-                dataSource={music.artists} rowKey="id" />          
+            <PagedTable columns={artistColumns}                 
+                pagedList={music.artists}
+                rowKey="id" />          
             </Col>
           </Tabs.TabPane>
         </Tabs>

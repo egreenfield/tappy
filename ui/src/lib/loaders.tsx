@@ -2,8 +2,8 @@
 // Client
 
 import useSWR, { KeyedMutator } from "swr";
-import { Album, Artist, Playlist } from "./musicDataTypes";
-import { getAlbumDetails, getArtistDetails, getPlaylistContent, getUsersMusic } from "./musicService";
+import { Album, Artist, PagedList, Playlist } from "./musicDataTypes";
+import { getAlbumDetails, getArtistDetails, getPage, getPlaylistContent, getUsersMusic } from "./musicService";
 import { getSpeakerData } from "./speakers";
 import { getBookmarks, getCards } from "./tappyBox";
 import { CardData } from "./tappyDataTypes";
@@ -49,4 +49,10 @@ export function useArtist(token:string|undefined,id:string|undefined) {
 export function useAlbum(token:string|undefined,id:string|undefined) {
   const {data:album,error} = useSWR<Album>([token,id],getAlbumDetails,{revalidateOnMount:true});
   return {album,error};
+}
+
+
+export function usePage<T>(list:PagedList<T>|undefined,pageIndex:number,pageSize:number) {
+  const {data:items,error,isValidating} = useSWR<T[]>([list,pageIndex,pageSize],getPage,{revalidateOnMount:true});
+  return {items,error,isValidating}
 }
