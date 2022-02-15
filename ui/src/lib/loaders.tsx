@@ -5,23 +5,32 @@ import useSWR, { KeyedMutator } from "swr";
 import { Album, Artist, PagedList, Playlist } from "./musicDataTypes";
 import { getAlbumDetails, getArtistDetails, getPage, getPlaylistContent, getUsersMusic } from "./musicService";
 import { getSpeakerData } from "./speakers";
-import { getBookmarks, getCards } from "./tappyBox";
-import { CardData } from "./tappyDataTypes";
+import { getBookmarks, getCards, getMusicToCardMap } from "./tappyBox";
+import { CardData, CardDataMap } from "./tappyDataTypes";
   
 
   export function useLibrary(accessToken:string|undefined) {
     const {data:music,error} = useSWR(accessToken,getUsersMusic,{revalidateOnMount:true});
     return {music,error}
   }
-  
+
 
 let cardsMutator:KeyedMutator<CardData[]>;
-  export function refreshCards() {cardsMutator && cardsMutator();}
-  export function useCurrentCards() {
+let musicToCardsMutator:KeyedMutator<CardDataMap>;
+
+export function refreshCards() {cardsMutator && cardsMutator(); musicToCardsMutator && musicToCardsMutator();}
+export function useCurrentCards() {
   const {data:cards,mutate,error} = useSWR(["cards"],getCards,{revalidateOnMount:true});
   cardsMutator = mutate;
   return {cards,error};
 }
+
+export function useMusicToCardMap() {
+  const {data:musicToCardMap,mutate,error} = useSWR(["musicToCardMap"],getMusicToCardMap,{revalidateOnMount:true});
+  musicToCardsMutator = mutate;
+  return {musicToCardMap,error};
+}
+
 
 let bookmarkMutate:KeyedMutator<CardData[]>;
 export function refreshBookmarks() {bookmarkMutate && bookmarkMutate();}

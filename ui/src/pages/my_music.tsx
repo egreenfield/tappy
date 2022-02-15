@@ -7,19 +7,21 @@ import { FaLink as LinkIcon, FaExternalLinkAlt as Navigate } from 'react-icons/f
 import {BsFillBookmarkFill as BookmarkIcon } from 'react-icons/bs';
 
 import { IconContext } from 'react-icons/lib';
-import { useLibrary } from '../lib/loaders';
+import { useLibrary, useMusicToCardMap } from '../lib/loaders';
 import { bookmarkContent } from '../lib/bookmarkActions';
 import { signIn, useSession } from '../lib/auth';
 import { Entity, entityType } from '../lib/musicDataTypes';
 import { Link } from 'react-router-dom';
 import { AlbumList } from '../components/AlbumList';
 import { PagedTable } from '../components/PagedTable';
+import { CardDataMap } from '../lib/tappyDataTypes';
 
 
 export default function MyMusic() {
   const { data: session } = useSession()
   const [linkAction,setLinkAction] = useState<CardAction|undefined>(undefined);
   const {music,error} = useLibrary(session?.token);
+  const {musicToCardMap} = useMusicToCardMap();
 
   
   async function startBookmark(record:Entity) {
@@ -49,6 +51,10 @@ export default function MyMusic() {
     setLinkAction(action);
     action.promise!.finally(()=> setLinkAction(undefined))
   }
+  const opacityFor = (record:Entity,musicToCardMap:CardDataMap|undefined):number => {
+    let isLinkable = musicToCardMap === undefined || !(record.external_urls.spotify in musicToCardMap);
+    return isLinkable? 1:.2;
+  }
 
   const makeColumns = <T extends Entity>(linkPrefix:string,linkable:boolean=true): ColumnsType<T> => {
     return [
@@ -57,7 +63,7 @@ export default function MyMusic() {
         key: 'key',
         align: 'right',
         width: 60,
-        render: (_,record) => <img alt="" src={record.images?.length? record.images[0].url:""} width="50" />
+        render: (_,record) => <img alt="" src={record.images?.length? record.images[0].url:""} width="20" />
       },
       {
         title: '',
@@ -72,7 +78,7 @@ export default function MyMusic() {
               </a>
               </Tooltip>
               {linkable? <Tooltip title="Link to Card">
-                            <LinkIcon cursor="pointer" onClick={()=> linkCard(record)} />
+                            <LinkIcon cursor="pointer" style={{opacity:opacityFor(record,musicToCardMap)}} onClick={()=> linkCard(record)} />
                           </Tooltip>: <></>
               }
               {linkable? <Tooltip title="Bookmark Card">
@@ -93,6 +99,7 @@ export default function MyMusic() {
   }
 
   const playlistColumns = makeColumns("/playlists/"); 
+  const albumColumns = makeColumns("/albums/"); 
   const artistColumns = makeColumns("/artists/",false); 
 
   if (session) {
@@ -116,9 +123,9 @@ export default function MyMusic() {
           </Tabs.TabPane>
           <Tabs.TabPane tab="Albums" key="Albums">
             <Col span={24}>
-              <AlbumList 
-                  pagedAlbumList={music.albums} 
-                  linkCard={linkCard} startBookmark={startBookmark} />
+              <PagedTable columns={albumColumns}                 
+                pagedList={music.albums}
+                rowKey="id" />          
             </Col>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Artists" key="Artists">

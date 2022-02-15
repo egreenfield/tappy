@@ -4,9 +4,10 @@ DONE * figure out how to invalidat SWR (i.e., when a bookmark is added, or a car
 DONE * fix login/logout when token expires.
 DONE * client side printing!
 DONE * paging
-* add artist to album lists
+DONE * show/filter tracks that have been associated
+DONE * add artist to album lists
+
 * search my music
-* show/filter tracks that have been associated
 * clean up paging UX
 
 

@@ -26,7 +26,7 @@ export function PagedTable<ItemType>({pagedList,columns,rowKey}:PagedTableProps<
     <>
         <Pagination current={page} defaultPageSize={pageSize} defaultCurrent={1} total={pagedList?.total}
             onChange={onPaginatorChange} showLessItems={true} style={{marginBottom:20}}/>
-        <Table columns={columns} dataSource={items?items as any[]:[]} rowKey={rowKey} pagination={false}/>
+        <Table size="small" columns={columns} dataSource={items?items as any[]:[]} rowKey={rowKey} pagination={false}/>
         <Pagination current={page} defaultPageSize={pageSize} defaultCurrent={1} total={pagedList?.total}
             onChange={onPaginatorChange} showLessItems={true} style={{marginTop:20}}/>
     </>

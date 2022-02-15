@@ -6,7 +6,7 @@ const ARTIST_DETAIL_ENDPOINT = 'https://api.spotify.com/v1/artists/';
 const PLAYLIST_CONTENT_ENDPOINT = 'https://api.spotify.com/v1/playlists/';
 
 
-class CursorSpotifyList<ItemType,LoadedType=ItemType> implements PagedList<ItemType> {
+class CursorSpotifyList<ItemType> implements PagedList<ItemType> {
   private cached:ItemType[];
   public total:number = -1;  
   private next:string;
