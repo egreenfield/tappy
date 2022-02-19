@@ -1,13 +1,12 @@
-import {  Space, Button, Popconfirm, message, Row, Col } from 'antd';
+import {  Table,Space, Button, Popconfirm, message, Row, Col } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CardAction, identifyCardContent, unlinkCard } from '../lib/cardActions';
 import { TiDelete} from 'react-icons/ti';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { BsPrinter } from 'react-icons/bs';
 
 import { IconContext } from 'react-icons/lib';
-import TopTable from '../components/TopTable';
 import CardInfoDialog from '../components/CardInfoDialog';
 import { useCurrentCards } from '../lib/loaders';
 import { CardData } from '../lib/tappyDataTypes';
@@ -112,16 +111,20 @@ export default function Cards() {
       <Row>
         <Col span={11}>
         <h1>Playlists </h1>
-          <TopTable columns={columns} rowKey="id"
-            rowSelection={{type:"checkbox",selectedRowKeys:playlistRows,onChange:(rows:string[])=>setPlaylistRows(rows)}}
+          <Table columns={columns} rowKey="id"
+            scroll={{ y: 1100 }} 
+            pagination={{ pageSize: 1000,  position: []}} 
+            rowSelection={{type:"checkbox",selectedRowKeys:playlistRows,onChange:(rows:React.Key[])=>setPlaylistRows(rows as string[])}}
             dataSource={modifiedCards.filter(c=>c.content.details.type !== "album")} />          
         </Col>
         <Col span={1}>
         </Col>
         <Col span={12}>
         <h1>Albums</h1>
-          <TopTable columns={columns} rowKey="id"
-            rowSelection={{type:"checkbox",selectedRowKeys:albumRows,onChange:(rows:string[])=>setAlbumRows(rows)}}
+          <Table columns={columns} rowKey="id"
+            scroll={{ y: 1100 }} 
+            pagination={{ pageSize: 1000,  position: []}} 
+            rowSelection={{type:"checkbox",selectedRowKeys:albumRows,onChange:(rows:React.Key[])=>setAlbumRows(rows as string[])}}
             dataSource={modifiedCards.filter(c=>c.content.details.type === "album")} />          
         <CardInfoDialog action={cardAction} onComplete={dismissDialog}/>
         </Col>

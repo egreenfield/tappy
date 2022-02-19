@@ -68,11 +68,11 @@ class RandomAccessSpotifyList<ItemType,LoadedType=ItemType> implements PagedList
   public async get(start:number,count:number):Promise<ItemType[]> {
     let results:ItemType[] = [];
 
-    let toLoad = this.total >= 0? Math.min(count,this.total):count;    
+    let toLoad = this.total >= 0? Math.min(count,this.total-start):count;    
     let loader = new URL(this.rootUrl);
     let params = loader.searchParams;
     
-    while(toLoad) {
+    while(toLoad > 0) {
       params.set("offset",start.toString())
       params.set("limit",Math.min(50,toLoad).toString());
       loader.search = params.toString();
@@ -86,6 +86,7 @@ class RandomAccessSpotifyList<ItemType,LoadedType=ItemType> implements PagedList
       
       let loadedResults = this.transformer?this.transformer(response.items):response.items;
       toLoad -= loadedResults.length;
+      start += loadedResults.length;
       results = results.concat(loadedResults);
     }
 

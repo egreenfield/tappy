@@ -93,13 +93,16 @@ export default function MyMusic() {
         title: 'Name',
         dataIndex: 'name',
         key: 'id',
-        render: (text,record) => (<Link  to={linkPrefix + record.id}>{record.name || ""}</Link>)
+        render: (text,record) => (
+          <Tooltip placement="topLeft" mouseEnterDelay={.7} title={<img alt="" src={record.images?.length? record.images[0].url:""} width="200" />}>
+            <Link  to={linkPrefix + record.id}>{record.name || ""}</Link>
+          </Tooltip>
+        )
       },
     ];
   }
 
   const playlistColumns = makeColumns("/playlists/"); 
-  const albumColumns = makeColumns("/albums/"); 
   const artistColumns = makeColumns("/artists/",false); 
 
   if (session) {
@@ -123,9 +126,9 @@ export default function MyMusic() {
           </Tabs.TabPane>
           <Tabs.TabPane tab="Albums" key="Albums">
             <Col span={24}>
-              <PagedTable columns={albumColumns}                 
-                pagedList={music.albums}
-                rowKey="id" />          
+              <AlbumList 
+                  pagedAlbumList={music.albums} 
+                  linkCard={linkCard} startBookmark={startBookmark} />
             </Col>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Artists" key="Artists">

@@ -6,6 +6,8 @@ import { FaLink as LinkIcon, FaExternalLinkAlt as Navigate } from 'react-icons/f
 import {BsFillBookmarkFill as BookmarkIcon } from 'react-icons/bs';
 import { Link } from "react-router-dom";
 import { PagedTable } from "./PagedTable";
+import { useMusicToCardMap } from "../lib/loaders";
+import { CardDataMap } from "../lib/tappyDataTypes";
 
 
 interface AlbumListProperties {
@@ -16,7 +18,13 @@ interface AlbumListProperties {
 
 export function AlbumList({pagedAlbumList,linkCard,startBookmark}:AlbumListProperties) {
 
+    const {musicToCardMap} = useMusicToCardMap();
 
+    const opacityFor = (record:Entity,musicToCardMap:CardDataMap|undefined):number => {
+        let isLinkable = musicToCardMap === undefined || !(record.external_urls.spotify in musicToCardMap);
+        return isLinkable? 1:.2;
+    }
+    
     const makeColumns = (linkPrefix:string,linkable:boolean=true): ColumnsType<Album> => {
         return [
           {
@@ -24,7 +32,7 @@ export function AlbumList({pagedAlbumList,linkCard,startBookmark}:AlbumListPrope
             key: 'key',
             align: 'right',
             width: 60,
-            render: (_,record) => <img alt="" src={record.images?.length? record.images[0].url:""} width="50" />
+            render: (_,record) => <img alt="" src={record.images?.length? record.images[0].url:""} width="20" />
           },
           {
             title: '',
@@ -39,7 +47,7 @@ export function AlbumList({pagedAlbumList,linkCard,startBookmark}:AlbumListPrope
                   </a>
                   </Tooltip>
                   {linkable? <Tooltip title="Link to Card">
-                                <LinkIcon cursor="pointer" onClick={()=> linkCard(record)} />
+                                <LinkIcon cursor="pointer" onClick={()=> linkCard(record)} style={{opacity:opacityFor(record,musicToCardMap)}} />
                               </Tooltip>: <></>
                   }
                   {linkable? <Tooltip title="Bookmark Card">
@@ -55,10 +63,12 @@ export function AlbumList({pagedAlbumList,linkCard,startBookmark}:AlbumListPrope
             dataIndex: 'name',
             key: 'id',
             render: (text,record) => (
-                <>
-                    <Link style={{fontSize:"1.2em"}}  to={linkPrefix + record.id}>{record.name || ""}</Link>
-                    <p style={{fontSize:".8em"}}>{record.artists?.length? record.artists[0].name:""}</p>
-                </>
+                <div style={{marginBottom:-15,marginTop:-5}}>
+                      <Tooltip placement="topLeft" mouseEnterDelay={.7} title={<img alt="" src={record.images?.length? record.images[0].url:""} width="200" />}>
+                        <Link style={{fontSize:"1.2em", marginBottom:-5}}  to={linkPrefix + record.id}>{record.name || ""}</Link>
+                    </Tooltip>
+                    <p style={{fontSize:".8em",marginTop:-5}}>{record.artists?.length? record.artists[0].name:""}</p>
+                </div>
             )
           },
         ];

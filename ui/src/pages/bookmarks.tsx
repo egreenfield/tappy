@@ -9,8 +9,8 @@ import { AiOutlineDelete as DeleteIcon } from 'react-icons/ai';
 import { IconContext } from 'react-icons/lib';
 import { FaLink as LinkIcon } from 'react-icons/fa';
 import { deleteBookmark, deleteBookmarks } from '../lib/bookmarkActions';
-import { CardData, Content } from '../lib/tappyDataTypes';
-import { useBookmarks } from '../lib/loaders';
+import { CardData, CardDataMap, Content } from '../lib/tappyDataTypes';
+import { useBookmarks, useMusicToCardMap } from '../lib/loaders';
 import { filterByList } from '../lib/utils';
 import PrintPanel from '../components/PrintPanel';
 
@@ -22,8 +22,15 @@ export default function Bookmarks() {
   const [albumRows,setAlbumRows] = useState<React.Key[]>([]);
   const [showPrint,setShowPrint] = useState<boolean>(false);
   const [cardsToPrint,setCardsToPrint] = useState<CardData[]|undefined>(undefined);
+  const {musicToCardMap} = useMusicToCardMap();
 
   const [linkAction,setLinkAction] = useState<CardAction|undefined>(undefined);
+
+
+  const opacityFor = (record:CardData,musicToCardMap:CardDataMap|undefined):number => {
+    let isLinkable = musicToCardMap === undefined || !(record.content.url in musicToCardMap);
+    return isLinkable? 1:.2;
+  }
 
   let {bookmarks} = useBookmarks();
 
@@ -82,8 +89,8 @@ export default function Bookmarks() {
                   <TiDelete  cursor="pointer"  onClick={()=> removeBookmark(record)}/>
               </IconContext.Provider>
               <IconContext.Provider value={{ color: "#7777FF" }}>
-                  <LinkIcon cursor="pointer" onClick={()=> linkCard(record.content)} />
-                </IconContext.Provider>
+                <LinkIcon cursor="pointer" style={{opacity:opacityFor(record,musicToCardMap)}} onClick={()=> linkCard(record.content)} />
+              </IconContext.Provider>
           </Space>
         
       )},
@@ -123,6 +130,8 @@ export default function Bookmarks() {
         <Col span={11}>
         <h1>Playlists </h1>
           <Table columns={columns} rowKey="id"
+            scroll={{ y: 1100 }} 
+            pagination={{ pageSize: 500,  position: []}} 
             rowSelection={{type:"checkbox",selectedRowKeys:playlistRows,onChange:(rows)=>setPlaylistRows(rows)}}
             dataSource={modifiedBookmarks.filter(c=>c.content.details.type !== "album")} />          
         </Col>
@@ -131,8 +140,10 @@ export default function Bookmarks() {
         <Col span={12}>
             <h1>Albums</h1>
             <Table columns={columns} rowKey="id"
-                rowSelection={{type:"checkbox",selectedRowKeys:albumRows,onChange:(rows)=>setAlbumRows(rows)}}
-                dataSource={modifiedBookmarks.filter(c=>c.content.details.type === "album")} />          
+              scroll={{ y: 1100 }} 
+              pagination={{ pageSize: 500,  position: []}} 
+              rowSelection={{type:"checkbox",selectedRowKeys:albumRows,onChange:(rows)=>setAlbumRows(rows)}}
+              dataSource={modifiedBookmarks.filter(c=>c.content.details.type === "album")} />          
             </Col>
         </Row>
         <LinkDialog action={linkAction} />
