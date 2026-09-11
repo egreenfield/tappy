@@ -56,10 +56,15 @@ class Tappy:
             time.sleep(delay)
     
     def stop(self):
-        self.reader.stopReading()
-        self.stereo.stopPlaying(self.dataModel.getCurrentSpeakers())
-        self.restService.stop()
-        GPIO.cleanup()
+        # Each step is independent; one failing must not prevent the others (this runs from a signal handler).
+        for step in (self.reader.stopReading,
+                     lambda: self.stereo.stopPlaying(self.dataModel.getCurrentSpeakers()),
+                     self.restService.stop,
+                     GPIO.cleanup):
+            try:
+                step()
+            except Exception:
+                log.exception("error during shutdown")
 
 
     def start(self):

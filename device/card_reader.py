@@ -12,6 +12,65 @@ kNoCard = 0
 kHasCard = 1
 kMaybeCard = 2
 
+
+class _MFRC522(MFRC522.MFRC522):
+    """mfrc522's MFRC522_ToCard has a broken wait-loop condition that never reacts to the reader's
+    timer interrupt, so every poll with no card present spins through 2000 SPI reads (~200ms of
+    CPU on a Pi Zero). This is the same routine with the loop fixed to stop on the timer IRQ
+    (no card) or the command IRQ (answer received)."""
+
+    def MFRC522_ToCard(self, command, sendData):
+        backData = []
+        backLen = 0
+        status = self.MI_ERR
+        irqEn = 0x00
+        waitIRq = 0x00
+        if command == self.PCD_AUTHENT:
+            irqEn = 0x12
+            waitIRq = 0x10
+        if command == self.PCD_TRANSCEIVE:
+            irqEn = 0x77
+            waitIRq = 0x30
+
+        self.Write_MFRC522(self.CommIEnReg, irqEn | 0x80)
+        self.ClearBitMask(self.CommIrqReg, 0x80)
+        self.SetBitMask(self.FIFOLevelReg, 0x80)
+        self.Write_MFRC522(self.CommandReg, self.PCD_IDLE)
+        for byte in sendData:
+            self.Write_MFRC522(self.FIFODataReg, byte)
+        self.Write_MFRC522(self.CommandReg, command)
+        if command == self.PCD_TRANSCEIVE:
+            self.SetBitMask(self.BitFramingReg, 0x80)
+
+        i = 2000
+        while True:
+            n = self.Read_MFRC522(self.CommIrqReg)
+            i -= 1
+            if i == 0 or (n & 0x01) or (n & waitIRq):   # timer expired, or command finished
+                break
+
+        self.ClearBitMask(self.BitFramingReg, 0x80)
+
+        if i != 0:
+            if (self.Read_MFRC522(self.ErrorReg) & 0x1B) == 0x00:
+                status = self.MI_OK
+                if n & irqEn & 0x01:
+                    status = self.MI_NOTAGERR
+                if command == self.PCD_TRANSCEIVE:
+                    n = self.Read_MFRC522(self.FIFOLevelReg)
+                    lastBits = self.Read_MFRC522(self.ControlReg) & 0x07
+                    backLen = (n - 1) * 8 + lastBits if lastBits != 0 else n * 8
+                    n = max(1, min(n, self.MAX_LEN))
+                    for _ in range(n):
+                        backData.append(self.Read_MFRC522(self.FIFODataReg))
+            else:
+                status = self.MI_ERR
+        return (status, backData, backLen)
+
+# Pause between reader polls. Each poll burns ~25ms of CPU inside the MFRC522 library waiting
+# for its timer, so without this the loop pins the Pi Zero's only core at 100%.
+kPollInterval = 0.2
+
 @dataclass
 class ReadConfig:
     read:Function
@@ -23,7 +82,7 @@ class ReadConfig:
 
 class CardReader:
     def __init__(self,tappy,readConfig):
-        self.MIFAREReader = MFRC522.MFRC522()
+        self.MIFAREReader = _MFRC522()
         self.dataModel = tappy.dataModel
         self.tappy = tappy
         self.state = kNoCard
@@ -76,13 +135,20 @@ class CardReader:
         if self.config.beep:
                 self.tappy.beep(3)
         if self.config.read:
-            self.config.read(uid,self.readCount)
+            self._callback(self.config.read, uid, self.readCount)
 
     def readComplete(self):
         if(self.config.readComplete):
-            self.config.readComplete(self.lastUID,self.readCount)
+            self._callback(self.config.readComplete, self.lastUID, self.readCount)
         if (self.config.autoRemove):
             self.readConfig.pop()
+
+    def _callback(self, fn, uid, readCount):
+        # A failing callback (network, Sonos, config...) must never take the read loop down.
+        try:
+            fn(uid, readCount)
+        except Exception:
+            log.exception(f"card callback failed for {uid}")
 
     def checkForContinue(self):
         if(self.readCount >= self.config.maxReads):
@@ -124,5 +190,6 @@ class CardReader:
             (status,TagType) = self.MIFAREReader.MFRC522_Request(self.MIFAREReader.PICC_REQIDL)
 
             self.updateState(status)
+            time.sleep(kPollInterval)
 
 

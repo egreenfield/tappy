@@ -86,10 +86,10 @@ write_version_file() {
 build_bundle() {
     local out=$1 cfg=$2 stage
     stage=$(mktemp -d)
-    ( cd "$REPO_DIR" && bundle_files | COPYFILE_DISABLE=1 tar -cf - -T - ) | tar -xf - -C "$stage"
+    ( cd "$REPO_DIR" && bundle_files | COPYFILE_DISABLE=1 tar --no-xattrs -cf - -T - ) | tar -xf - -C "$stage"
     cp "$cfg" "$stage/deploy/remote/config.default.json"
     write_version_file > "$stage/VERSION"
-    ( cd "$stage" && COPYFILE_DISABLE=1 tar -czf "$out" . )
+    ( cd "$stage" && COPYFILE_DISABLE=1 tar --no-xattrs -czf "$out" . )
     rm -rf "$stage"
 }
 
