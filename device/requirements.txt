@@ -1,0 +1,7 @@
+# Installed into the venv by deploy/remote/apply.sh (re-run automatically when this file changes).
+# RPi.GPIO, spidev, lxml and requests come from apt (see migrations/001) and are visible through
+# --system-site-packages, so they are not pinned here.
+mfrc522>=0.0.7
+soco>=0.26,<1
+falcon>=3.0.1,<5
+Werkzeug>=2.0.2,<4

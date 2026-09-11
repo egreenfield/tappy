@@ -1,0 +1,19 @@
+# Installed by deploy/remote/apply.sh as /etc/systemd/system/tappy.service. Edit the template, not the copy.
+[Unit]
+Description=Tappy Music Player Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=__TAPPY_DIR__/device
+ExecStart=__TAPPY_VENV__/bin/python -u __TAPPY_DIR__/device/main.py
+# Log output straight to journald instead of block-buffering it (Python < 3.9 buffers stderr otherwise).
+Environment=PYTHONUNBUFFERED=1
+# Come back if the process dies for any reason.
+Restart=always
+RestartSec=5
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

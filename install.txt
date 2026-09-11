@@ -1,15 +1,5 @@
-make sure you're using python3
-sudo python -m pip install mfrc522 
-sudo python -m pip install soco
-sudo python -m pip install pyyaml
+Installation and updates are scripted. See deploy/README.md:
 
-
-Remote debugging:
-sudo python -m pip install ptvsd
-
-
-
-sudo cp tappy.service /lib/systemd/system/tappy.service
-sudo chmod 644 /lib/systemd/system/tappy.service
-sudo systemctl daemon-reload
-sudo systemctl enable tappy.service
+  ./deploy/install.sh   # fresh Raspberry Pi
+  ./deploy/update.sh    # push new code / apply environment changes
+  ./deploy/status.sh    # what's running

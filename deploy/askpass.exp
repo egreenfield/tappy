@@ -1,0 +1,14 @@
+#!/usr/bin/expect -f
+# Runs a command (ssh/scp/...) and answers its password prompt with $TAPPY_PASSWORD.
+# Used only when `sshpass` is not installed on the client. Exit code is the command's.
+set timeout -1
+if {![info exists env(TAPPY_PASSWORD)]} { puts stderr "askpass.exp: TAPPY_PASSWORD not set"; exit 2 }
+set pw $env(TAPPY_PASSWORD)
+log_user 0                      ;# hide the password prompt itself
+spawn -noecho {*}$argv
+expect {
+    -re "(?i)password: ?$" { send -- "$pw\r"; log_user 1; exp_continue }
+    eof { log_user 1 }
+}
+catch wait result
+exit [lindex $result 3]

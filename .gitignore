@@ -1,3 +1,7 @@
 ._*
 *.pyc
 backup/*
+deploy/.env
+deploy/backups/
+.venv/
+__pycache__/
