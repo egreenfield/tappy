@@ -3,6 +3,7 @@ from pyclbr import Function
 from tokenize import Number
 from xmlrpc.client import boolean
 import mfrc522 as MFRC522
+import RPi.GPIO as GPIO
 import logging
 import time
 log = logging.getLogger(__name__)
@@ -71,6 +72,15 @@ class _MFRC522(MFRC522.MFRC522):
 # for its timer, so without this the loop pins the Pi Zero's only core at 100%.
 kPollInterval = 0.2
 
+# The RC522 module's RST line is wired to BCM 25 (board pin 22). With GPIO in BCM mode the
+# mfrc522 library wrongly drives BCM 15 instead, so the chip was never hardware-reset: after days
+# of uptime its RF front end can wedge (registers look fine, no card is ever detected) and only a
+# pulse on RST recovers it. So we drive RST ourselves, at startup and periodically while idle.
+kResetPin = 25
+kIdleResetInterval = 30 * 60   # hard-reset the reader after this long without a card
+kHealthCheckInterval = 60      # verify the chip still holds its configuration this often
+kHeartbeatInterval = 60 * 60   # log poll statistics this often
+
 @dataclass
 class ReadConfig:
     read:Function
@@ -82,7 +92,13 @@ class ReadConfig:
 
 class CardReader:
     def __init__(self,tappy,readConfig):
-        self.MIFAREReader = _MFRC522()
+        self.lastHealthCheck = time.time()
+        self.lastHeartbeat = time.time()
+        self.pollCount = 0
+        self.okCount = 0
+        self.resetCount = 0
+        self.MIFAREReader = _MFRC522(pin_rst=kResetPin)   # the library configures the RST pin
+        self.hardReset()
         self.dataModel = tappy.dataModel
         self.tappy = tappy
         self.state = kNoCard
@@ -100,6 +116,45 @@ class CardReader:
     @property
     def callbackTimestamp(self):
         return self.readConfig[-1][1]
+
+    def hardReset(self, reason="startup"):
+        """Pulse the reader's RST line and re-run the library's initialisation."""
+        log.info(f"hard-resetting card reader ({reason})")
+        GPIO.output(kResetPin, GPIO.LOW)
+        time.sleep(0.05)
+        GPIO.output(kResetPin, GPIO.HIGH)
+        time.sleep(0.05)
+        self.MIFAREReader.MFRC522_Init()
+        self.lastReset = time.time()
+        self.resetCount += 1
+
+    def readerHealthy(self):
+        """True if the chip still holds the configuration MFRC522_Init gave it."""
+        r = self.MIFAREReader
+        try:
+            version = r.Read_MFRC522(r.VersionReg)
+            tmode = r.Read_MFRC522(r.TModeReg)
+            antenna = r.Read_MFRC522(r.TxControlReg) & 0x03
+        except Exception as e:
+            log.warning(f"reader register read failed: {e}")
+            return False
+        if version not in (0x91, 0x92) or tmode != 0x8D or antenna != 0x03:
+            log.warning(f"reader lost its configuration: version={version:02x} tmode={tmode:02x} antenna={antenna:02x}")
+            return False
+        return True
+
+    def maintain(self):
+        """Housekeeping between polls: health check, idle reset, heartbeat."""
+        now = time.time()
+        if now - self.lastHealthCheck >= kHealthCheckInterval:
+            self.lastHealthCheck = now
+            if not self.readerHealthy():
+                self.hardReset("configuration lost")
+        if self.state == kNoCard and now - self.lastReset >= kIdleResetInterval:
+            self.hardReset("periodic idle reset")
+        if now - self.lastHeartbeat >= kHeartbeatInterval:
+            self.lastHeartbeat = now
+            log.info(f"heartbeat: polls={self.pollCount} card_seen={self.okCount} resets={self.resetCount} state={self.state}")
 
     def stopReading(self):
         self.continue_reading = False
@@ -188,8 +243,12 @@ class CardReader:
             
             # Scan for cards    
             (status,TagType) = self.MIFAREReader.MFRC522_Request(self.MIFAREReader.PICC_REQIDL)
+            self.pollCount += 1
+            if status == self.MIFAREReader.MI_OK:
+                self.okCount += 1
 
             self.updateState(status)
+            self.maintain()
             time.sleep(kPollInterval)
 
 
